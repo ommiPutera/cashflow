@@ -38,6 +38,8 @@
     --radius: 0.5rem;
 
     --shell-page-width: 610px;
+    --header-height: 48px;
+    --header-height-mobile: 56px;
   }
 
   .dark {
