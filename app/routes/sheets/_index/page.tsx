@@ -26,8 +26,22 @@ function CreateSheet() {
   return (
     <Section className="bg-white dark:bg-black border hover:bg-neutral-50 border-neutral-200 dark:border-neutral-800 p-0 lg:p-0 cursor-pointer">
       <div className="p-4 lg:py-6 lg:px-6 flex items-center gap-2 lg:gap-3">
-        {/* <PenLine className="lg:w-5 lg:h-5 w-4 h-4" /> */}
-        <span>pen</span>
+        <span>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            fill="none"
+            stroke="currentColor"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            viewBox="0 0 24 24"
+            className="lg:w-5 lg:h-5 w-4 h-4"
+          >
+            <path d="M12 20h9M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z"></path>
+          </svg>
+        </span>
         <h2 className="text-sm lg:text-base font-semibold">Buat Sheet</h2>
       </div>
     </Section>
@@ -61,8 +75,21 @@ function Sheet({ title, to }: { title: string; to: string }) {
           <div className="flex flex-col gap-3">
             <div className="flex items-center gap-2">
               <span>
-                sheet
-                {/* <SheetIcon className="lg:w-5 lg:h-5 w-4 h-4" /> */}
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  className="lg:w-5 lg:h-5 w-4 h-4"
+                  viewBox="0 0 24 24"
+                >
+                  <rect width="18" height="18" x="3" y="3" rx="2" ry="2"></rect>
+                  <path d="M3 9h18M3 15h18M9 9v12M15 9v12"></path>
+                </svg>
               </span>
               <span className="text-sm font-semibold">{title}</span>
             </div>
