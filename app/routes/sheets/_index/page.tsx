@@ -1,4 +1,3 @@
-import { PenLine, SheetIcon } from "lucide-react";
 import { Link, type MetaFunction } from "react-router";
 
 import ShellPage, { Divide, Section } from "~/components/shell-page";
@@ -27,7 +26,8 @@ function CreateSheet() {
   return (
     <Section className="bg-white dark:bg-black border hover:bg-neutral-50 border-neutral-200 dark:border-neutral-800 p-0 lg:p-0 cursor-pointer">
       <div className="p-4 lg:py-6 lg:px-6 flex items-center gap-2 lg:gap-3">
-        <PenLine className="lg:w-5 lg:h-5 w-4 h-4" />
+        {/* <PenLine className="lg:w-5 lg:h-5 w-4 h-4" /> */}
+        <span>pen</span>
         <h2 className="text-sm lg:text-base font-semibold">Buat Sheet</h2>
       </div>
     </Section>
@@ -61,7 +61,8 @@ function Sheet({ title, to }: { title: string; to: string }) {
           <div className="flex flex-col gap-3">
             <div className="flex items-center gap-2">
               <span>
-                <SheetIcon className="lg:w-5 lg:h-5 w-4 h-4" />
+                sheet
+                {/* <SheetIcon className="lg:w-5 lg:h-5 w-4 h-4" /> */}
               </span>
               <span className="text-sm font-semibold">{title}</span>
             </div>
