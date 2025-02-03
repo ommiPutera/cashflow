@@ -1,35 +1,44 @@
-import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
+
 import { cva, type VariantProps } from "class-variance-authority";
+import React from "react";
+import { useNavigate } from "react-router";
+
+import { Loading } from "~/components/loading";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "~/components/ui/tooltip";
 
 import { cn } from "~/lib/utils";
 
+import { AnchorOrLink } from "~/utils/misc";
+
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  "relative inline-flex items-center justify-center whitespace-nowrap font-semibold border border-transparent tracking-tight ring-offset-background transition-colors focus-visble:border-none focus-visible:outline-1 outline-primary-500 disabled:pointer-events-none disabled:opacity-70",
   {
     variants: {
       variant: {
-        default:
-          "bg-primary text-primary-foreground shadow hover:bg-primary/90",
-        destructive:
-          "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90",
-        outline:
-          "border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground",
-        secondary:
-          "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
-        link: "text-primary underline-offset-4 hover:underline",
+        transparent: "",
+        primary:
+          "bg-primary-500 text-neutral-50 focus:outline-none focus:ring-2 focus:ring-primary-500/50 disabled:bg-neutral-100 disabled:border-neutral-300 disabled:text-neutral-500",
+        secondary: "bg-primary-50 text-primary-500",
+        "secondary-danger": "bg-danger-50 text-danger-500",
+        "outlined-danger": "border-danger-300 text-danger-500 bg-neutral-50",
+        "outlined-primary": "border-neutral-300 text-primary-500 bg-neutral-50",
+        danger: "bg-danger-500 text-white",
       },
       size: {
-        default: "h-9 px-4 py-2",
-        sm: "h-8 rounded-md px-3 text-xs",
-        lg: "h-10 rounded-md px-8",
-        icon: "h-9 w-9",
+        sm: "h-11 lg:h-10 rounded-md px-6 text-sm",
+        lg: "h-14 lg:h-11 px-6 rounded-lg text-sm font-bold",
+        xl: "h-[52px] px-6 rounded-lg text-base font-bold",
+        icon: "w-fit h-fit rounded-md",
       },
     },
     defaultVariants: {
-      variant: "default",
-      size: "default",
+      variant: "transparent",
+      size: "lg",
     },
   },
 );
@@ -38,20 +47,96 @@ export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean;
+  loading?: boolean;
+  tooltip?: string;
+  tooltipSide?: "bottom" | "left" | "right" | "top";
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
+  (
+    {
+      className,
+      variant,
+      size,
+      loading = false,
+      asChild = false,
+      tooltip = "",
+      tooltipSide = "bottom",
+      ...props
+    },
+    ref,
+  ) => {
     const Comp = asChild ? Slot : "button";
+
+    if (tooltip) {
+      return (
+        <Tooltip disableHoverableContent delayDuration={200}>
+          <TooltipTrigger asChild>
+            <Comp
+              className={cn(buttonVariants({ variant, size, className }))}
+              ref={ref}
+              {...props}
+            >
+              {loading ? <Loading dark={props.disabled} /> : props.children}
+            </Comp>
+          </TooltipTrigger>
+          <TooltipContent align="center" side={tooltipSide} sideOffset={3}>
+            {tooltip}
+          </TooltipContent>
+        </Tooltip>
+      );
+    }
+
     return (
       <Comp
         className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
         {...props}
-      />
+      >
+        {loading ? <Loading dark={props.disabled} /> : props.children}
+      </Comp>
     );
   },
 );
 Button.displayName = "Button";
 
-export { Button, buttonVariants };
+/**
+ * A button that looks like a link
+ */
+const ButtonLink = React.forwardRef<
+  HTMLAnchorElement,
+  React.ComponentPropsWithRef<typeof AnchorOrLink> &
+    ButtonProps & { delay?: number }
+>(function ButtonLink({ delay = 0, ...props }, ref) {
+  const { variant, size, href, prefetch = "none" } = props;
+
+  const navigate = useNavigate();
+  const redirectTo = async () => {
+    await wait(delay);
+    if (href) navigate(href);
+  };
+
+  const Comp = delay ? Slot : AnchorOrLink;
+  return (
+    <Button asChild variant={variant} size={size} className={props.className}>
+      <Comp
+        ref={ref}
+        prefetch={prefetch}
+        onClick={() => (delay ? redirectTo() : null)}
+        href={props.href}
+        {...props}
+      >
+        {props.children}
+      </Comp>
+    </Button>
+  );
+});
+ButtonLink.displayName = "ButtonLink";
+
+function wait(time: number) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, time);
+  });
+}
+
+export { Button, ButtonLink, buttonVariants };
