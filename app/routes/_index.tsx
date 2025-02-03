@@ -1,10 +1,7 @@
 import type { MetaFunction } from "react-router";
 
 export const meta: MetaFunction = () => {
-  return [
-    { title: "Cashflow" },
-    { name: "description", content: "Welcome to Remix!" },
-  ];
+  return [{ title: "Cashflow" }, { name: "", content: "" }];
 };
 
 export default function Index() {
