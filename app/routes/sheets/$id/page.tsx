@@ -38,6 +38,7 @@ import { Label } from "~/components/ui/label";
 
 import { useMediaQuery } from "~/hooks/use-media-query";
 import { DialogClose } from "@radix-ui/react-dialog";
+import { ToggleGroup, ToggleGroupItem } from "~/components/ui/toggle-group";
 
 export const meta: MetaFunction = ({ params }) => {
   const title = params.id?.split("-").join(" ");
@@ -171,7 +172,7 @@ function Transaction(props: TTransaction) {
             </div>
           </Button>
         </DialogTrigger>
-        <DialogContent className="sm:max-w-[495px]">
+        <DialogContent className="sm:max-w-[545px]">
           <DialogHeader>
             <DialogTitle>{name}</DialogTitle>
             <DialogDescription></DialogDescription>
@@ -179,12 +180,12 @@ function Transaction(props: TTransaction) {
           <div className="mt-2">
             <FormEditTransaction {...props} />
           </div>
-          <DialogFooter className="pt-4">
-            <Button variant="primary" className="w-full">
+          <DialogFooter className="pt-8">
+            <Button variant="primary" className="w-[125px]">
               Simpan
             </Button>
             <DialogClose asChild>
-              <Button variant="outlined-primary" className="w-full">
+              <Button variant="outlined-primary" className="w-[125px]">
                 Batalkan
               </Button>
             </DialogClose>
@@ -217,7 +218,7 @@ function Transaction(props: TTransaction) {
         <div className="p-4 pt-2 mt-2">
           <FormEditTransaction {...props} />
         </div>
-        <DrawerFooter className="pt-4">
+        <DrawerFooter className="pt-8">
           <Button variant="primary">Simpan</Button>
           <DrawerClose asChild>
             <Button variant="outlined-primary">Batalkan</Button>
@@ -239,7 +240,7 @@ const createBankSchema = z.object({
     .string({ required_error: "Nominal transaksi harus diisi" })
     .max(30, "Maksimal 30 karakter"),
 });
-function FormEditTransaction({ name, nominal }: TTransaction) {
+function FormEditTransaction({ name, nominal, type }: TTransaction) {
   const fetcher = useFetcher();
   const actionData = useActionData<typeof action>();
 
@@ -270,7 +271,7 @@ function FormEditTransaction({ name, nominal }: TTransaction) {
               prefix="Rp"
               thousandSeparator="."
               decimalSeparator=","
-              className="border-none bg-transparent px-0 text-2xl font-bold"
+              className="border-none bg-transparent px-0 text-2xl lg:text-3xl font-bold"
               error={!!fields.nominal.errors}
               {...getInputProps(fields.nominal, {
                 type: "text",
@@ -278,6 +279,61 @@ function FormEditTransaction({ name, nominal }: TTransaction) {
               })}
               key={fields.nominal.key}
             />
+          </div>
+          <div className="grid w-full items-center gap-2">
+            <Label htmlFor={fields.name.id}>Tipe Transaksi</Label>
+            <ToggleGroup
+              type="single"
+              defaultValue={type}
+              className="flex w-full items-center gap-2"
+            >
+              <ToggleGroupItem
+                value="in"
+                aria-label="Pemasukan"
+                className="w-full h-14 data-[state=on]:border-green-500 data-[state=on]:text-green-600 data-[state=on]:bg-neutral-50"
+              >
+                <span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    className="w-4 h-4 lg:w-5 lg:h-5"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M5 12h14M12 5v14"></path>
+                  </svg>
+                </span>
+                <span>Pemasukan</span>
+              </ToggleGroupItem>
+              <ToggleGroupItem
+                value="out"
+                aria-label="Pengeluaran"
+                className="w-full h-14 data-[state=on]:border-danger-500 data-[state=on]:text-danger-400 data-[state=on]:bg-neutral-50"
+              >
+                <span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    className="w-4 h-4 lg:w-5 lg:h-5"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M5 12h14"></path>
+                  </svg>
+                </span>
+                <span>Pengeluaran</span>
+              </ToggleGroupItem>
+            </ToggleGroup>
           </div>
           <div className="grid w-full items-center gap-2">
             <Label htmlFor={fields.name.id}>Nama Transaksi</Label>
