@@ -16,7 +16,7 @@ import { cn } from "~/lib/utils";
 import { AnchorOrLink } from "~/utils/misc";
 
 const buttonVariants = cva(
-  "relative inline-flex items-center justify-center whitespace-nowrap font-semibold border border-transparent tracking-tight ring-offset-background transition-colors focus-visble:border-none focus-visible:outline-1 outline-primary-500 disabled:pointer-events-none disabled:opacity-70",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md font-semibold transition-colors focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
@@ -25,8 +25,10 @@ const buttonVariants = cva(
           "bg-primary-500 text-neutral-50 focus:outline-none focus:ring-2 focus:ring-primary-500/50 disabled:bg-neutral-100 disabled:border-neutral-300 disabled:text-neutral-500",
         secondary: "bg-primary-50 text-primary-500",
         "secondary-danger": "bg-danger-50 text-danger-500",
-        "outlined-danger": "border-danger-300 text-danger-500 bg-neutral-50",
-        "outlined-primary": "border-neutral-300 text-primary-500 bg-neutral-50",
+        "outlined-danger":
+          "border border-danger-300 text-danger-500 bg-neutral-50",
+        "outlined-primary":
+          "border text-primary-500 bg-neutral-50 focus:outline-none focus:ring-2 focus:ring-primary-500/50",
         danger: "bg-danger-500 text-white",
       },
       size: {
