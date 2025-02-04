@@ -55,7 +55,7 @@ export function Section({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
       className={cn(
-        "flex flex-col px-4 py-3 lg:py-8 lg:px-6 overflow-hidden relative rounded-xl",
+        "flex flex-col p-3 lg:py-8 lg:px-6 overflow-hidden relative",
         props.className,
       )}
     >
