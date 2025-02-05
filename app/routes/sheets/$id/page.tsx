@@ -8,13 +8,19 @@ import {
 } from "react-router";
 import { z } from "zod";
 
-import { FormProvider, getInputProps, useForm } from "@conform-to/react";
+import {
+  FormProvider,
+  getInputProps,
+  useField,
+  useForm,
+} from "@conform-to/react";
 import { parseWithZod } from "@conform-to/zod";
 
 import ShellPage, { Divide, Section } from "~/components/shell-page";
 import { Button } from "~/components/ui/button";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -22,22 +28,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "~/components/ui/dialog";
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from "~/components/ui/drawer";
 import { Input } from "~/components/ui/input";
 import { InputNumber } from "~/components/ui/input-number";
 import { Label } from "~/components/ui/label";
-
-import { useMediaQuery } from "~/hooks/use-media-query";
-import { DialogClose } from "@radix-ui/react-dialog";
+import { Textarea } from "~/components/ui/textarea";
 import { ToggleGroup, ToggleGroupItem } from "~/components/ui/toggle-group";
 
 export const meta: MetaFunction = ({ params }) => {
@@ -47,7 +41,7 @@ export const meta: MetaFunction = ({ params }) => {
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
-  console.log("formData: ", formData);
+  console.log("formData: ", JSON.stringify(formData));
   return {};
 };
 
@@ -150,54 +144,16 @@ type TTransaction = {
   id: string;
   type: string;
   nominal: number;
+  notes: string | null;
 };
 function Transaction(props: TTransaction) {
   const { name, nominal } = props;
+
+  const fetcher = useFetcher();
   const [open, setOpen] = React.useState(false);
-  const isDesktop = useMediaQuery("(min-width: 768px)");
-
-  if (isDesktop) {
-    return (
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger asChild>
-          <Button
-            variant="transparent"
-            className="px-4 lg:px-6 h-14 lg:h-16 flex w-full items-center hover:bg-neutral-50 cursor-pointer rounded-none border-x-0"
-          >
-            <div className="flex justify-between items-center w-full">
-              <span className="text-sm font-medium text-wrap">{name}</span>
-              <span className="text-sm font-semibold text-neutral-700 text-wrap">
-                {nominal}
-              </span>
-            </div>
-          </Button>
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-[545px]">
-          <DialogHeader>
-            <DialogTitle>{name}</DialogTitle>
-            <DialogDescription></DialogDescription>
-          </DialogHeader>
-          <div className="mt-2">
-            <FormEditTransaction {...props} />
-          </div>
-          <DialogFooter className="pt-8">
-            <Button variant="primary" className="w-[125px]">
-              Simpan
-            </Button>
-            <DialogClose asChild>
-              <Button variant="outlined-primary" className="w-[125px]">
-                Batalkan
-              </Button>
-            </DialogClose>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    );
-  }
-
   return (
-    <Drawer open={open} onOpenChange={setOpen}>
-      <DrawerTrigger asChild>
+    <Dialog open={open} onOpenChange={setOpen} modal={true}>
+      <DialogTrigger asChild>
         <Button
           variant="transparent"
           className="px-4 lg:px-6 h-14 lg:h-16 flex w-full items-center hover:bg-neutral-50 cursor-pointer rounded-none border-x-0"
@@ -209,23 +165,40 @@ function Transaction(props: TTransaction) {
             </span>
           </div>
         </Button>
-      </DrawerTrigger>
-      <DrawerContent>
-        <DrawerHeader className="text-left">
-          <DrawerTitle>{name}</DrawerTitle>
-          <DrawerDescription></DrawerDescription>
-        </DrawerHeader>
-        <div className="p-4 pt-2 mt-2">
-          <FormEditTransaction {...props} />
-        </div>
-        <DrawerFooter className="pt-8">
-          <Button variant="primary">Simpan</Button>
-          <DrawerClose asChild>
-            <Button variant="outlined-primary">Batalkan</Button>
-          </DrawerClose>
-        </DrawerFooter>
-      </DrawerContent>
-    </Drawer>
+      </DialogTrigger>
+      <DialogContent
+        className="sm:max-w-[525px] min-h-svh lg:min-h-fit border-none gap-8 !overflow-y-scroll"
+        onOpenAutoFocus={(e) => e.preventDefault()}
+      >
+        <DialogHeader>
+          <DialogTitle>{name}</DialogTitle>
+          <DialogDescription></DialogDescription>
+        </DialogHeader>
+        <fetcher.Form action="." method="post" className="flex flex-col gap-8">
+          <div className="lg:mt-2">
+            <FormEditTransaction {...props} />
+          </div>
+          <DialogFooter className="lg:pt-8 flex flex-col lg:flex-row gap-3">
+            <Button
+              variant="primary"
+              type="submit"
+              className="w-full lg:w-[125px]"
+            >
+              Simpan
+            </Button>
+            <DialogClose asChild>
+              <Button
+                type="button"
+                variant="outlined-primary"
+                className="w-full lg:w-[125px]"
+              >
+                Batalkan
+              </Button>
+            </DialogClose>
+          </DialogFooter>
+        </fetcher.Form>
+      </DialogContent>
+    </Dialog>
   );
 }
 
@@ -239,12 +212,14 @@ const createBankSchema = z.object({
   nominal: z
     .string({ required_error: "Nominal transaksi harus diisi" })
     .max(30, "Maksimal 30 karakter"),
+  notes: z.string().max(30, "Maksimal 30 karakter").optional(),
 });
-function FormEditTransaction({ name, nominal, type }: TTransaction) {
-  const fetcher = useFetcher();
+const formId = "edit-transaction";
+function FormEditTransaction({ name, nominal, type, notes }: TTransaction) {
   const actionData = useActionData<typeof action>();
 
   const [form, fields] = useForm({
+    id: formId,
     lastResult: actionData,
     onValidate({ formData }) {
       return parseWithZod(formData, { schema: createBankSchema });
@@ -252,104 +227,139 @@ function FormEditTransaction({ name, nominal, type }: TTransaction) {
     defaultValue: {
       name,
       nominal: nominal.toString(),
+      notes,
     },
     shouldValidate: "onInput",
     shouldRevalidate: "onInput",
   });
   return (
-    <fetcher.Form>
-      <FormProvider context={form.context}>
-        <div className="flex flex-col gap-5">
-          <div className="grid w-full items-center gap-1">
-            <Label htmlFor={fields.name.id}>Nominal</Label>
-            <InputNumber
-              // eslint-disable-next-line jsx-a11y/no-autofocus
-              autoFocus
-              allowNegative={false}
-              placeholder="Rp"
-              maxLength={16}
-              prefix="Rp"
-              thousandSeparator="."
-              decimalSeparator=","
-              className="border-none bg-transparent px-0 text-2xl lg:text-3xl font-bold"
-              error={!!fields.nominal.errors}
-              {...getInputProps(fields.nominal, {
-                type: "text",
-                ariaDescribedBy: fields.nominal.descriptionId,
-              })}
-              key={fields.nominal.key}
-            />
-          </div>
-          <div className="grid w-full items-center gap-2">
-            <Label htmlFor={fields.name.id}>Tipe Transaksi</Label>
-            <ToggleGroup
-              type="single"
-              defaultValue={type}
-              className="flex w-full items-center gap-2"
-            >
-              <ToggleGroupItem
-                value="in"
-                aria-label="Pemasukan"
-                className="w-full h-14 data-[state=on]:border-green-500 data-[state=on]:text-green-600 data-[state=on]:bg-neutral-50"
-              >
-                <span>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    className="w-4 h-4 lg:w-5 lg:h-5"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M5 12h14M12 5v14"></path>
-                  </svg>
-                </span>
-                <span>Pemasukan</span>
-              </ToggleGroupItem>
-              <ToggleGroupItem
-                value="out"
-                aria-label="Pengeluaran"
-                className="w-full h-14 data-[state=on]:border-danger-500 data-[state=on]:text-danger-400 data-[state=on]:bg-neutral-50"
-              >
-                <span>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    className="w-4 h-4 lg:w-5 lg:h-5"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M5 12h14"></path>
-                  </svg>
-                </span>
-                <span>Pengeluaran</span>
-              </ToggleGroupItem>
-            </ToggleGroup>
-          </div>
-          <div className="grid w-full items-center gap-2">
-            <Label htmlFor={fields.name.id}>Nama Transaksi</Label>
-            <Input
-              placeholder="Masukkan nama transaksi"
-              error={!!fields.name.errors}
-              {...getInputProps(fields.name, {
-                type: "text",
-                ariaDescribedBy: fields.name.descriptionId,
-              })}
-              key={fields.name.key}
-            />
-          </div>
+    <FormProvider context={form.context}>
+      <div className="flex flex-col gap-5 h-full">
+        <div className="grid w-full items-center gap-1">
+          <Label htmlFor={fields.name.id} required>
+            Nominal
+          </Label>
+          <InputNumber
+            allowNegative={false}
+            placeholder="Rp"
+            maxLength={14}
+            prefix="Rp"
+            pattern="[0-9]*"
+            inputMode="decimal"
+            thousandSeparator="."
+            decimalSeparator=","
+            className="border-none bg-transparent px-0 text-3xl lg:text-2xl font-semibold lg:font-bold"
+            error={!!fields.nominal.errors}
+            {...getInputProps(fields.nominal, {
+              type: "text",
+              ariaDescribedBy: fields.nominal.descriptionId,
+            })}
+            key={fields.nominal.key}
+          />
         </div>
-      </FormProvider>
-    </fetcher.Form>
+        <div className="grid w-full items-center gap-2">
+          <Label htmlFor={fields.name.id} required>
+            Nama Transaksi
+          </Label>
+          <Input
+            placeholder="Masukkan nama transaksi"
+            error={!!fields.name.errors}
+            {...getInputProps(fields.name, {
+              type: "text",
+              ariaDescribedBy: fields.name.descriptionId,
+            })}
+            key={fields.name.key}
+          />
+        </div>
+        <div className="grid w-full items-center gap-2">
+          <Label htmlFor={fields.type.id} required>
+            Tipe Transaksi
+          </Label>
+          <Type type={type} />
+        </div>
+        <div className="grid w-full items-center gap-2">
+          <Label htmlFor={fields.name.id}>Catatan</Label>
+          <Textarea
+            placeholder="Masukkan nama transaksi"
+            rows={4}
+            error={!!fields.name.errors}
+            {...getInputProps(fields.name, {
+              type: "text",
+              ariaDescribedBy: fields.name.descriptionId,
+            })}
+            key={fields.name.key}
+          />
+        </div>
+      </div>
+    </FormProvider>
+  );
+}
+function Type({ type }: { type: TTransaction["type"] }) {
+  const [field] = useField("type");
+
+  const [value, setValue] = React.useState(type);
+  return (
+    <div>
+      <input
+        {...getInputProps(field, {
+          type: "hidden",
+          ariaDescribedBy: field.descriptionId,
+        })}
+      />
+      <ToggleGroup
+        type="single"
+        onValueChange={setValue}
+        defaultValue={value}
+        className="flex w-full items-center gap-2"
+      >
+        <ToggleGroupItem
+          value="in"
+          aria-label="Pemasukan"
+          className="w-full h-14 data-[state=on]:border-green-500 data-[state=on]:text-green-600 data-[state=on]:bg-neutral-50"
+        >
+          <span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              fill="none"
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              className="w-4 h-4 lg:w-5 lg:h-5"
+              viewBox="0 0 24 24"
+            >
+              <path d="M5 12h14M12 5v14"></path>
+            </svg>
+          </span>
+          <span>Pemasukan</span>
+        </ToggleGroupItem>
+        <ToggleGroupItem
+          value="out"
+          aria-label="Pengeluaran"
+          className="w-full h-14 data-[state=on]:border-danger-500 data-[state=on]:text-danger-400 data-[state=on]:bg-neutral-50"
+        >
+          <span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              fill="none"
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              className="w-4 h-4 lg:w-5 lg:h-5"
+              viewBox="0 0 24 24"
+            >
+              <path d="M5 12h14"></path>
+            </svg>
+          </span>
+          <span>Pengeluaran</span>
+        </ToggleGroupItem>
+      </ToggleGroup>
+    </div>
   );
 }
 
@@ -359,11 +369,13 @@ const data: TTransaction[] = [
     name: "Kredivo",
     type: "out",
     nominal: 890000,
+    notes: null,
   },
   {
     id: "123456",
     name: "Traveloka",
     type: "out",
     nominal: 1780000,
+    notes: null,
   },
 ];

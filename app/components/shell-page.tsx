@@ -1,12 +1,76 @@
 import React from "react";
-import { Link, useLocation } from "react-router";
 
 import { cn } from "~/lib/utils";
+import { ExpandableTabs } from "~/components/ui/expandable-tabs";
+import { Button } from "~/components/ui/button";
 
 export default function ShellPage({
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
-  const location = useLocation();
+  const tabs = [
+    {
+      title: "Sheets",
+      to: "/sheets",
+      icon: () => (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          fill="none"
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="2"
+          viewBox="0 0 24 24"
+        >
+          <path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"></path>
+          <path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12"></path>
+          <path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17"></path>
+        </svg>
+      ),
+    },
+    {
+      title: "Saya",
+      to: "/account",
+      icon: () => (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          fill="none"
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="2"
+          viewBox="0 0 24 24"
+        >
+          <circle cx="12" cy="8" r="5"></circle>
+          <path d="M20 21a8 8 0 0 0-16 0"></path>
+        </svg>
+      ),
+    },
+    {
+      title: "Pengaturan",
+      to: "/setting",
+      icon: () => (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          fill="none"
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="2"
+          viewBox="0 0 24 24"
+        >
+          <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2"></path>
+          <circle cx="12" cy="12" r="3"></circle>
+        </svg>
+      ),
+    },
+  ];
+
   return (
     <div className="mx-auto w-full max-w-[var(--shell-page-width)]">
       <div className="flex flex-col relative">
@@ -14,34 +78,12 @@ export default function ShellPage({
           <div className="h-fit relative">
             <header
               role="banner"
-              className="inline-flex gap-8 cursor-pointer h-[var(--header-height-mobile)] md:h-[var(--header-height)] w-full justify-center items-center"
+              className="flex flex-col-reverse lg:flex-row gap-2 fixed bottom-0 mx-auto left-0 cursor-pointer h-[var(--header-height-mobile)] md:h-[var(--header-height)] w-full justify-center items-center"
             >
-              <span
-                className={cn(
-                  "text-xs text-muted-foreground/80 font-semibold",
-                  location.pathname === "/sheets" && "text-foreground",
-                )}
-              >
-                <Link to="/sheets">Sheets</Link>
-              </span>
-              <span
-                className={cn(
-                  "text-xs text-muted-foreground/80 font-semibold",
-                  location.pathname === "/account" && "text-foreground",
-                )}
-              >
-                <Link to="/account">Account</Link>
-              </span>
-              <span
-                className={cn(
-                  "text-xs text-muted-foreground/80 font-semibold",
-                  location.pathname === "/setting" && "text-foreground",
-                )}
-              >
-                <Link to="/setting">Setting</Link>
-              </span>
+              <ExpandableTabs tabs={tabs} />
+              <Button variant="outlined-primary">Sheet Baru</Button>
             </header>
-            <main role="main" className="px-3 lg:px-14">
+            <main role="main" className="p-3 lg:px-14">
               {props.children}
             </main>
           </div>

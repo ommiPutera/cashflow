@@ -16,8 +16,8 @@ const toggleVariants = cva(
           "border bg-transparent shadow-sm hover:bg-neutral-50 hover:text-accent-foreground",
       },
       size: {
-        sm: "h-8 px-1.5 min-w-8",
-        lg: "h-14 lg:h-12 px-4 rounded-lg text-sm min-w-10",
+        sm: "h-8 px-1.5 min-w-8 rounded-lg",
+        lg: "h-14 lg:h-12 px-4 rounded-xl text-sm min-w-10",
       },
     },
     defaultVariants: {

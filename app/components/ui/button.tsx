@@ -28,13 +28,13 @@ const buttonVariants = cva(
         "outlined-danger":
           "border border-danger-300 text-danger-500 bg-neutral-50",
         "outlined-primary":
-          "border text-primary-500 bg-neutral-50 focus:outline-none focus:ring-2 focus:ring-primary-500/50",
+          "border text-primary-500 bg-white focus:outline-none focus:ring-2 focus:ring-primary-500/50",
         danger: "bg-danger-500 text-white",
       },
       size: {
-        sm: "h-11 lg:h-10 rounded-md px-6 text-sm",
-        lg: "h-14 lg:h-12 px-6 rounded-lg text-sm font-bold",
-        xl: "h-[52px] px-6 rounded-lg text-base font-bold",
+        sm: "h-11 lg:h-10 rounded-lg px-6 text-sm",
+        lg: "h-14 lg:h-12 px-6 rounded-xl text-sm font-bold",
+        xl: "h-[52px] px-6 rounded-2xl text-base font-bold",
         icon: "w-fit h-fit rounded-md",
       },
     },

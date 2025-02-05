@@ -79,8 +79,8 @@
     --radius: 0.5rem;
 
     --shell-page-width: 610px;
-    --header-height: 48px;
-    --header-height-mobile: 56px;
+    --header-height: 128px;
+    --header-height-mobile: 186px;
   }
 
   .dark {
@@ -116,7 +116,6 @@
     -webkit-tap-highlight-color: transparent;
     -webkit-font-smoothing: antialiased;
     font-synthesis: none;
-    overscroll-behavior-y: none;
   }
   html {
     ::-webkit-scrollbar {
@@ -144,7 +143,7 @@
   input::selection,
   textarea::selection {
     @apply bg-neutral-300;
-    color: inherit; /* Change text color if needed */
+    color: inherit;
   }
 }
 

@@ -4,7 +4,7 @@ import React from "react";
 import { cn } from "~/lib/utils";
 
 const inputVariants = cva(
-  "flex h-9 w-full rounded-md border bg-neutral-50 appearance-none transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-neutral-700 focus-visible:outline-none outline-primary-500 disabled:cursor-not-allowed disabled:opacity-50",
+  "flex h-9 w-full border bg-neutral-50 appearance-none transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-neutral-700 focus-visible:outline-none outline-primary-500 disabled:cursor-not-allowed disabled:opacity-50",
   {
     variants: {
       variant: {
@@ -12,8 +12,8 @@ const inputVariants = cva(
           "border-neutral-300 hover:border-neutral-800 hover:disabled:border-neutral-300 disabled:border-neutral-300 disabled:bg-neutral-100 disabled:text-neutral-500 disabled:opacity-100 focus-visible:border-primary-500",
       },
       inputSize: {
-        sm: "h-11 lg:h-9 rounded-sm px-3 text-sm",
-        lg: "h-14 lg:h-12 px-4 rounded-lg text-sm",
+        sm: "h-11 lg:h-9 rounded-lg px-3 text-sm",
+        lg: "h-14 lg:h-12 px-4 rounded-xl text-sm",
       },
     },
     defaultVariants: {
