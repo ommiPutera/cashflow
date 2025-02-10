@@ -58,7 +58,15 @@ const transactions: TTransaction[] = [
     name: "Traveloka",
     type: "out",
     nominal: 1780000,
-    notes: null,
+    notes: "Lunas",
+  },
+  {
+    id: "3",
+    sheetId: "Tagihan-Jan-2025",
+    name: "Transfer",
+    type: "in",
+    nominal: 90000000,
+    notes: "Sudah diterima",
   },
 ];
 
@@ -71,8 +79,8 @@ export default function Edit() {
       <div className="w-full h-12">
         <ButtonLink
           asChild
-          prefetch="intent"
           to={`/sheets/${sheetId}`}
+          prefetch="intent"
           className="p-0 h-fit items-center"
           variant="transparent"
         >
@@ -93,14 +101,18 @@ export default function Edit() {
           <span>Kembali</span>
         </ButtonLink>
       </div>
-      <div className="flex flex-col gap-1">
-        <fetcher.Form action="." method="post" className="flex flex-col gap-8">
+      <div className="flex flex-col gap-1 p-2">
+        <fetcher.Form
+          action="."
+          method="post"
+          className="flex flex-col gap-8 min-h-screen lg:min-h-fit mb-12 lg:mb-0"
+        >
           <div className="lg:mt-2">
             <FormEditTransaction />
           </div>
-          <div className="fixed lg:relative bottom-0 lg:bg-transparent bg-white w-full left-0 p-4 lg:p-0 flex flex-col gap-2">
+          <div className="fixed bg-white lg:relative bottom-0 lg:bg-transparent w-full left-0 px-1.5 py-3 lg:p-0 flex flex-col gap-1.5">
             <Button variant="primary" type="submit" className="w-full">
-              Simpan
+              Ubah
             </Button>
             <ButtonLink
               to={`/sheets/${sheetId}`}
@@ -109,7 +121,7 @@ export default function Edit() {
               variant="outlined-primary"
               className="w-full"
             >
-              Batalkan
+              Batal
             </ButtonLink>
           </div>
         </fetcher.Form>
@@ -132,7 +144,8 @@ const createBankSchema = z.object({
 });
 const formId = "edit-transaction";
 function FormEditTransaction() {
-  const { name, nominal, notes, type } = useLoaderData<typeof loader>();
+  const { name, nominal, notes, type, sheetId } =
+    useLoaderData<typeof loader>();
   const actionData = useActionData<typeof action>();
 
   const [form, fields] = useForm({
@@ -151,14 +164,65 @@ function FormEditTransaction() {
   });
   return (
     <FormProvider context={form.context}>
-      <div className="flex flex-col gap-3 h-full min-h-screen mb-24">
-        <div className="grid w-full items-center">
-          <Label htmlFor={fields.name.id} required>
-            Nominal
+      <div className="flex flex-col gap-3 h-full">
+        <div className="flex flex-col w-full items-center justify-center mb-14 mt-6">
+          {type === "out" ? (
+            <Label
+              htmlFor={fields.nominal.id}
+              className="bg-danger-50 h-16 w-16 mb-2 flex justify-center items-center rounded-full border border-danger-200"
+            >
+              <span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  className="text-danger-500"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M7 7h10v10M7 17 17 7"></path>
+                </svg>
+              </span>
+            </Label>
+          ) : (
+            <Label
+              htmlFor={fields.nominal.id}
+              className="bg-green-50 h-16 w-16 mb-2 flex justify-center items-center rounded-full border border-green-400"
+            >
+              <span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  className="text-green-500"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M12 17V3M6 11l6 6 6-6M19 21H5"></path>
+                </svg>
+              </span>
+            </Label>
+          )}
+          <Label htmlFor={fields.nominal.id} className="text-base font-bold">
+            {name}
           </Label>
+          {notes && (
+            <Label
+              htmlFor={fields.nominal.id}
+              className="text-sm font-normal truncate"
+            >
+              {notes}
+            </Label>
+          )}
           <InputNumber
-            // eslint-disable-next-line jsx-a11y/no-autofocus
-            autoFocus
             allowNegative={false}
             placeholder="Rp"
             maxLength={14}
@@ -167,7 +231,7 @@ function FormEditTransaction() {
             inputMode="decimal"
             thousandSeparator="."
             decimalSeparator=","
-            className="border-none bg-transparent px-0 text-3xl lg:text-2xl font-semibold lg:font-bold"
+            className="border-none bg-transparent text-center px-0 text-3xl font-bold"
             error={!!fields.nominal.errors}
             {...getInputProps(fields.nominal, {
               type: "text",
@@ -175,11 +239,15 @@ function FormEditTransaction() {
             })}
             key={fields.nominal.key}
           />
+          <Label
+            htmlFor={fields.nominal.id}
+            className="text-sm text-neutral-500 font-normal"
+          >
+            {sheetId?.split("-").join(" ")}
+          </Label>
         </div>
         <div className="grid w-full items-center gap-1">
-          <Label htmlFor={fields.name.id} required>
-            Nama Transaksi
-          </Label>
+          <Label htmlFor={fields.name.id}>Nama Transaksi</Label>
           <Input
             placeholder="Masukkan nama transaksi"
             error={!!fields.name.errors}
@@ -191,9 +259,7 @@ function FormEditTransaction() {
           />
         </div>
         <div className="grid w-full items-center gap-1">
-          <Label htmlFor={fields.type.id} required>
-            Tipe Transaksi
-          </Label>
+          <Label htmlFor={fields.type.id}>Tipe Transaksi</Label>
           <Type type={type ?? ""} />
         </div>
         <div className="grid w-full items-center gap-1">
@@ -234,7 +300,7 @@ function Type({ type }: { type: TTransaction["type"] }) {
         <ToggleGroupItem
           value="in"
           aria-label="Pemasukan"
-          className="w-full h-14 data-[state=on]:border-green-500 data-[state=on]:text-green-600 data-[state=on]:bg-neutral-50"
+          className="w-full h-14 data-[state=on]:border-green-500 data-[state=on]:text-green-600 data-[state=on]:bg-green-50"
         >
           <span>
             <svg
@@ -257,7 +323,7 @@ function Type({ type }: { type: TTransaction["type"] }) {
         <ToggleGroupItem
           value="out"
           aria-label="Pengeluaran"
-          className="w-full h-14 data-[state=on]:border-danger-500 data-[state=on]:text-danger-400 data-[state=on]:bg-neutral-50"
+          className="w-full h-14 data-[state=on]:border-danger-500 data-[state=on]:text-danger-400 data-[state=on]:bg-danger-50"
         >
           <span>
             <svg

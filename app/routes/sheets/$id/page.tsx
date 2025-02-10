@@ -40,7 +40,15 @@ const transactions: TTransaction[] = [
     name: "Traveloka",
     type: "out",
     nominal: 1780000,
-    notes: null,
+    notes: "Lunas",
+  },
+  {
+    id: "3",
+    sheetId: "Tagihan-Jan-2025",
+    name: "Transfer",
+    type: "in",
+    nominal: 90000000,
+    notes: "Sudah diterima",
   },
 ];
 
