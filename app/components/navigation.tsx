@@ -26,7 +26,7 @@ interface ExpandableTabsProps {
   onChange?: (index: number | null) => void;
 }
 
-export function ExpandableTabs({
+export default function Navigation({
   tabs,
   className,
   activeColor = "text-primary-500",
@@ -40,7 +40,7 @@ export function ExpandableTabs({
   return (
     <div
       className={cn(
-        "flex flex-wrap items-center gap-2 rounded-xl border bg-white p-1 h-14 lg:h-12",
+        "flex flex-wrap items-center gap-2 rounded-full border bg-white p-1.5 h-12",
         className,
       )}
     >
@@ -55,13 +55,13 @@ export function ExpandableTabs({
           <Link to={tab.to} key={tab.title}>
             <div
               className={cn(
-                "relative flex items-center gap-2 rounded-xl p-2 text-sm font-medium",
+                "relative flex items-center gap-2 rounded-full p-2 text-xs font-medium",
                 isMatch
                   ? cn("bg-muted font-bold", activeColor)
                   : "text-muted-foreground hover:bg-muted hover:text-foreground",
               )}
             >
-              <Icon size={20} />
+              <Icon />
               {isMatch && <span className="overflow-hidden">{tab.title}</span>}
             </div>
           </Link>

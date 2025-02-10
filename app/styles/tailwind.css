@@ -79,8 +79,8 @@
     --radius: 0.5rem;
 
     --shell-page-width: 610px;
-    --header-height: 128px;
-    --header-height-mobile: 186px;
+    --header-height: 158px;
+    --header-height-mobile: 146px;
   }
 
   .dark {

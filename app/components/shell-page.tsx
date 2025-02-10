@@ -1,12 +1,13 @@
 import React from "react";
 
+import Navigation from "~/components/navigation";
+
 import { cn } from "~/lib/utils";
-import { ExpandableTabs } from "~/components/ui/expandable-tabs";
-import { Button } from "~/components/ui/button";
 
 export default function ShellPage({
+  noNavigation,
   ...props
-}: React.HTMLAttributes<HTMLDivElement>) {
+}: React.HTMLAttributes<HTMLDivElement> & { noNavigation?: boolean }) {
   const tabs = [
     {
       title: "Sheets",
@@ -14,8 +15,8 @@ export default function ShellPage({
       icon: () => (
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
+          width="20"
+          height="20"
           fill="none"
           stroke="currentColor"
           strokeLinecap="round"
@@ -35,8 +36,8 @@ export default function ShellPage({
       icon: () => (
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
+          width="20"
+          height="20"
           fill="none"
           stroke="currentColor"
           strokeLinecap="round"
@@ -55,8 +56,8 @@ export default function ShellPage({
       icon: () => (
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
+          width="20"
+          height="20"
           fill="none"
           stroke="currentColor"
           strokeLinecap="round"
@@ -76,13 +77,14 @@ export default function ShellPage({
       <div className="flex flex-col relative">
         <div className="relative overflow-hidden">
           <div className="h-fit relative">
-            <header
-              role="banner"
-              className="flex flex-col-reverse lg:flex-row gap-2 fixed bottom-0 mx-auto left-0 cursor-pointer h-[var(--header-height-mobile)] md:h-[var(--header-height)] w-full justify-center items-center"
-            >
-              <ExpandableTabs tabs={tabs} />
-              <Button variant="outlined-primary">Sheet Baru</Button>
-            </header>
+            {!noNavigation && (
+              <header
+                role="banner"
+                className="flex z-10 shadow-sm flex-col-reverse lg:flex-row gap-2 fixed bottom-0 mx-auto left-0 cursor-pointer h-[var(--header-height-mobile)] md:h-[var(--header-height)] w-full justify-center items-center"
+              >
+                <Navigation tabs={tabs} />
+              </header>
+            )}
             <main role="main" className="p-3 lg:px-14">
               {props.children}
             </main>
