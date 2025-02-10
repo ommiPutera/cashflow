@@ -9,10 +9,10 @@ export const meta: MetaFunction = () => {
 export default function Sheets() {
   return (
     <ShellPage>
-      <div className="ml-2 w-full h-12">
-        <h1 className="text-xl font-semibold">Sheets</h1>
+      <div className="w-full h-12">
+        <h1 className="text-xl font-bold">Sheets</h1>
       </div>
-      <div className="flex flex-col gap-1 mb-24">
+      <div className="flex flex-col gap-3 mb-24">
         {data.map((item) => (
           <SheetsLinks key={item.id} {...item} />
         ))}
@@ -23,7 +23,7 @@ export default function Sheets() {
 
 function SheetsLinks({ title, sheets }: TData) {
   return (
-    <Section className="bg-white dark:bg-black border border-neutral-200 dark:border-neutral-800 p-0 lg:p-0 rounded-2xl 2xl:rounded-3xl">
+    <Section className="bg-white dark:bg-black border border-neutral-200 dark:border-neutral-800 p-0 lg:p-0 rounded-xl 2xl:rounded-2xl">
       <div className="px-4 py-3 lg:py-4 lg:px-6 bg-neutral-50 border-b lg:border-none lg:bg-white">
         <h2 className="text-sm font-bold">{title}</h2>
       </div>

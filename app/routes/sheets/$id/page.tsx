@@ -81,7 +81,7 @@ export default function Sheet() {
       <div className="w-full h-12">
         <Link
           to="/sheets"
-          prefetch="intent"
+          prefetch="viewport"
           className="p-0 h-fit font-normal inline-flex items-center gap-2"
         >
           <svg
@@ -100,7 +100,7 @@ export default function Sheet() {
           <span className="text-sm font-medium">Kembali</span>
         </Link>
       </div>
-      <div className="flex flex-col gap-1 mb-24">
+      <div className="flex flex-col gap-3 mb-24">
         <SheetSum />
         <SheetTransactions />
       </div>
@@ -113,7 +113,7 @@ function SheetSum() {
 
   const title = params.id?.split("-").join(" ");
   return (
-    <Section className="bg-white dark:bg-black border border-neutral-200 dark:border-neutral-800 p-0 lg:p-0 rounded-2xl 2xl:rounded-3xl">
+    <Section className="bg-white dark:bg-black border border-neutral-200 dark:border-neutral-800 p-0 lg:p-0 rounded-xl 2xl:rounded-2xl">
       <div className="px-4 py-3 lg:py-4 lg:px-6 bg-neutral-50 border-b lg:border-none lg:bg-white">
         <h2 className="text-sm font-bold">{title}</h2>
       </div>
@@ -129,10 +129,10 @@ function SheetSum() {
 function SheetTransactions() {
   const { transactions } = useLoaderData<typeof loader>();
   return (
-    <Section className="bg-white dark:bg-black border border-neutral-200 dark:border-neutral-800 p-0 lg:p-0 rounded-2xl 2xl:rounded-3xl">
+    <Section className="bg-white dark:bg-black border border-neutral-200 dark:border-neutral-800 p-0 lg:p-0 rounded-xl 2xl:rounded-2xl">
       <Button
         variant="outlined-primary"
-        className="!h-14 lg:!h-20 bg-neutral-50 inline-flex gap-2 rounded-t-2xl 2xl:rounded-t-3xl rounded-b-none border-b"
+        className="!h-14 lg:!h-20 bg-neutral-50 inline-flex gap-2 rounded-t-2xl 2xl:rounded-t-3xl rounded-b-none border-t-transparent border-x-transparent border-b"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

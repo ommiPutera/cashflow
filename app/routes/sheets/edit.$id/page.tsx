@@ -12,13 +12,14 @@ import { z } from "zod";
 
 import {
   FormProvider,
+  getFormProps,
   getInputProps,
   useField,
   useForm,
 } from "@conform-to/react";
-import { parseWithZod } from "@conform-to/zod";
+import { getZodConstraint, parseWithZod } from "@conform-to/zod";
 
-import ShellPage from "~/components/shell-page";
+import ShellPage, { Section } from "~/components/shell-page";
 import { Button, ButtonLink } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { InputNumber } from "~/components/ui/input-number";
@@ -87,63 +88,6 @@ const transactions: TTransaction[] = [
   },
 ];
 
-export default function Edit() {
-  const { sheetId } = useLoaderData<typeof loader>();
-  const fetcher = useFetcher();
-
-  return (
-    <ShellPage noNavigation>
-      <div className="w-full h-12">
-        <Link
-          to={`/sheets/${sheetId}`}
-          prefetch="intent"
-          className="p-0 h-fit font-normal inline-flex items-center gap-2"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="18"
-            height="18"
-            fill="none"
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            viewBox="0 0 24 24"
-          >
-            <path d="m15 18-6-6 6-6"></path>
-          </svg>
-          <span className="text-sm font-medium">Kembali</span>
-        </Link>
-      </div>
-      <div className="flex flex-col gap-1 p-2">
-        <fetcher.Form
-          action="."
-          method="post"
-          className="flex flex-col gap-8 min-h-screen lg:min-h-fit mb-12 lg:mb-0"
-        >
-          <div className="lg:mt-2">
-            <FormEditTransaction />
-          </div>
-          <div className="relative bottom-0 w-full left-0 px-1.5 flex flex-col gap-1.5">
-            <Button variant="primary" type="submit" className="w-full">
-              Ubah
-            </Button>
-            <ButtonLink
-              to={`/sheets/${sheetId}`}
-              prefetch="intent"
-              type="button"
-              variant="outlined-primary"
-              className="w-full"
-            >
-              Batal
-            </ButtonLink>
-          </div>
-        </fetcher.Form>
-      </div>
-    </ShellPage>
-  );
-}
-
 const createBankSchema = z.object({
   name: z
     .string({ required_error: "Nama transaksi harus diunggah" })
@@ -157,147 +101,224 @@ const createBankSchema = z.object({
   notes: z.string().max(30, "Maksimal 30 karakter").optional(),
 });
 const formId = "edit-transaction";
-function FormEditTransaction() {
-  const { name, nominal, notes, type, sheetId } =
-    useLoaderData<typeof loader>();
+export default function Edit() {
+  const fetcher = useFetcher();
+  const { name, nominal, notes, sheetId } = useLoaderData<typeof loader>();
   const actionData = useActionData<typeof action>();
 
-  const [form, fields] = useForm({
+  const [form] = useForm({
     id: formId,
     lastResult: actionData,
-    onValidate({ formData }) {
-      return parseWithZod(formData, { schema: createBankSchema });
-    },
+    constraint: getZodConstraint(createBankSchema),
+    onValidate: ({ formData }) =>
+      parseWithZod(formData, { schema: createBankSchema }),
     defaultValue: {
       name,
       nominal: nominal?.toString(),
       notes,
     },
     shouldValidate: "onInput",
-    shouldRevalidate: "onInput",
   });
+
   return (
     <FormProvider context={form.context}>
-      <div className="flex flex-col gap-3 h-full">
-        <div className="flex flex-col w-full items-center justify-center mb-16 mt-8">
-          {type === "out" ? (
-            <Label
-              htmlFor={fields.nominal.id}
-              className="bg-danger-50 h-16 w-16 mb-2 flex justify-center items-center rounded-full border border-danger-200"
-            >
-              <span>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  className="text-danger-500"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M7 7h10v10M7 17 17 7"></path>
-                </svg>
-              </span>
-            </Label>
-          ) : (
-            <Label
-              htmlFor={fields.nominal.id}
-              className="bg-green-50 h-16 w-16 mb-2 flex justify-center items-center rounded-full border border-green-400"
-            >
-              <span>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  className="text-green-500"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M12 17V3M6 11l6 6 6-6M19 21H5"></path>
-                </svg>
-              </span>
-            </Label>
-          )}
-          <Label htmlFor={fields.nominal.id} className="text-base font-bold">
-            {name}
-          </Label>
-          {notes && (
-            <Label
-              htmlFor={fields.nominal.id}
-              className="text-sm font-normal truncate"
-            >
-              {notes}
-            </Label>
-          )}
-          <InputNumber
-            allowNegative={false}
-            placeholder="Rp"
-            maxLength={14}
-            prefix="Rp"
-            pattern="[0-9]*"
-            inputMode="decimal"
-            thousandSeparator="."
-            decimalSeparator=","
-            className="border-none bg-transparent text-center px-0 text-3xl font-bold"
-            error={!!fields.nominal.errors}
-            {...getInputProps(fields.nominal, {
-              type: "text",
-              ariaDescribedBy: fields.nominal.descriptionId,
-            })}
-            key={fields.nominal.key}
-          />
-          <Label
-            htmlFor={fields.nominal.id}
-            className="text-sm text-neutral-500 font-normal"
+      <ShellPage
+        noNavigation
+        className="h-svh lg:h-full w-full overflow-scroll"
+      >
+        <div className="w-full h-12">
+          <Link
+            to={`/sheets/${sheetId}`}
+            prefetch="viewport"
+            className="p-0 h-fit font-normal inline-flex items-center gap-2"
           >
-            {sheetId?.split("-").join(" ")}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="18"
+              height="18"
+              fill="none"
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              viewBox="0 0 24 24"
+            >
+              <path d="m15 18-6-6 6-6"></path>
+            </svg>
+            <span className="text-sm font-medium">Kembali</span>
+          </Link>
+        </div>
+        <div className="flex flex-col gap-1">
+          <fetcher.Form
+            action="."
+            method="post"
+            className="flex relative flex-col gap-4 h-full pb-12"
+            {...getFormProps(form)}
+          >
+            <div className="lg:mt-2">
+              <FormEditTransaction />
+            </div>
+            <div className="lg:relative sticky -bottom-3 py-4 px-4 lg:p-0 lg:py-0 bg-background w-full flex gap-3 justify-between">
+              <Button
+                variant="outlined-primary"
+                type="submit"
+                disabled={!form.dirty}
+                className="w-full lg:w-fit border-2 font-bold text-primary-500 border-primary-500"
+              >
+                Ubah
+              </Button>
+              <ButtonLink
+                variant="transparent"
+                type="button"
+                to={`/sheets/${sheetId}`}
+                className="hidden lg:flex lg:w-fit"
+              >
+                Batal
+              </ButtonLink>
+            </div>
+          </fetcher.Form>
+        </div>
+      </ShellPage>
+    </FormProvider>
+  );
+}
+
+function FormEditTransaction() {
+  const { name, notes, type, sheetId } = useLoaderData<typeof loader>();
+  const [nominalField] = useField("nominal");
+  const [notesField] = useField("notes");
+  const [nameField] = useField("name");
+  const [typeField] = useField("type");
+
+  return (
+    <div className="flex flex-col gap-3 h-full">
+      <div className="flex flex-col w-full items-center justify-center h-[calc(100svh-16rem)] lg:h-full lg:my-32">
+        {type === "out" ? (
+          <Label
+            htmlFor={nominalField.id}
+            className="bg-danger-50 h-14 w-14 mb-2 flex justify-center items-center rounded-full border border-danger-200"
+          >
+            <span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="none"
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                className="text-danger-500"
+                viewBox="0 0 24 24"
+              >
+                <path d="M7 7h10v10M7 17 17 7"></path>
+              </svg>
+            </span>
           </Label>
-        </div>
-        <div className="border-b w-full mb-2"></div>
-        <div>
-          <p className="text-center text-sm text-neutral-600 mb-4">
-            *Anda dapat mengubah transaksi ini melalui formulir dibawah
-          </p>
-        </div>
-        <div className="grid w-full items-center gap-1">
-          <Label htmlFor={fields.name.id}>Nama Transaksi</Label>
+        ) : (
+          <Label
+            htmlFor={nominalField.id}
+            className="bg-green-50 h-14 w-14 mb-2 flex justify-center items-center rounded-full border border-green-400"
+          >
+            <span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="none"
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                className="text-green-500"
+                viewBox="0 0 24 24"
+              >
+                <path d="M12 17V3M6 11l6 6 6-6M19 21H5"></path>
+              </svg>
+            </span>
+          </Label>
+        )}
+        <Label
+          htmlFor={nominalField.id}
+          className="text-base font-semibold text-neutral-700"
+        >
+          {name}
+        </Label>
+        {notes && (
+          <Label
+            htmlFor={nominalField.id}
+            className="text-xs font-normal truncate text-neutral-500"
+          >
+            {notes}
+          </Label>
+        )}
+        <InputNumber
+          placeholder="Rp"
+          className="border-none bg-transparent text-center px-0 text-4xl font-bold"
+          error={!!nominalField.errors}
+          {...getInputProps(nominalField, {
+            type: "text",
+            ariaDescribedBy: nominalField.descriptionId,
+          })}
+          prefix="Rp"
+          pattern="[0-9]*"
+          inputMode="decimal"
+          thousandSeparator="."
+          decimalSeparator=","
+          allowNegative={false}
+          maxLength={14}
+          key={nominalField.key}
+        />
+        <Label
+          htmlFor={nominalField.id}
+          className="text-sm text-neutral-500 font-medium"
+        >
+          {sheetId?.split("-").join(" ")}
+        </Label>
+      </div>
+      <div className="mx-auto w-full max-w-[240px]">
+        <p className="text-center text-sm text-neutral-600 mb-4">
+          *Anda dapat mengubah transaksi ini melalui formulir dibawah
+        </p>
+      </div>
+      <div className="border-b border-neutral-400 border-dashed w-full mb-6"></div>
+      <Section className="bg-white dark:bg-black border border-neutral-200 dark:border-neutral-800 rounded-xl 2xl:rounded-2xl">
+        <div className="grid w-full items-center gap-2">
+          <Label htmlFor={nameField.id}>Nama Transaksi</Label>
           <Input
             placeholder="Masukkan nama transaksi"
-            error={!!fields.name.errors}
-            {...getInputProps(fields.name, {
+            error={!!nameField.errors}
+            {...getInputProps(nameField, {
               type: "text",
-              ariaDescribedBy: fields.name.descriptionId,
+              ariaDescribedBy: nameField.descriptionId,
             })}
-            key={fields.name.key}
+            key={nameField.key}
           />
         </div>
-        <div className="grid w-full items-center gap-1">
-          <Label htmlFor={fields.type.id}>Tipe Transaksi</Label>
+      </Section>
+      <Section className="bg-white dark:bg-black border border-neutral-200 dark:border-neutral-800 rounded-xl 2xl:rounded-2xl">
+        <div className="grid w-full items-center gap-2">
+          <Label htmlFor={typeField.id}>Tipe Transaksi</Label>
           <Type type={type ?? ""} />
         </div>
-        <div className="grid w-full items-center gap-1">
-          <Label htmlFor={fields.notes.id}>Catatan</Label>
+      </Section>
+      <Section className="bg-white dark:bg-black border border-neutral-200 dark:border-neutral-800 rounded-xl 2xl:rounded-2xl">
+        <div className="grid w-full items-center gap-2">
+          <Label htmlFor={notesField.id}>Catatan</Label>
           <Textarea
             placeholder="Masukkan catatan terkait transaksi"
             rows={4}
             maxLength={32}
-            error={!!fields.notes.errors}
-            {...getInputProps(fields.notes, {
+            error={!!notesField.errors}
+            {...getInputProps(notesField, {
               type: "text",
-              ariaDescribedBy: fields.notes.descriptionId,
+              ariaDescribedBy: notesField.descriptionId,
             })}
-            key={fields.notes.key}
+            key={notesField.key}
           />
         </div>
-      </div>
-    </FormProvider>
+      </Section>
+    </div>
   );
 }
 function Type({ type }: { type: TTransaction["type"] }) {

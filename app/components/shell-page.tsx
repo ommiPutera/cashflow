@@ -80,12 +80,12 @@ export default function ShellPage({
             {!noNavigation && (
               <header
                 role="banner"
-                className="flex z-10 shadow-sm flex-col-reverse lg:flex-row gap-2 fixed bottom-0 mx-auto left-0 cursor-pointer h-[var(--header-height-mobile)] md:h-[var(--header-height)] w-full justify-center items-center"
+                className="z-10 hidden shadow-sm flex-col-reverse lg:flex-row gap-2 fixed bottom-0 mx-auto left-0 cursor-pointer h-[var(--header-height-mobile)] md:h-[var(--header-height)] w-full justify-center items-center"
               >
                 <Navigation tabs={tabs} />
               </header>
             )}
-            <main role="main" className="p-3 lg:px-14">
+            <main role="main" className={cn("p-3 lg:px-14", props.className)}>
               {props.children}
             </main>
           </div>
