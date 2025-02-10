@@ -1,6 +1,7 @@
 import React from "react";
 import {
   ActionFunctionArgs,
+  Link,
   LoaderFunctionArgs,
   MetaFunction,
   useActionData,
@@ -68,6 +69,22 @@ const transactions: TTransaction[] = [
     nominal: 90000000,
     notes: "Sudah diterima",
   },
+  {
+    id: "4",
+    sheetId: "Tagihan-Des-2024",
+    name: "Bayar listrik",
+    type: "out",
+    nominal: 201500,
+    notes: null,
+  },
+  {
+    id: "5",
+    sheetId: "Tagihan-Feb-2025",
+    name: "Jajan Indomaret",
+    type: "out",
+    nominal: 11200,
+    notes: null,
+  },
 ];
 
 export default function Edit() {
@@ -77,29 +94,26 @@ export default function Edit() {
   return (
     <ShellPage noNavigation>
       <div className="w-full h-12">
-        <ButtonLink
-          asChild
+        <Link
           to={`/sheets/${sheetId}`}
           prefetch="intent"
-          className="p-0 h-fit items-center"
-          variant="transparent"
+          className="p-0 h-fit font-normal inline-flex items-center gap-2"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
+            width="18"
+            height="18"
             fill="none"
             stroke="currentColor"
             strokeLinecap="round"
             strokeLinejoin="round"
             strokeWidth="2"
-            className="lucide lucide-chevron-left"
             viewBox="0 0 24 24"
           >
             <path d="m15 18-6-6 6-6"></path>
           </svg>
-          <span>Kembali</span>
-        </ButtonLink>
+          <span className="text-sm font-medium">Kembali</span>
+        </Link>
       </div>
       <div className="flex flex-col gap-1 p-2">
         <fetcher.Form
@@ -110,7 +124,7 @@ export default function Edit() {
           <div className="lg:mt-2">
             <FormEditTransaction />
           </div>
-          <div className="fixed bg-white lg:relative bottom-0 lg:bg-transparent w-full left-0 px-1.5 py-3 lg:p-0 flex flex-col gap-1.5">
+          <div className="relative bottom-0 w-full left-0 px-1.5 flex flex-col gap-1.5">
             <Button variant="primary" type="submit" className="w-full">
               Ubah
             </Button>
@@ -165,7 +179,7 @@ function FormEditTransaction() {
   return (
     <FormProvider context={form.context}>
       <div className="flex flex-col gap-3 h-full">
-        <div className="flex flex-col w-full items-center justify-center mb-14 mt-6">
+        <div className="flex flex-col w-full items-center justify-center mb-16 mt-8">
           {type === "out" ? (
             <Label
               htmlFor={fields.nominal.id}
@@ -246,6 +260,12 @@ function FormEditTransaction() {
             {sheetId?.split("-").join(" ")}
           </Label>
         </div>
+        <div className="border-b w-full mb-2"></div>
+        <div>
+          <p className="text-center text-sm text-neutral-600 mb-4">
+            *Anda dapat mengubah transaksi ini melalui formulir dibawah
+          </p>
+        </div>
         <div className="grid w-full items-center gap-1">
           <Label htmlFor={fields.name.id}>Nama Transaksi</Label>
           <Input
@@ -267,6 +287,7 @@ function FormEditTransaction() {
           <Textarea
             placeholder="Masukkan catatan terkait transaksi"
             rows={4}
+            maxLength={32}
             error={!!fields.notes.errors}
             {...getInputProps(fields.notes, {
               type: "text",

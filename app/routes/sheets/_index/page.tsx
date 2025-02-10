@@ -12,7 +12,7 @@ export default function Sheets() {
       <div className="ml-2 w-full h-12">
         <h1 className="text-xl font-semibold">Sheets</h1>
       </div>
-      <div className="flex flex-col gap-1">
+      <div className="flex flex-col gap-1 mb-24">
         {data.map((item) => (
           <SheetsLinks key={item.id} {...item} />
         ))}

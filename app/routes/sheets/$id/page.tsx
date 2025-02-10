@@ -1,5 +1,7 @@
 import {
   ActionFunctionArgs,
+  Link,
+  LoaderFunctionArgs,
   MetaFunction,
   useLoaderData,
   useParams,
@@ -7,6 +9,8 @@ import {
 
 import ShellPage, { Divide, Section } from "~/components/shell-page";
 import { Button, ButtonLink } from "~/components/ui/button";
+
+import { toIDR } from "~/utils/currency";
 
 export const meta: MetaFunction = ({ params }) => {
   const title = params.id?.split("-").join(" ");
@@ -19,9 +23,12 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   return {};
 };
 
-export const loader = async () => {
+export const loader = async ({ params }: LoaderFunctionArgs) => {
+  const trxs = transactions.filter((trx) => trx.sheetId === params.id);
+  if (!trxs.length) throw new Error("Data not found");
+
   return {
-    transactions,
+    transactions: trxs,
   };
 };
 
@@ -50,37 +57,50 @@ const transactions: TTransaction[] = [
     nominal: 90000000,
     notes: "Sudah diterima",
   },
+  {
+    id: "4",
+    sheetId: "Tagihan-Des-2024",
+    name: "Bayar listrik",
+    type: "out",
+    nominal: 201500,
+    notes: null,
+  },
+  {
+    id: "5",
+    sheetId: "Tagihan-Feb-2025",
+    name: "Jajan Indomaret",
+    type: "out",
+    nominal: 11200,
+    notes: null,
+  },
 ];
 
 export default function Sheet() {
   return (
     <ShellPage>
       <div className="w-full h-12">
-        <ButtonLink
-          asChild
+        <Link
           to="/sheets"
           prefetch="intent"
-          className="p-0 h-fit items-center"
-          variant="transparent"
+          className="p-0 h-fit font-normal inline-flex items-center gap-2"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
+            width="18"
+            height="18"
             fill="none"
             stroke="currentColor"
             strokeLinecap="round"
             strokeLinejoin="round"
             strokeWidth="2"
-            className="lucide lucide-chevron-left"
             viewBox="0 0 24 24"
           >
             <path d="m15 18-6-6 6-6"></path>
           </svg>
-          <span>Kembali</span>
-        </ButtonLink>
+          <span className="text-sm font-medium">Kembali</span>
+        </Link>
       </div>
-      <div className="flex flex-col gap-1">
+      <div className="flex flex-col gap-1 mb-24">
         <SheetSum />
         <SheetTransactions />
       </div>
@@ -102,9 +122,17 @@ function SheetSum() {
         <SumItem title="Pengeluaran" totalAmount="Rp10000000" from="out" />
         <SumItem title="Tersedia" totalAmount="Rp10000000" from="available" />
       </Divide>
+    </Section>
+  );
+}
+
+function SheetTransactions() {
+  const { transactions } = useLoaderData<typeof loader>();
+  return (
+    <Section className="bg-white dark:bg-black border border-neutral-200 dark:border-neutral-800 p-0 lg:p-0 rounded-2xl 2xl:rounded-3xl">
       <Button
-        variant="transparent"
-        className="!h-14 lg:!h-20 bg-neutral-50 inline-flex gap-2 rounded-b-2xl 2xl:rounded-b-3xl rounded-t-none"
+        variant="outlined-primary"
+        className="!h-14 lg:!h-20 bg-neutral-50 inline-flex gap-2 rounded-t-2xl 2xl:rounded-t-3xl rounded-b-none border-b"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -122,14 +150,6 @@ function SheetSum() {
         </svg>
         <span>Buat transaksi</span>
       </Button>
-    </Section>
-  );
-}
-
-function SheetTransactions() {
-  const { transactions } = useLoaderData<typeof loader>();
-  return (
-    <Section className="bg-white dark:bg-black border border-neutral-200 dark:border-neutral-800 p-0 lg:p-0 rounded-2xl 2xl:rounded-3xl">
       <div className="px-4 py-3 lg:py-4 lg:px-6 bg-neutral-50 border-b lg:border-none lg:bg-white">
         <h2 className="text-sm font-bold">Transaksi</h2>
       </div>
@@ -142,9 +162,50 @@ function SheetTransactions() {
             className="px-4 lg:px-6 h-14 lg:h-16 flex w-full items-center hover:bg-neutral-50 cursor-pointer rounded-none border-x-0"
           >
             <div className="flex justify-between items-center w-full flex-wrap">
-              <span className="text-sm font-medium text-wrap">{trx.name}</span>
+              <div className="flex items-center gap-3">
+                {trx.type === "out" ? (
+                  <div className="bg-danger-50 h-6 w-6 flex justify-center items-center rounded-full border border-danger-200">
+                    <span>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        className="text-danger-500"
+                        viewBox="0 0 24 24"
+                      >
+                        <path d="M7 7h10v10M7 17 17 7"></path>
+                      </svg>
+                    </span>
+                  </div>
+                ) : (
+                  <div className="bg-green-50 h-6 w-6 flex justify-center items-center rounded-full border border-green-400">
+                    <span>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        className="text-green-500"
+                        viewBox="0 0 24 24"
+                      >
+                        <path d="M12 17V3M6 11l6 6 6-6M19 21H5"></path>
+                      </svg>
+                    </span>
+                  </div>
+                )}
+                <p className="text-sm font-medium text-wrap">{trx.name}</p>
+              </div>
               <span className="text-sm font-semibold text-neutral-700 text-wrap">
-                {trx.nominal}
+                {toIDR(trx.nominal)}
               </span>
             </div>
           </ButtonLink>
