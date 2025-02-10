@@ -2,6 +2,7 @@ import React from "react";
 import {
   ActionFunctionArgs,
   LoaderFunctionArgs,
+  MetaFunction,
   useActionData,
   useFetcher,
   useLoaderData,
@@ -16,13 +17,18 @@ import {
 } from "@conform-to/react";
 import { parseWithZod } from "@conform-to/zod";
 
+import ShellPage from "~/components/shell-page";
 import { Button, ButtonLink } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { InputNumber } from "~/components/ui/input-number";
 import { Label } from "~/components/ui/label";
 import { Textarea } from "~/components/ui/textarea";
 import { ToggleGroup, ToggleGroupItem } from "~/components/ui/toggle-group";
-import ShellPage from "~/components/shell-page";
+
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+  const title = data?.name;
+  return [{ title }, { name: "", content: "" }];
+};
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
@@ -62,7 +68,7 @@ export default function Edit() {
 
   return (
     <ShellPage noNavigation>
-      <div className="w-full h-14">
+      <div className="w-full h-12">
         <ButtonLink
           asChild
           prefetch="intent"
@@ -145,12 +151,14 @@ function FormEditTransaction() {
   });
   return (
     <FormProvider context={form.context}>
-      <div className="flex flex-col gap-5 h-full">
-        <div className="grid w-full items-center gap-1">
+      <div className="flex flex-col gap-3 h-full min-h-screen mb-24">
+        <div className="grid w-full items-center">
           <Label htmlFor={fields.name.id} required>
             Nominal
           </Label>
           <InputNumber
+            // eslint-disable-next-line jsx-a11y/no-autofocus
+            autoFocus
             allowNegative={false}
             placeholder="Rp"
             maxLength={14}
@@ -159,7 +167,7 @@ function FormEditTransaction() {
             inputMode="decimal"
             thousandSeparator="."
             decimalSeparator=","
-            className="border-none bg-transparent px-0 text-4xl lg:text-2xl font-semibold lg:font-bold"
+            className="border-none bg-transparent px-0 text-3xl lg:text-2xl font-semibold lg:font-bold"
             error={!!fields.nominal.errors}
             {...getInputProps(fields.nominal, {
               type: "text",
@@ -168,7 +176,7 @@ function FormEditTransaction() {
             key={fields.nominal.key}
           />
         </div>
-        <div className="grid w-full items-center gap-2">
+        <div className="grid w-full items-center gap-1">
           <Label htmlFor={fields.name.id} required>
             Nama Transaksi
           </Label>
@@ -182,23 +190,23 @@ function FormEditTransaction() {
             key={fields.name.key}
           />
         </div>
-        <div className="grid w-full items-center gap-2">
+        <div className="grid w-full items-center gap-1">
           <Label htmlFor={fields.type.id} required>
             Tipe Transaksi
           </Label>
           <Type type={type ?? ""} />
         </div>
-        <div className="grid w-full items-center gap-2">
-          <Label htmlFor={fields.name.id}>Catatan</Label>
+        <div className="grid w-full items-center gap-1">
+          <Label htmlFor={fields.notes.id}>Catatan</Label>
           <Textarea
-            placeholder="Masukkan nama transaksi"
+            placeholder="Masukkan catatan terkait transaksi"
             rows={4}
-            error={!!fields.name.errors}
-            {...getInputProps(fields.name, {
+            error={!!fields.notes.errors}
+            {...getInputProps(fields.notes, {
               type: "text",
-              ariaDescribedBy: fields.name.descriptionId,
+              ariaDescribedBy: fields.notes.descriptionId,
             })}
-            key={fields.name.key}
+            key={fields.notes.key}
           />
         </div>
       </div>

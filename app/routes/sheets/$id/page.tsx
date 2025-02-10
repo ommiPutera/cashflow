@@ -47,7 +47,7 @@ const transactions: TTransaction[] = [
 export default function Sheet() {
   return (
     <ShellPage>
-      <div className="w-full h-14">
+      <div className="w-full h-12">
         <ButtonLink
           asChild
           to="/sheets"
