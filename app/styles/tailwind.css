@@ -7,7 +7,8 @@
     --white: 0 0% 100%;
     --black: 0 0% 8%;
 
-    --background: 0 0% 94%;
+    --background: 0 0% 100%;
+    /* --background: 0 0% 94%; */
     --foreground: 213 13% 17%;
 
     --primary-50: 217 91% 95%;
@@ -79,8 +80,8 @@
     --radius: 0.5rem;
 
     --shell-page-width: 550px;
-    --header-height: 158px;
-    --header-height-mobile: 106px;
+    --header-height: 48px;
+    --header-height-mobile: 82px;
   }
 
   .dark {

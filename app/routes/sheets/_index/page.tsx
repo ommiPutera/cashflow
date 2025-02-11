@@ -9,9 +9,6 @@ export const meta: MetaFunction = () => {
 export default function Sheets() {
   return (
     <ShellPage>
-      <div className="w-full h-12 ml-2">
-        <h1 className="text-2xl font-bold tracking-tighter text-primary-500">flowsheet</h1>
-      </div>
       <div className="flex flex-col gap-3 mb-24">
         {data.map((item) => (
           <SheetsLinks key={item.id} {...item} />

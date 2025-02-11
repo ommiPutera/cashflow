@@ -132,7 +132,7 @@ function SheetTransactions() {
     <Section className="bg-white dark:bg-black border border-neutral-200 dark:border-neutral-800 p-0 lg:p-0 rounded-xl 2xl:rounded-2xl">
       <Button
         variant="outlined-primary"
-        className="!h-14 lg:!h-20 bg-neutral-50 inline-flex gap-2 rounded-t-2xl 2xl:rounded-t-3xl rounded-b-none border-t-transparent border-x-transparent border-b"
+        className="!h-14 lg:!h-20 bg-neutral-50 inline-flex gap-2 rounded-t-xl 2xl:rounded-t-2xl rounded-b-none border-t-transparent border-x-transparent border-b"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
