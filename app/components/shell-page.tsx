@@ -13,13 +13,13 @@ export default function ShellPage({
       <div className="flex flex-col relative">
         <div className="relative overflow-hidden">
           <div className="h-fit relative">
-            {!noNavigation && (
-              <>
-                <Navigation />
-                <div className="h-[var(--header-height-mobile)] lg:h-[var(--header-height)] bg-background"></div>
-              </>
-            )}
-            <main role="main" className={cn("p-3 lg:px-14", props.className)}>
+            <div className="z-20 bg-white">
+              <Navigation noNavigation={noNavigation} />
+            </div>
+            <main
+              role="main"
+              className={cn("px-3 py-6 lg:px-14", props.className)}
+            >
               {props.children}
             </main>
           </div>

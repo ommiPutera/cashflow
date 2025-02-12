@@ -124,18 +124,18 @@ export default function Edit() {
     <FormProvider context={form.context}>
       <ShellPage
         noNavigation
-        className="h-svh lg:h-full w-full overflow-scroll"
+        className="h-svh lg:h-full w-full overflow-scroll p-0"
       >
-        <div className="w-full h-12">
+        <div className="w-full h-12 px-3 py-6">
           <Link
             to={`/sheets/${sheetId}`}
             prefetch="viewport"
-            className="p-0 h-fit font-normal inline-flex items-center gap-2"
+            className="p-0 h-fit active:scale-90 font-normal inline-flex items-center tap-highlight-transparent"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              width="18"
-              height="18"
+              width="24"
+              height="24"
               fill="none"
               stroke="currentColor"
               strokeLinecap="round"
@@ -152,13 +152,13 @@ export default function Edit() {
           <fetcher.Form
             action="."
             method="post"
-            className="flex relative flex-col gap-4 h-full pb-12"
+            className="flex relative flex-col gap-4 h-full pb-32"
             {...getFormProps(form)}
           >
-            <div className="lg:mt-2">
+            <div className="lg:mt-2 px-3">
               <FormEditTransaction />
             </div>
-            <div className="lg:relative sticky -bottom-3 py-4 px-4 lg:p-0 lg:py-0 bg-background w-full flex gap-3 justify-between">
+            <div className="lg:relative fixed bottom-0 py-4 px-4 lg:px-3 lg:py-0 bg-background w-full flex gap-3 justify-between">
               <Button
                 variant="outlined-primary"
                 type="submit"
@@ -191,12 +191,12 @@ function FormEditTransaction() {
   const [typeField] = useField("type");
 
   return (
-    <div className="flex flex-col gap-3 h-full">
-      <div className="flex flex-col w-full items-center justify-center h-[calc(100svh-16rem)] lg:h-full lg:my-32">
+    <div className="flex flex-col gap-3 h-full mb-52 lg:mb-0">
+      <div className="flex flex-col w-full items-center justify-center min-h-[calc(100svh-17.5rem)] lg:min-h-[calc(100svh-29.5rem)] lg:my-32">
         {type === "out" ? (
           <Label
             htmlFor={nominalField.id}
-            className="bg-danger-50 h-14 w-14 mb-2 flex justify-center items-center rounded-full border border-danger-200"
+            className="bg-danger-50 h-12 w-12 mb-4 flex justify-center items-center rounded-full border border-danger-200"
           >
             <span>
               <svg
@@ -218,7 +218,7 @@ function FormEditTransaction() {
         ) : (
           <Label
             htmlFor={nominalField.id}
-            className="bg-green-50 h-14 w-14 mb-2 flex justify-center items-center rounded-full border border-green-400"
+            className="bg-green-50 h-12 w-12 mb-4 flex justify-center items-center rounded-full border border-green-400"
           >
             <span>
               <svg

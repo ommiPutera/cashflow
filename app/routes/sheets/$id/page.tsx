@@ -77,17 +77,17 @@ const transactions: TTransaction[] = [
 
 export default function Sheet() {
   return (
-    <ShellPage>
+    <ShellPage noNavigation>
       <div className="w-full h-12">
         <Link
           to="/sheets"
           prefetch="viewport"
-          className="p-0 h-fit font-normal inline-flex items-center gap-2"
+          className="p-0 h-fit active:scale-90 font-normal inline-flex items-center tap-highlight-transparent"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            width="18"
-            height="18"
+            width="24"
+            height="24"
             fill="none"
             stroke="currentColor"
             strokeLinecap="round"
