@@ -164,7 +164,7 @@ export default function Edit() {
                   variant="outlined-primary"
                   type="submit"
                   disabled={!form.dirty}
-                  className="w-full border-2 font-bold text-primary-500 border-primary-500"
+                  className="w-full border-2 font-bold text-primary-500 border-primary-500 rounded-full"
                 >
                   Ubah
                 </Button>

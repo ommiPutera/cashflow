@@ -21,8 +21,7 @@ export default function Navigation({
           to="/sheets"
           className="flex-1 inline-flex justify-start items-center tap-highlight-transparent"
         >
-          <img src="/logo.png" alt="" className="h-10 block lg:hidden" />
-          <img src="/logo_horizontal.png" alt="" className="h-7 lg:block hidden" />
+          <img src="/text-logo.png" alt="" className="h-7 block" />
         </Link>
         <div
           className={cn(
@@ -36,7 +35,7 @@ export default function Navigation({
                 to={tab.to}
                 key={tab.title}
                 className={cn(
-                  "h-full w-full lg:w-fit lg:px-8 border-b border-neutral-100 inline-flex justify-center items-center lg:border-transparent",
+                  "h-full w-full lg:w-fit lg:px-8 border-b-[1.5px] border-neutral-100 inline-flex justify-center items-center lg:border-transparent",
                   isMatch && "border-neutral-950",
                 )}
               >
@@ -46,7 +45,7 @@ export default function Navigation({
                     isMatch && "text-neutral-950",
                   )}
                 >
-                  <span className="text-sm font-semibold">{tab.title}</span>
+                  <span className="text-sm font-bold">{tab.title}</span>
                 </div>
               </Link>
             );

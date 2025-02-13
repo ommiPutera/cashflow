@@ -10,16 +10,27 @@
     --background: 0 0% 100%;
     --foreground: 213 13% 17%;
 
-    --primary-50: hsl(141, 64%, 87%);
-    --primary-100: hsl(141, 66%, 83%);
-    --primary-200: hsl(141, 65%, 79%);
-    --primary-300: hsl(140, 65%, 73%);
-    --primary-400: hsl(141, 66%, 68%);
-    --primary-500: hsl(140, 65%, 63%);
-    --primary-600: hsl(140, 66%, 58%);
-    --primary-700: hsl(141, 66%, 53%);
-    --primary-800: hsl(140, 66%, 48%);
-    --primary-900: hsl(140, 65%, 43%);
+    --primary-50: 217 91% 95%;
+    --primary-100: 219 89% 86%;
+    --primary-200: 219 89% 79%;
+    --primary-300: 219 88% 70%;
+    --primary-400: 219 88% 64%;
+    --primary-500: 219 88% 55%;
+    --primary-600: 219 72% 50%;
+    --primary-700: 219 72% 39%;
+    --primary-800: 219 73% 30%;
+    --primary-900: 219 73% 30%;
+
+    --success-50: 150 39% 93%;
+    --success-100: 150 40% 78%;
+    --success-200: 151 40% 68%;
+    --success-300: 151 40% 53%;
+    --success-400: 151 51% 44%;
+    --success-500: 151 93% 30%;
+    --success-600: 151 93% 27%;
+    --success-700: 151 93% 21%;
+    --success-800: 151 93% 16%;
+    --success-900: 151 94% 13%;
 
     --warning-50: 34 100% 95%;
     --warning-100: 35 100% 85%;
@@ -69,7 +80,7 @@
 
     --shell-page-width: 550px;
     --header-height: 52px;
-    --header-height-mobile: 124px;
+    --header-height-mobile: 114px;
   }
 
   .dark {
@@ -102,7 +113,7 @@
 
 @layer base {
   * {
-    -webkit-tap-highlight-color: rgb(	77, 218, 125, 0.2);
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.6);
     font-synthesis: none;
     @apply border-border;
   }
