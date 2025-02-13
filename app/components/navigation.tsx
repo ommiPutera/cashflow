@@ -18,11 +18,9 @@ export default function Navigation({
       >
         <Link
           to="/sheets"
-          className="flex-1 inline-flex justify-center lg:justify-start items-center"
+          className="flex-1 inline-flex justify-center lg:justify-start items-center tap-highlight-transparent"
         >
-          <h1 className="text-xl font-bold tracking-tighter text-primary-500 ">
-            flowsheet
-          </h1>
+          <img src="/logo.png" alt="" className="h-7" />
         </Link>
         <div
           className={cn(
@@ -43,11 +41,11 @@ export default function Navigation({
               >
                 <div
                   className={cn(
-                    "flex gap-1 items-center text-neutral-400 font-semibold",
+                    "flex gap-1 items-center text-neutral-400",
                     isMatch && "text-neutral-950",
                   )}
                 >
-                  <span className="text-xs">{tab.title}</span>
+                  <span className="text-sm font-semibold">{tab.title}</span>
                 </div>
               </Link>
             );
