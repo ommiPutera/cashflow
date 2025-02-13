@@ -1,6 +1,7 @@
-import { Link, type MetaFunction } from "react-router";
+import { type MetaFunction } from "react-router";
 
 import ShellPage, { Divide, Section } from "~/components/shell-page";
+import { ButtonLink } from "~/components/ui/button";
 
 export const meta: MetaFunction = () => {
   return [{ title: "Sheets" }, { name: "", content: "" }];
@@ -35,18 +36,18 @@ function SheetsLinks({ title, sheets }: TData) {
 
 function Sheet({ title, id, day }: TSheet) {
   return (
-    <div>
-      <Link to={`/sheets/${id}`}>
-        <div className="px-4 lg:px-6 h-14 lg:h-16 flex w-full items-center hover:bg-neutral-50 cursor-pointer">
-          <div className="flex flex-col">
-            <span className="text-sm font-medium text-wrap">{title}</span>
-            <span className="text-sm font-normal text-neutral-500 text-wrap">
-              {day}
-            </span>
-          </div>
-        </div>
-      </Link>
-    </div>
+    <ButtonLink
+      to={`/sheets/${id}`}
+      variant="transparent"
+      className="px-4 lg:px-6 active:scale-[0.97] active:bg-transparent h-14 lg:h-16 flex w-full items-center hover:bg-neutral-50 cursor-pointer rounded-none border-x-0"
+    >
+      <div className="flex flex-col w-full">
+        <span className="text-sm font-medium text-wrap">{title}</span>
+        <span className="text-sm font-normal text-neutral-500 text-wrap">
+          {day}
+        </span>
+      </div>
+    </ButtonLink>
   );
 }
 

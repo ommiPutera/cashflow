@@ -25,7 +25,7 @@ const inputVariants = cva(
 
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement>,
-  VariantProps<typeof inputVariants> {
+    VariantProps<typeof inputVariants> {
   error?: boolean;
 }
 
@@ -68,7 +68,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           className={cn(
             inputVariants({ variant, inputSize, className }),
             error &&
-            "border-danger-500 focus:border-danger-500 focus-visible:border-danger-500 hover:border-danger-500",
+              "border-danger-500 focus:border-danger-500 focus-visible:border-danger-500 hover:border-danger-500",
             type === "password" && "pr-14",
           )}
           ref={ref}

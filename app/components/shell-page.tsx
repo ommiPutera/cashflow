@@ -9,7 +9,7 @@ export default function ShellPage({
   ...props
 }: React.HTMLAttributes<HTMLDivElement> & { noNavigation?: boolean }) {
   return (
-    <div className="mx-auto w-full max-w-[var(--shell-page-width)]">
+    <div className="mx-auto w-full max-w-[var(--shell-page-width)] min-h-screen mb-12">
       <div className="flex flex-col relative">
         <div className="relative overflow-hidden">
           <div className="h-fit relative">

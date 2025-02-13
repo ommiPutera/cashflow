@@ -82,7 +82,7 @@ export default function Sheet() {
         <Link
           to="/sheets"
           prefetch="viewport"
-          className="p-0 h-fit active:scale-90 font-normal inline-flex items-center tap-highlight-transparent"
+          className="p-0 h-fit active:scale-[0.97] font-normal inline-flex items-center tap-highlight-transparent"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -159,7 +159,7 @@ function SheetTransactions() {
             key={trx.id}
             to={`/sheets/edit/${trx.id}`}
             variant="transparent"
-            className="px-4 lg:px-6 h-14 lg:h-16 flex w-full items-center hover:bg-neutral-50 cursor-pointer rounded-none border-x-0"
+            className="px-4 lg:px-6 active:scale-[0.97] active:bg-transparent h-14 lg:h-16 flex w-full items-center hover:bg-neutral-50 cursor-pointer rounded-none border-x-0"
           >
             <div className="flex justify-between items-center w-full flex-wrap">
               <div className="flex items-center gap-3">

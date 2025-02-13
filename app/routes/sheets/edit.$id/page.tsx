@@ -124,13 +124,13 @@ export default function Edit() {
     <FormProvider context={form.context}>
       <ShellPage
         noNavigation
-        className="h-svh lg:h-full w-full overflow-scroll p-0"
+        className="h-svh lg:h-full w-full overflow-scroll"
       >
-        <div className="w-full h-12 px-3 py-6">
+        <div className="w-full h-12">
           <Link
             to={`/sheets/${sheetId}`}
             prefetch="viewport"
-            className="p-0 h-fit active:scale-90 font-normal inline-flex items-center tap-highlight-transparent"
+            className="p-0 h-fit active:scale-[0.97] font-normal inline-flex items-center tap-highlight-transparent"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -155,9 +155,7 @@ export default function Edit() {
             className="flex relative flex-col gap-4 h-full pb-32"
             {...getFormProps(form)}
           >
-            <div className="lg:mt-2 px-3">
-              <FormEditTransaction />
-            </div>
+            <FormEditTransaction />
             <div className="fixed left-0 bottom-0 py-4 px-4 bg-background w-full">
               <div className="max-w-[var(--shell-page-width)] lg:max-w-[406px] mx-auto w-full flex gap-3 justify-between">
                 <Button
@@ -278,7 +276,9 @@ function FormEditTransaction() {
       <div className="border-b border-neutral-400 border-dashed w-full mb-6"></div>
       <Section className="bg-white dark:bg-black border bg-neutral-50 border-none rounded-lg">
         <div className="grid w-full items-center gap-4">
-          <Label htmlFor={nameField.id} className="font-semibold">Nama Transaksi</Label>
+          <Label htmlFor={nameField.id} className="font-semibold">
+            Nama Transaksi
+          </Label>
           <Input
             placeholder="Masukkan nama transaksi"
             error={!!nameField.errors}
@@ -292,13 +292,17 @@ function FormEditTransaction() {
       </Section>
       <Section className="bg-white dark:bg-black border bg-neutral-50 border-none rounded-lg">
         <div className="grid w-full items-center gap-4">
-          <Label htmlFor={typeField.id} className="font-semibold">Tipe Transaksi</Label>
+          <Label htmlFor={typeField.id} className="font-semibold">
+            Tipe Transaksi
+          </Label>
           <Type type={type ?? ""} />
         </div>
       </Section>
       <Section className="bg-white dark:bg-black border bg-neutral-50 border-none rounded-lg">
         <div className="grid w-full items-center gap-4">
-          <Label htmlFor={notesField.id} className="font-semibold">Catatan</Label>
+          <Label htmlFor={notesField.id} className="font-semibold">
+            Catatan
+          </Label>
           <Textarea
             placeholder="Masukkan catatan terkait transaksi"
             rows={4}
@@ -330,8 +334,8 @@ function Type({ type }: { type: TTransaction["type"] }) {
       <ToggleGroup
         type="single"
         onValueChange={(v) => {
-          setValue(v)
-          meta.validate()
+          setValue(v);
+          meta.validate();
         }}
         defaultValue={value}
         className="flex w-full items-center gap-2"

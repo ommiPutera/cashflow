@@ -19,7 +19,7 @@ const textareaVariants = cva(
 );
 export interface TextareaProps
   extends React.TextareaHTMLAttributes<HTMLTextAreaElement>,
-  VariantProps<typeof textareaVariants> {
+    VariantProps<typeof textareaVariants> {
   error?: boolean;
 }
 
@@ -44,7 +44,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
             textareaVariants({ variant }),
             className,
             error &&
-            "border-danger-500 focus:border-danger-500 focus-visible:border-danger-500 hover:border-danger-500",
+              "border-danger-500 focus:border-danger-500 focus-visible:border-danger-500 hover:border-danger-500",
           )}
           onChange={handleChange}
           ref={ref}

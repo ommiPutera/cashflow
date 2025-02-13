@@ -9,7 +9,7 @@ export default function Navigation({
 }) {
   const location = useLocation();
 
-  if (noNavigation) return <></>
+  if (noNavigation) return <></>;
   return (
     <>
       <header
