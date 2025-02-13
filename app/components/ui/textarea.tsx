@@ -4,7 +4,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "~/lib/utils";
 
 const textareaVariants = cva(
-  "flex w-full min-h-[70px] font-normal rounded-2xl border bg-neutral-50 px-4 py-3 text-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none placeholder:text-muted-foreground placeholder:font-normal disabled:cursor-not-allowed disabled:opacity-50",
+  "flex w-full min-h-[70px] font-normal rounded-2xl border bg-white px-4 py-3 text-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none placeholder:text-muted-foreground placeholder:font-normal disabled:cursor-not-allowed disabled:opacity-50",
   {
     variants: {
       variant: {
@@ -19,7 +19,7 @@ const textareaVariants = cva(
 );
 export interface TextareaProps
   extends React.TextareaHTMLAttributes<HTMLTextAreaElement>,
-    VariantProps<typeof textareaVariants> {
+  VariantProps<typeof textareaVariants> {
   error?: boolean;
 }
 
@@ -44,7 +44,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
             textareaVariants({ variant }),
             className,
             error &&
-              "border-danger-500 focus:border-danger-500 focus-visible:border-danger-500 hover:border-danger-500",
+            "border-danger-500 focus:border-danger-500 focus-visible:border-danger-500 hover:border-danger-500",
           )}
           onChange={handleChange}
           ref={ref}

@@ -20,7 +20,7 @@ import {
 import { getZodConstraint, parseWithZod } from "@conform-to/zod";
 
 import ShellPage, { Section } from "~/components/shell-page";
-import { Button, ButtonLink } from "~/components/ui/button";
+import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { InputNumber } from "~/components/ui/input-number";
 import { Label } from "~/components/ui/label";
@@ -134,8 +134,8 @@ export default function Edit() {
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
+              width="28"
+              height="28"
               fill="none"
               stroke="currentColor"
               strokeLinecap="round"
@@ -145,7 +145,7 @@ export default function Edit() {
             >
               <path d="m15 18-6-6 6-6"></path>
             </svg>
-            <span className="text-sm font-medium">Kembali</span>
+            <span className="text-xs font-medium">Kembali</span>
           </Link>
         </div>
         <div className="flex flex-col gap-1">
@@ -158,23 +158,17 @@ export default function Edit() {
             <div className="lg:mt-2 px-3">
               <FormEditTransaction />
             </div>
-            <div className="lg:relative fixed bottom-0 py-4 px-4 lg:px-3 lg:py-0 bg-background w-full flex gap-3 justify-between">
-              <Button
-                variant="outlined-primary"
-                type="submit"
-                disabled={!form.dirty}
-                className="w-full lg:w-fit border-2 font-bold text-primary-500 border-primary-500"
-              >
-                Ubah
-              </Button>
-              <ButtonLink
-                variant="transparent"
-                type="button"
-                to={`/sheets/${sheetId}`}
-                className="hidden lg:flex lg:w-fit"
-              >
-                Batal
-              </ButtonLink>
+            <div className="fixed left-0 bottom-0 py-4 px-4 bg-background w-full">
+              <div className="max-w-[var(--shell-page-width)] lg:max-w-[406px] mx-auto w-full flex gap-3 justify-between">
+                <Button
+                  variant="outlined-primary"
+                  type="submit"
+                  disabled={!form.dirty}
+                  className="w-full border-2 font-bold text-primary-500 border-primary-500"
+                >
+                  Ubah
+                </Button>
+              </div>
             </div>
           </fetcher.Form>
         </div>
@@ -192,7 +186,7 @@ function FormEditTransaction() {
 
   return (
     <div className="flex flex-col gap-3 h-full mb-52 lg:mb-0">
-      <div className="flex flex-col w-full items-center justify-center min-h-[calc(100svh-17.5rem)] lg:min-h-[calc(100svh-29.5rem)] lg:my-32">
+      <div className="flex flex-col w-full items-center justify-center min-h-[calc(100svh-15.5rem)] lg:min-h-[calc(100svh-29.5rem)] lg:my-32">
         {type === "out" ? (
           <Label
             htmlFor={nominalField.id}
@@ -282,9 +276,9 @@ function FormEditTransaction() {
         </p>
       </div>
       <div className="border-b border-neutral-400 border-dashed w-full mb-6"></div>
-      <Section className="bg-white dark:bg-black border border-neutral-200 dark:border-neutral-800 rounded-xl 2xl:rounded-2xl">
-        <div className="grid w-full items-center gap-2">
-          <Label htmlFor={nameField.id}>Nama Transaksi</Label>
+      <Section className="bg-white dark:bg-black border bg-neutral-50 border-none rounded-lg">
+        <div className="grid w-full items-center gap-4">
+          <Label htmlFor={nameField.id} className="font-semibold">Nama Transaksi</Label>
           <Input
             placeholder="Masukkan nama transaksi"
             error={!!nameField.errors}
@@ -296,15 +290,15 @@ function FormEditTransaction() {
           />
         </div>
       </Section>
-      <Section className="bg-white dark:bg-black border border-neutral-200 dark:border-neutral-800 rounded-xl 2xl:rounded-2xl">
-        <div className="grid w-full items-center gap-2">
-          <Label htmlFor={typeField.id}>Tipe Transaksi</Label>
+      <Section className="bg-white dark:bg-black border bg-neutral-50 border-none rounded-lg">
+        <div className="grid w-full items-center gap-4">
+          <Label htmlFor={typeField.id} className="font-semibold">Tipe Transaksi</Label>
           <Type type={type ?? ""} />
         </div>
       </Section>
-      <Section className="bg-white dark:bg-black border border-neutral-200 dark:border-neutral-800 rounded-xl 2xl:rounded-2xl">
-        <div className="grid w-full items-center gap-2">
-          <Label htmlFor={notesField.id}>Catatan</Label>
+      <Section className="bg-white dark:bg-black border bg-neutral-50 border-none rounded-lg">
+        <div className="grid w-full items-center gap-4">
+          <Label htmlFor={notesField.id} className="font-semibold">Catatan</Label>
           <Textarea
             placeholder="Masukkan catatan terkait transaksi"
             rows={4}
@@ -322,7 +316,7 @@ function FormEditTransaction() {
   );
 }
 function Type({ type }: { type: TTransaction["type"] }) {
-  const [field] = useField("type");
+  const [field, meta] = useField("type");
 
   const [value, setValue] = React.useState(type);
   return (
@@ -335,14 +329,17 @@ function Type({ type }: { type: TTransaction["type"] }) {
       />
       <ToggleGroup
         type="single"
-        onValueChange={setValue}
+        onValueChange={(v) => {
+          setValue(v)
+          meta.validate()
+        }}
         defaultValue={value}
         className="flex w-full items-center gap-2"
       >
         <ToggleGroupItem
           value="in"
           aria-label="Pemasukan"
-          className="w-full h-14 data-[state=on]:border-green-500 data-[state=on]:text-green-600 data-[state=on]:bg-green-50"
+          className="w-full h-14 bg-white data-[state=on]:border-green-500 data-[state=on]:text-green-600 data-[state=on]:bg-green-50"
         >
           <span>
             <svg
@@ -365,7 +362,7 @@ function Type({ type }: { type: TTransaction["type"] }) {
         <ToggleGroupItem
           value="out"
           aria-label="Pengeluaran"
-          className="w-full h-14 data-[state=on]:border-danger-500 data-[state=on]:text-danger-400 data-[state=on]:bg-danger-50"
+          className="w-full h-14 bg-white data-[state=on]:border-danger-500 data-[state=on]:text-danger-400 data-[state=on]:bg-danger-50"
         >
           <span>
             <svg

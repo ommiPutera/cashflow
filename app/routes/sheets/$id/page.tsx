@@ -86,8 +86,8 @@ export default function Sheet() {
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
+            width="28"
+            height="28"
             fill="none"
             stroke="currentColor"
             strokeLinecap="round"
@@ -97,7 +97,7 @@ export default function Sheet() {
           >
             <path d="m15 18-6-6 6-6"></path>
           </svg>
-          <span className="text-sm font-medium">Kembali</span>
+          <span className="text-xs font-medium">Kembali</span>
         </Link>
       </div>
       <div className="flex flex-col gap-3 mb-24">

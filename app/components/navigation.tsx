@@ -8,24 +8,25 @@ export default function Navigation({
   noNavigation: boolean | undefined;
 }) {
   const location = useLocation();
+
+  if (noNavigation) return <></>
   return (
     <>
       <header
         className={cn(
           "flex flex-wrap flex-col lg:flex-row items-center shadow-sm border-b lg:border-b-transparent lg:shadow-none justify-between lg:gap-2 lg:px-8 bg-white fixed top-0 z-50 left-0 w-full h-[var(--header-height-mobile)] lg:h-[var(--header-height)]",
-          noNavigation && "h-[calc(var(--header-height-mobile)_-_51.5px)]",
         )}
       >
         <Link
           to="/sheets"
-          className="flex-1 inline-flex justify-center lg:justify-start items-center tap-highlight-transparent"
+          className="flex-1 inline-flex justify-start items-center tap-highlight-transparent"
         >
-          <img src="/logo.png" alt="" className="h-7" />
+          <img src="/logo.png" alt="" className="h-10 block lg:hidden" />
+          <img src="/logo_horizontal.png" alt="" className="h-7 lg:block hidden" />
         </Link>
         <div
           className={cn(
             "flex flex-1 justify-center items-center lg:justify-end w-full h-full",
-            noNavigation && "hidden lg:flex",
           )}
         >
           {tabs.map((tab) => {
@@ -55,7 +56,6 @@ export default function Navigation({
       <div
         className={cn(
           "h-[var(--header-height-mobile)] lg:h-[var(--header-height)] bg-background",
-          noNavigation && "h-[calc(var(--header-height-mobile)_-_51.5px)]",
         )}
       ></div>
     </>

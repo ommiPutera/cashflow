@@ -4,7 +4,7 @@ import React from "react";
 import { cn } from "~/lib/utils";
 
 const inputVariants = cva(
-  "flex h-9 w-full border bg-neutral-50 appearance-none transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-neutral-700 focus-visible:outline-none outline-primary-500 disabled:cursor-not-allowed disabled:opacity-50",
+  "flex h-9 w-full border bg-white appearance-none transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-neutral-700 focus-visible:outline-none outline-primary-500 disabled:cursor-not-allowed disabled:opacity-50",
   {
     variants: {
       variant: {
@@ -25,7 +25,7 @@ const inputVariants = cva(
 
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement>,
-    VariantProps<typeof inputVariants> {
+  VariantProps<typeof inputVariants> {
   error?: boolean;
 }
 
@@ -68,7 +68,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           className={cn(
             inputVariants({ variant, inputSize, className }),
             error &&
-              "border-danger-500 focus:border-danger-500 focus-visible:border-danger-500 hover:border-danger-500",
+            "border-danger-500 focus:border-danger-500 focus-visible:border-danger-500 hover:border-danger-500",
             type === "password" && "pr-14",
           )}
           ref={ref}
