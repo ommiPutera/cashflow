@@ -1,3 +1,4 @@
+import React from "react";
 import {
   ActionFunctionArgs,
   Link,
@@ -28,20 +29,20 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 };
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
-  const trxs = transactions.filter((trx) => trx.sheetId === params.id);
-
   const url = new URL(request.url);
-  const isExpectationModeActive = !!parseInt(
-    url.searchParams.get("expectation-mode") === "1" ? "1" : "0",
+  const isExpectationModeActive =
+    url.searchParams.get("expectation-mode") === "1";
+  const transactions = mockTransactions.filter(
+    (trx) => trx.sheetId === params.id,
   );
 
   const totalOut = 100000;
   const totalIn = 250000;
   return {
-    transactions: trxs,
+    transactions,
     bool: {
       isExpectationModeActive,
-      transactions: !!trxs.length,
+      hasTransactions: transactions.length > 0,
     },
     sum: {
       totalOut,
@@ -51,7 +52,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   };
 };
 
-const transactions: TTransaction[] = [
+const mockTransactions = [
   {
     id: "1",
     sheetId: "Tagihan-Jan-2025",
@@ -97,60 +98,79 @@ const transactions: TTransaction[] = [
 export default function Sheet() {
   return (
     <ShellPage noNavigation>
-      <div className="w-full h-12">
-        <Link
-          to="/sheets"
-          prefetch="viewport"
-          className="p-0 h-fit active:scale-[0.97] font-normal inline-flex items-center tap-highlight-transparent"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="28"
-            height="28"
-            fill="none"
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            viewBox="0 0 24 24"
-          >
-            <path d="m15 18-6-6 6-6"></path>
-          </svg>
-          <span className="text-xs font-medium">Kembali</span>
-        </Link>
-      </div>
-      <div className="flex flex-col gap-3 mb-24">
-        <SheetSum />
-        <AvailableMinus />
-        <div className="mx-auto w-full max-w-[240px]">
-          <p className="text-center text-sm text-neutral-600 mb-6 mt-2">
-            *Selalu jaga Dana Tersedia Anda, demi kelancaran finansial.
-          </p>
-        </div>
-        <SheetTransactions />
-      </div>
+      <Header />
+      <Content />
     </ShellPage>
   );
 }
 
-function SheetSum() {
-  const {
-    sum: { totalIn, totalOut, available },
-  } = useLoaderData<typeof loader>();
-  const params = useParams();
+function Header() {
+  return (
+    <div className="w-full h-12">
+      <Link
+        to="/sheets"
+        prefetch="viewport"
+        className="p-0 h-fit active:scale-[0.97] font-normal inline-flex items-center tap-highlight-transparent"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="28"
+          height="28"
+          fill="none"
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="2"
+          viewBox="0 0 24 24"
+        >
+          <path d="m15 18-6-6 6-6"></path>
+        </svg>
+        <span className="text-xs font-medium">Kembali</span>
+      </Link>
+    </div>
+  );
+}
 
-  const title = params.id?.split("-").join(" ");
+function Content() {
+  return (
+    <div className="flex flex-col gap-3 mb-24">
+      <SheetSum />
+      <AvailableMinus />
+      <InfoMessage />
+      <SheetTransactions />
+    </div>
+  );
+}
+
+function InfoMessage() {
+  return (
+    <div className="mx-auto w-full max-w-[240px]">
+      <p className="text-center text-sm text-neutral-600 mb-6 mt-2">
+        *Selalu jaga Dana Tersedia Anda, demi kelancaran finansial.
+      </p>
+    </div>
+  );
+}
+
+function SheetSum() {
+  const { sum } = useLoaderData<typeof loader>();
+  const title = useParams().id?.replace(/-/g, " ");
+
   return (
     <Section className="bg-white dark:bg-black border border-neutral-200 dark:border-neutral-800 p-0 lg:p-0 rounded-xl 2xl:rounded-2xl">
       <div className="px-4 py-5 lg:py-6 lg:px-6 bg-neutral-50 border-b lg:border-none lg:bg-white">
         <h2 className="text-sm font-bold">Hitungan {title}</h2>
       </div>
       <Divide>
-        <SumItem title="Pengeluaran" totalAmount={toIDR(totalOut)} from="out" />
-        <SumItem title="Pemasukan" totalAmount={toIDR(totalIn)} from="in" />
+        <SumItem
+          title="Pengeluaran"
+          totalAmount={toIDR(sum.totalOut)}
+          from="out"
+        />
+        <SumItem title="Pemasukan" totalAmount={toIDR(sum.totalIn)} from="in" />
         <SumItem
           title="Dana Tersedia"
-          totalAmount={toIDR(available)}
+          totalAmount={toIDR(sum.available)}
           from="available"
         />
       </Divide>
@@ -176,10 +196,6 @@ function AvailableMinus() {
 }
 
 function SheetTransactions() {
-  const {
-    transactions,
-    bool: { transactions: trxs },
-  } = useLoaderData<typeof loader>();
   return (
     <Section className="bg-white dark:bg-black border border-neutral-200 dark:border-neutral-800 p-0 lg:p-0 rounded-xl 2xl:rounded-2xl">
       <Button
@@ -206,29 +222,124 @@ function SheetTransactions() {
         <h2 className="text-sm font-bold">Transaksi</h2>
         <ExpectationMode />
       </div>
+      <Transactions />
+    </Section>
+  );
+}
+
+type TExpectationSumProps = {
+  totalOut: number;
+  totalIn: number;
+  calculate: (
+    nominal: number,
+    type: "out" | "in",
+    operation: "add" | "sub",
+  ) => void;
+  clearAllState: () => void;
+};
+type ExpectationSumContext = Partial<TExpectationSumProps>;
+const ExpectationSumContext = React.createContext<ExpectationSumContext>({});
+const useExpectationSumContext = () => React.useContext(ExpectationSumContext);
+function Transactions() {
+  const {
+    transactions,
+    bool: { isExpectationModeActive, hasTransactions: trxs },
+  } = useLoaderData<typeof loader>();
+
+  const [totalOut, setTotalOut] = React.useState(0);
+  const [totalIn, setTotalIn] = React.useState(0);
+  const calculate = (
+    nominal: number,
+    type: "out" | "in",
+    operation: "add" | "sub",
+  ) => {
+    if (type === "in") {
+      setTotalIn((prev) =>
+        Math.max(0, prev + (operation === "add" ? nominal : -nominal)),
+      );
+    }
+    if (type === "out") {
+      setTotalOut((prev) =>
+        Math.max(0, prev + (operation === "add" ? nominal : -nominal)),
+      );
+    }
+  };
+
+  React.useEffect(() => {
+    if (!isExpectationModeActive) {
+      setTotalOut(0);
+      setTotalIn(0);
+    }
+  }, [isExpectationModeActive]);
+
+  return (
+    <ExpectationSumContext.Provider value={{ totalOut, totalIn, calculate }}>
       <Divide>
+        <ExpectationSum />
         {trxs ? (
           transactions.map((trx) => <Transaction key={trx.id} {...trx} />)
         ) : (
-          <div className="w-full h-16 flex justify-center items-center">
-            <span className="text-sm font-medium text-neutral-400">
-              Belum ada Transaksi..
-            </span>
-          </div>
+          <EmptyTransaction />
         )}
+      </Divide>
+    </ExpectationSumContext.Provider>
+  );
+}
+function EmptyTransaction() {
+  return (
+    <div className="w-full h-16 flex justify-center items-center">
+      <span className="text-sm font-medium text-neutral-400">
+        Belum ada Transaksi..
+      </span>
+    </div>
+  );
+}
+
+function ExpectationSum() {
+  const {
+    bool: { isExpectationModeActive },
+  } = useLoaderData<typeof loader>();
+
+  const { totalOut, totalIn } = useExpectationSumContext();
+  const available = (totalIn || 0) - (totalOut || 0);
+
+  if (!isExpectationModeActive) return <></>;
+  return (
+    <Section className="bg-neutral-50 m-2 dark:bg-black border border-neutral-200 dark:border-neutral-800 p-0 lg:p-0 rounded-xl 2xl:rounded-2xl">
+      <Divide>
+        <SumItem
+          title="Pengeluaran"
+          totalAmount={toIDR(totalOut || 0)}
+          from="out"
+        />
+        <SumItem
+          title="Pemasukan"
+          totalAmount={toIDR(totalIn || 0)}
+          from="in"
+        />
+        <SumItem
+          title="Dana Tersedia"
+          totalAmount={toIDR(available)}
+          from="available"
+        />
       </Divide>
     </Section>
   );
 }
+
 function Transaction(props: TTransaction) {
   const {
     bool: { isExpectationModeActive },
   } = useLoaderData<typeof loader>();
-  const { id } = props;
+  const { id, nominal, type } = props;
 
   if (isExpectationModeActive) {
     return (
-      <TransactionCheckbox id={id}>
+      <TransactionCheckbox
+        id={id}
+        nominal={nominal}
+        type={type === "in" ? "in" : "out"}
+      >
         <TransactionContent {...props} />
       </TransactionCheckbox>
     );
@@ -243,12 +354,23 @@ function Transaction(props: TTransaction) {
 }
 function TransactionCheckbox({
   ...props
-}: React.HTMLAttributes<HTMLDivElement> & { id: string }) {
-  const { id } = props;
+}: React.HTMLAttributes<HTMLDivElement> & {
+  id: string;
+  nominal: number;
+  type: "in" | "out";
+}) {
+  const { id, nominal, type } = props;
+  const { calculate } = useExpectationSumContext();
   return (
     <TransactionContentLayout id={id}>
       <div className="flex items-center gap-4 w-full">
-        <Checkbox id={id} />
+        <Checkbox
+          id={id}
+          onCheckedChange={(checked) =>
+            typeof calculate === "function" &&
+            calculate(nominal, type, checked ? "add" : "sub")
+          }
+        />
         {props.children}
       </div>
     </TransactionContentLayout>
@@ -323,13 +445,13 @@ function TransactionContent({ type, nominal, name }: TTransaction) {
 
 function ExpectationMode() {
   const {
-    bool: { isExpectationModeActive, transactions },
+    bool: { isExpectationModeActive, hasTransactions },
   } = useLoaderData<typeof loader>();
   const [, setSearchParams] = useSearchParams();
   return (
     <div className="flex items-center space-x-2">
       <Switch
-        disabled={!transactions}
+        disabled={!hasTransactions}
         id="expectation-mode"
         checked={isExpectationModeActive}
         onCheckedChange={(checked) => {
@@ -413,7 +535,7 @@ function SumItem({ title, totalAmount, from }: TSumItem) {
     <div className="px-4 lg:px-6 h-14 lg:h-16 flex w-full items-center hover:bg-neutral-50 cursor-pointer">
       <div className="flex justify-between items-center w-full flex-wrap">
         <span className="text-sm font-medium text-wrap">{title}</span>
-        <span className="text-sm inline-flex gap-2 font-semibold text-neutral-700 text-wrap underline">
+        <span className="text-sm inline-flex gap-2 font-semibold text-neutral-700 text-wrap">
           {totalAmount}
           {symbol}
         </span>
