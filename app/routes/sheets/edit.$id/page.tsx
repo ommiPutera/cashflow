@@ -156,7 +156,7 @@ export default function Edit() {
             {...getFormProps(form)}
           >
             <FormEditTransaction />
-            <div className="fixed left-0 bottom-0 py-4 px-4 bg-background w-full">
+            <div className="fixed left-0 bottom-0 py-6 px-4 bg-background w-full">
               <div className="max-w-[var(--shell-page-width)] lg:max-w-[406px] mx-auto w-full flex gap-3 justify-between">
                 <Button
                   variant="outlined-primary"
@@ -176,105 +176,21 @@ export default function Edit() {
 }
 
 function FormEditTransaction() {
-  const { name, notes, type, sheetId } = useLoaderData<typeof loader>();
-  const [nominalField] = useField("nominal");
+  const { type } = useLoaderData<typeof loader>();
   const [notesField] = useField("notes");
   const [nameField] = useField("name");
   const [typeField] = useField("type");
 
   return (
-    <div className="flex flex-col gap-3 h-full mb-52 lg:mb-0">
-      <div className="flex flex-col w-full items-center justify-center min-h-[calc(100svh-15.5rem)] lg:min-h-[calc(100svh-29.5rem)] lg:my-32">
-        {type === "out" ? (
-          <Label
-            htmlFor={nominalField.id}
-            className="bg-danger-50 h-12 w-12 mb-4 flex justify-center items-center rounded-full border border-danger-200"
-          >
-            <span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                fill="none"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                className="text-danger-500"
-                viewBox="0 0 24 24"
-              >
-                <path d="M7 7h10v10M7 17 17 7"></path>
-              </svg>
-            </span>
-          </Label>
-        ) : (
-          <Label
-            htmlFor={nominalField.id}
-            className="bg-green-50 h-12 w-12 mb-4 flex justify-center items-center rounded-full border border-green-400"
-          >
-            <span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                fill="none"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                className="text-green-500"
-                viewBox="0 0 24 24"
-              >
-                <path d="M12 17V3M6 11l6 6 6-6M19 21H5"></path>
-              </svg>
-            </span>
-          </Label>
-        )}
-        <Label
-          htmlFor={nominalField.id}
-          className="text-base font-semibold text-neutral-700"
-        >
-          {name}
-        </Label>
-        {notes && (
-          <Label
-            htmlFor={nominalField.id}
-            className="text-xs font-normal truncate text-neutral-500"
-          >
-            {notes}
-          </Label>
-        )}
-        <InputNumber
-          placeholder="Rp"
-          className="border-none bg-transparent text-center px-0 text-4xl font-bold"
-          error={!!nominalField.errors}
-          {...getInputProps(nominalField, {
-            type: "text",
-            ariaDescribedBy: nominalField.descriptionId,
-          })}
-          prefix="Rp"
-          pattern="[0-9]*"
-          inputMode="decimal"
-          thousandSeparator="."
-          decimalSeparator=","
-          allowNegative={false}
-          maxLength={14}
-          key={nominalField.key}
-        />
-        <Label
-          htmlFor={nominalField.id}
-          className="text-sm text-neutral-500 font-medium"
-        >
-          {sheetId?.split("-").join(" ")}
-        </Label>
-      </div>
+    <div className="flex flex-col gap-4 h-full mb-52 lg:mb-0">
+      <Nominal />
       <div className="mx-auto w-full max-w-[240px]">
         <p className="text-center text-sm text-neutral-600 mb-4">
           *Anda dapat mengubah transaksi ini melalui formulir dibawah
         </p>
       </div>
       <div className="border-b border-neutral-400 border-dashed w-full mb-6"></div>
-      <Section className="bg-white dark:bg-black border bg-neutral-50 border-none rounded-lg">
+      <Section className="bg-white dark:bg-black border bg-neutral-100 border-none rounded-lg">
         <div className="grid w-full items-center gap-4">
           <Label htmlFor={nameField.id} className="font-semibold">
             Nama Transaksi
@@ -290,7 +206,7 @@ function FormEditTransaction() {
           />
         </div>
       </Section>
-      <Section className="bg-white dark:bg-black border bg-neutral-50 border-none rounded-lg">
+      <Section className="bg-white dark:bg-black border bg-neutral-100 border-none rounded-lg">
         <div className="grid w-full items-center gap-4">
           <Label htmlFor={typeField.id} className="font-semibold">
             Tipe Transaksi
@@ -298,7 +214,7 @@ function FormEditTransaction() {
           <Type type={type ?? ""} />
         </div>
       </Section>
-      <Section className="bg-white dark:bg-black border bg-neutral-50 border-none rounded-lg">
+      <Section className="bg-white dark:bg-black border bg-neutral-100 border-none rounded-lg">
         <div className="grid w-full items-center gap-4">
           <Label htmlFor={notesField.id} className="font-semibold">
             Catatan
@@ -316,6 +232,96 @@ function FormEditTransaction() {
           />
         </div>
       </Section>
+    </div>
+  );
+}
+function Nominal() {
+  const { name, notes, type, sheetId } = useLoaderData<typeof loader>();
+  const [nominalField] = useField("nominal");
+  return (
+    <div className="flex flex-col w-full items-center justify-center min-h-[calc(100svh-17.5rem)] lg:min-h-[calc(100svh-34.5rem)] lg:my-32">
+      {type === "out" ? (
+        <Label
+          htmlFor={nominalField.id}
+          className="bg-danger-50 h-12 w-12 mb-4 flex justify-center items-center rounded-full border border-danger-200"
+        >
+          <span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              fill="none"
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              className="text-danger-500"
+              viewBox="0 0 24 24"
+            >
+              <path d="M7 7h10v10M7 17 17 7"></path>
+            </svg>
+          </span>
+        </Label>
+      ) : (
+        <Label
+          htmlFor={nominalField.id}
+          className="bg-green-50 h-12 w-12 mb-4 flex justify-center items-center rounded-full border border-green-400"
+        >
+          <span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              fill="none"
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              className="text-green-500"
+              viewBox="0 0 24 24"
+            >
+              <path d="M12 17V3M6 11l6 6 6-6M19 21H5"></path>
+            </svg>
+          </span>
+        </Label>
+      )}
+      <Label
+        htmlFor={nominalField.id}
+        className="text-base font-semibold text-neutral-700"
+      >
+        {name}
+      </Label>
+      {notes && (
+        <Label
+          htmlFor={nominalField.id}
+          className="text-xs font-normal truncate text-neutral-500"
+        >
+          {notes}
+        </Label>
+      )}
+      <InputNumber
+        placeholder="Rp"
+        className="border-none bg-transparent text-center px-0 text-4xl font-bold"
+        error={!!nominalField.errors}
+        {...getInputProps(nominalField, {
+          type: "text",
+          ariaDescribedBy: nominalField.descriptionId,
+        })}
+        prefix="Rp"
+        pattern="[0-9]*"
+        inputMode="decimal"
+        thousandSeparator="."
+        decimalSeparator=","
+        allowNegative={false}
+        maxLength={14}
+        key={nominalField.key}
+      />
+      <Label
+        htmlFor={nominalField.id}
+        className="text-sm text-neutral-500 font-medium"
+      >
+        {sheetId?.split("-").join(" ")}
+      </Label>
     </div>
   );
 }

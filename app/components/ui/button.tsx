@@ -27,8 +27,7 @@ const buttonVariants = cva(
         "secondary-danger": "bg-danger-50 text-danger-500",
         "outlined-danger":
           "border border-danger-300 text-danger-500 bg-neutral-50",
-        "outlined-primary":
-          "border text-primary-500 bg-white focus:outline-none focus:ring-2 focus:ring-primary-500/50",
+        "outlined-primary": "border text-primary-500 bg-white",
         danger: "bg-danger-500 text-white",
       },
       size: {

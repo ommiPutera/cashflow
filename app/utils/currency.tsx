@@ -8,7 +8,7 @@ const numberFormatter = Intl.NumberFormat("id-ID", {
 });
 
 export function toIDR(v: number, symbol = true) {
-  if (isNaN(v)) return v;
+  if (isNaN(v)) return v.toString();
 
   const stringArr = v.toString().split(".");
   const integerPart = +stringArr[0];
