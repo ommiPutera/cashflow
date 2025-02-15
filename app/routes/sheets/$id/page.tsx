@@ -6,14 +6,14 @@ import {
   MetaFunction,
   useLoaderData,
   useParams,
-  useSearchParams,
+  // useSearchParams,
 } from "react-router";
 
 import ShellPage, { Divide, Section } from "~/components/shell-page";
 import { Button } from "~/components/ui/button";
 import { Checkbox } from "~/components/ui/checkbox";
 import { Label } from "~/components/ui/label";
-import { Switch } from "~/components/ui/switch";
+// import { Switch } from "~/components/ui/switch";
 
 import { toIDR } from "~/utils/currency";
 
@@ -444,13 +444,13 @@ function TransactionContent({ type, nominal, name }: TTransaction) {
 }
 
 function ExpectationMode() {
-  const {
-    bool: { isExpectationModeActive, hasTransactions },
-  } = useLoaderData<typeof loader>();
-  const [, setSearchParams] = useSearchParams();
+  // const {
+  //   bool: { isExpectationModeActive, hasTransactions },
+  // } = useLoaderData<typeof loader>();
+  // const [, setSearchParams] = useSearchParams();
   return (
     <div className="flex items-center space-x-2">
-      <Switch
+      {/* <Switch
         disabled={!hasTransactions}
         id="expectation-mode"
         checked={isExpectationModeActive}
@@ -461,7 +461,7 @@ function ExpectationMode() {
             preventScrollReset: true,
           });
         }}
-      />
+      /> */}
       <Label htmlFor="expectation-mode" className="font-semibold">
         Mode Ekspetasi
       </Label>
