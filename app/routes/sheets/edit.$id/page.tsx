@@ -26,6 +26,7 @@ import { InputNumber } from "~/components/ui/input-number";
 import { Label } from "~/components/ui/label";
 import { Textarea } from "~/components/ui/textarea";
 import { ToggleGroup, ToggleGroupItem } from "~/components/ui/toggle-group";
+import { cn } from "~/lib/utils";
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
   const title = data?.name;
@@ -122,10 +123,7 @@ export default function Edit() {
 
   return (
     <FormProvider context={form.context}>
-      <ShellPage
-        noNavigation
-        className="h-svh lg:h-full w-full overflow-scroll"
-      >
+      <ShellPage noNavigation>
         <div className="w-full h-12">
           <Link
             to={`/sheets/${sheetId}`}
@@ -157,7 +155,7 @@ export default function Edit() {
           >
             <FormEditTransaction />
             <div className="fixed left-0 bottom-0 py-6 px-4 bg-background w-full">
-              <div className="max-w-[var(--shell-page-width)] lg:max-w-[406px] mx-auto w-full flex gap-3 justify-between">
+              <div className="max-w-[var(--shell-page-width)] lg:max-w-[406px] mx-auto w-full flex flex-col gap-2 justify-between">
                 <Button
                   variant="primary"
                   type="submit"
@@ -167,6 +165,7 @@ export default function Edit() {
                 >
                   Ubah
                 </Button>
+                <DeleteTransaction />
               </div>
             </div>
           </fetcher.Form>
@@ -253,7 +252,7 @@ function Nominal() {
 
   const [nominalField] = useField("nominal");
   return (
-    <div className="flex flex-col w-full items-center justify-center min-h-[calc(100svh-16rem)] lg:min-h-[calc(100svh-32.5rem)] lg:my-32">
+    <div className="flex flex-col w-full items-center justify-center min-h-[calc(100svh-19rem)] lg:min-h-[calc(100svh-35.5rem)] lg:my-32">
       {type === "out" ? (
         <Label
           htmlFor={nominalField.id}
@@ -375,10 +374,10 @@ function Type({ type }: { type: TTransaction["type"] }) {
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeWidth="2"
-              className="w-4 h-4 lg:w-5 lg:h-5"
+              className="text-green-500 w-4 h-4 lg:w-5 lg:h-5"
               viewBox="0 0 24 24"
             >
-              <path d="M5 12h14M12 5v14"></path>
+              <path d="M12 17V3M6 11l6 6 6-6M19 21H5"></path>
             </svg>
           </span>
           <span>Pemasukan</span>
@@ -398,15 +397,60 @@ function Type({ type }: { type: TTransaction["type"] }) {
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeWidth="2"
-              className="w-4 h-4 lg:w-5 lg:h-5"
+              className="text-danger-500 w-4 h-4 lg:w-5 lg:h-5"
               viewBox="0 0 24 24"
             >
-              <path d="M5 12h14"></path>
+              <path d="M7 7h10v10M7 17 17 7"></path>
             </svg>
           </span>
           <span>Pengeluaran</span>
         </ToggleGroupItem>
       </ToggleGroup>
+    </div>
+  );
+}
+
+function DeleteTransaction() {
+  const [isRequest, setIsRequest] = React.useState(false);
+  return (
+    <div>
+      <Button
+        variant="outlined-danger"
+        type="button"
+        size="sm"
+        onClick={() => setIsRequest(true)}
+        className={cn(
+          "w-full border-2 font-bold rounded-full",
+          isRequest && "hidden",
+        )}
+      >
+        Hapus Transaksi
+      </Button>
+      <div
+        className={cn(
+          "hidden border-2 border-danger-500 h-11 lg:h-10 justify-between rounded-full overflow-hidden",
+          isRequest && "flex",
+        )}
+      >
+        <Button
+          variant="outlined-danger"
+          type="button"
+          size="sm"
+          onClick={() => setIsRequest(true)}
+          className="border-none w-full rounded-none bg-danger-50 h-10 lg:h-9"
+        >
+          Ya, Hapus
+        </Button>
+        <Button
+          variant="transparent"
+          type="button"
+          size="sm"
+          onClick={() => setIsRequest(false)}
+          className="border-none w-full rounded-none h-10 lg:h-9"
+        >
+          Batal
+        </Button>
+      </div>
     </div>
   );
 }

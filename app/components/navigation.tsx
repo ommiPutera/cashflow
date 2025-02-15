@@ -36,13 +36,13 @@ export default function Navigation({
                 key={tab.title}
                 className={cn(
                   "h-full w-full lg:w-fit lg:px-8 border-b-[1.5px] border-neutral-100 inline-flex justify-center items-center lg:border-transparent",
-                  isMatch && "border-neutral-950",
+                  isMatch && "border-primary-500",
                 )}
               >
                 <div
                   className={cn(
                     "flex gap-1 items-center text-neutral-400",
-                    isMatch && "text-neutral-950",
+                    isMatch && "text-primary-500",
                   )}
                 >
                   <span className="text-sm font-bold">{tab.title}</span>

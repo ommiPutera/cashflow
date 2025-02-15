@@ -243,7 +243,7 @@ function SheetTransactions() {
         </svg>
         <span>Buat transaksi</span>
       </ButtonLink>
-      <div className="px-4 py-5 lg:py-6 lg:px-6 bg-neutral-50 lg:bg-white flex justify-between items-center">
+      <div className="px-4 py-5 lg:py-6 lg:px-6 bg-neutral-50 lg:bg-white flex flex-wrap gap-2 justify-between items-center">
         <h2 className="text-sm font-bold">Transaksi</h2>
         <ExpectationMode />
       </div>
@@ -408,7 +408,7 @@ function TransactionContentLayout({
   return (
     <label
       htmlFor={id}
-      className="px-4 lg:px-6 h-14 lg:h-16 flex w-full items-center hover:bg-neutral-50 cursor-pointer rounded-none border-x-0"
+      className="px-4 lg:px-6 min-h-14 lg:h-16 flex w-full items-center hover:bg-neutral-50 cursor-pointer rounded-none border-x-0"
     >
       <div className="active:scale-[0.99] active:bg-transparent w-full">
         {props.children}

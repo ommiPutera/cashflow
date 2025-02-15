@@ -25,6 +25,7 @@ import { Input } from "~/components/ui/input";
 import { ToggleGroup, ToggleGroupItem } from "~/components/ui/toggle-group";
 import { Textarea } from "~/components/ui/textarea";
 import { Button } from "~/components/ui/button";
+import { InputNumber } from "~/components/ui/input-number";
 
 export const meta: MetaFunction = ({ params }) => {
   const title = `Buat Transaksi | ${params.sheetId?.split("-").join(" ")}`;
@@ -73,10 +74,7 @@ export default function Create() {
 
   return (
     <FormProvider context={form.context}>
-      <ShellPage
-        noNavigation
-        className="h-svh lg:h-full w-full overflow-scroll"
-      >
+      <ShellPage noNavigation>
         <div className="w-full h-12">
           <Link
             to={`/sheets/${sheetId}`}
@@ -131,12 +129,40 @@ export default function Create() {
 }
 
 function FormCreateTransaction() {
+  const [nominalField] = useField("nominal");
   const [nameField] = useField("name");
   const [notesField] = useField("notes");
   const [typeField] = useField("type");
 
   return (
     <div className="flex flex-col gap-2 h-full">
+      <Section className="bg-white border border-neutral-200 dark:border-neutral-800 rounded-xl 2xl:rounded-2xl">
+        <div className="grid w-full items-center gap-2 py-4">
+          <Label
+            htmlFor={nominalField.id}
+            className="font-semibold text-center"
+          >
+            Nominal
+          </Label>
+          <InputNumber
+            placeholder="Rp0"
+            className="border-none bg-transparent text-center px-0 text-3xl font-bold"
+            error={!!nominalField.errors}
+            {...getInputProps(nominalField, {
+              type: "text",
+              ariaDescribedBy: nominalField.descriptionId,
+            })}
+            prefix="Rp"
+            pattern="[0-9]*"
+            inputMode="decimal"
+            thousandSeparator="."
+            decimalSeparator=","
+            allowNegative={false}
+            maxLength={14}
+            key={nominalField.key}
+          />
+        </div>
+      </Section>
       <Section className="bg-white border border-neutral-200 dark:border-neutral-800 rounded-xl 2xl:rounded-2xl">
         <div className="grid w-full items-center gap-2 py-4">
           <Label htmlFor={nameField.id} className="font-semibold">
@@ -215,10 +241,10 @@ function Type() {
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeWidth="2"
-              className="w-4 h-4 lg:w-5 lg:h-5"
+              className="text-green-500 w-4 h-4 lg:w-5 lg:h-5"
               viewBox="0 0 24 24"
             >
-              <path d="M5 12h14M12 5v14"></path>
+              <path d="M12 17V3M6 11l6 6 6-6M19 21H5"></path>
             </svg>
           </span>
           <span>Pemasukan</span>
@@ -238,10 +264,10 @@ function Type() {
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeWidth="2"
-              className="w-4 h-4 lg:w-5 lg:h-5"
+              className="text-danger-500 w-4 h-4 lg:w-5 lg:h-5"
               viewBox="0 0 24 24"
             >
-              <path d="M5 12h14"></path>
+              <path d="M7 7h10v10M7 17 17 7"></path>
             </svg>
           </span>
           <span>Pengeluaran</span>

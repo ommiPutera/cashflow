@@ -18,7 +18,10 @@ export default function ShellPage({
             </div>
             <main
               role="main"
-              className={cn("px-3 py-6 lg:px-14", props.className)}
+              className={cn(
+                "px-4 py-7 lg:px-14 overflow-scroll",
+                props.className,
+              )}
             >
               {props.children}
             </main>
