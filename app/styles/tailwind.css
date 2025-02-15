@@ -115,6 +115,7 @@
   * {
     -webkit-tap-highlight-color: transparent;
     font-synthesis: none;
+    overscroll-behavior-y: none;
     overscroll-behavior-x: none;
     @apply border-border;
   }

@@ -21,7 +21,7 @@ export default function Navigation({
           to="/sheets"
           className="flex-1 inline-flex justify-start items-center tap-highlight-transparent"
         >
-          <img src="/text-logo.png" alt="" className="h-6 block" />
+          <img src="/text-logo.png" alt="" className="h-7 block" />
         </Link>
         <div
           className={cn(

@@ -88,7 +88,7 @@ const transactions: TTransaction[] = [
   },
 ];
 
-const createBankSchema = z.object({
+const editTransactionSchema = z.object({
   name: z
     .string({ required_error: "Nama transaksi harus diunggah" })
     .max(30, "Maksimal 30 karakter"),
@@ -102,16 +102,16 @@ const createBankSchema = z.object({
 });
 const formId = "edit-transaction";
 export default function Edit() {
-  const fetcher = useFetcher();
   const { name, nominal, notes, sheetId } = useLoaderData<typeof loader>();
-  const actionData = useActionData<typeof action>();
 
+  const fetcher = useFetcher();
+  const actionData = useActionData<typeof action>();
   const [form] = useForm({
     id: formId,
     lastResult: actionData,
-    constraint: getZodConstraint(createBankSchema),
+    constraint: getZodConstraint(editTransactionSchema),
     onValidate: ({ formData }) =>
-      parseWithZod(formData, { schema: createBankSchema }),
+      parseWithZod(formData, { schema: editTransactionSchema }),
     defaultValue: {
       name,
       nominal: nominal?.toString(),
@@ -159,10 +159,11 @@ export default function Edit() {
             <div className="fixed left-0 bottom-0 py-6 px-4 bg-background w-full">
               <div className="max-w-[var(--shell-page-width)] lg:max-w-[406px] mx-auto w-full flex gap-3 justify-between">
                 <Button
-                  variant="outlined-primary"
+                  variant="primary"
                   type="submit"
+                  size="sm"
                   disabled={!form.dirty}
-                  className="w-full border-2 font-bold text-primary-500 border-primary-500 rounded-full"
+                  className="w-full border-2 font-bold text-white border-primary-500 rounded-full"
                 >
                   Ubah
                 </Button>
@@ -176,13 +177,15 @@ export default function Edit() {
 }
 
 function FormEditTransaction() {
-  const { type } = useLoaderData<typeof loader>();
-  const [notesField] = useField("notes");
+  const { name, sheetId, type } = useLoaderData<typeof loader>();
+  const title = sheetId?.replace(/-/g, " ");
+
   const [nameField] = useField("name");
+  const [notesField] = useField("notes");
   const [typeField] = useField("type");
 
   return (
-    <div className="flex flex-col gap-4 h-full mb-52 lg:mb-0">
+    <div className="flex flex-col gap-2 h-full mb-52 lg:mb-0">
       <Nominal />
       <div className="mx-auto w-full max-w-[240px]">
         <p className="text-center text-sm text-neutral-600 mb-4">
@@ -190,8 +193,17 @@ function FormEditTransaction() {
         </p>
       </div>
       <div className="border-b border-neutral-400 border-dashed w-full mb-6"></div>
-      <Section className="bg-white dark:bg-black border bg-neutral-100 border-none rounded-lg">
-        <div className="grid w-full items-center gap-4">
+      <Section className="bg-white border border-neutral-200 dark:border-neutral-800 p-0 lg:p-0 rounded-xl 2xl:rounded-2xl">
+        <div className="h-2 bg-primary-500 w-full"></div>
+        <div className="px-4 py-5 lg:py-6 lg:px-6 flex flex-col">
+          <p className="text-sm text-neutral-500 font-semibold">{title}</p>
+          <p className="text-sm font-bold">
+            Ubah Transaksi: <span className="underline">{name}</span>
+          </p>
+        </div>
+      </Section>
+      <Section className="bg-white border border-neutral-200 dark:border-neutral-800 rounded-xl 2xl:rounded-2xl">
+        <div className="grid w-full items-center gap-2 py-4">
           <Label htmlFor={nameField.id} className="font-semibold">
             Nama Transaksi
           </Label>
@@ -206,16 +218,16 @@ function FormEditTransaction() {
           />
         </div>
       </Section>
-      <Section className="bg-white dark:bg-black border bg-neutral-100 border-none rounded-lg">
-        <div className="grid w-full items-center gap-4">
+      <Section className="bg-white border border-neutral-200 dark:border-neutral-800 rounded-xl 2xl:rounded-2xl">
+        <div className="grid w-full items-center gap-2 py-4">
           <Label htmlFor={typeField.id} className="font-semibold">
             Tipe Transaksi
           </Label>
           <Type type={type ?? ""} />
         </div>
       </Section>
-      <Section className="bg-white dark:bg-black border bg-neutral-100 border-none rounded-lg">
-        <div className="grid w-full items-center gap-4">
+      <Section className="bg-white border border-neutral-200 dark:border-neutral-800 rounded-xl 2xl:rounded-2xl">
+        <div className="grid w-full items-center gap-2 py-4">
           <Label htmlFor={notesField.id} className="font-semibold">
             Catatan
           </Label>
@@ -237,9 +249,11 @@ function FormEditTransaction() {
 }
 function Nominal() {
   const { name, notes, type, sheetId } = useLoaderData<typeof loader>();
+  const title = sheetId?.replace(/-/g, " ");
+
   const [nominalField] = useField("nominal");
   return (
-    <div className="flex flex-col w-full items-center justify-center min-h-[calc(100svh-17.5rem)] lg:min-h-[calc(100svh-34.5rem)] lg:my-32">
+    <div className="flex flex-col w-full items-center justify-center min-h-[calc(100svh-16rem)] lg:min-h-[calc(100svh-32.5rem)] lg:my-32">
       {type === "out" ? (
         <Label
           htmlFor={nominalField.id}
@@ -318,9 +332,9 @@ function Nominal() {
       />
       <Label
         htmlFor={nominalField.id}
-        className="text-sm text-neutral-500 font-medium"
+        className="text-base mt-2 text-primary-600 font-semibold"
       >
-        {sheetId?.split("-").join(" ")}
+        {title}
       </Label>
     </div>
   );

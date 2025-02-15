@@ -10,7 +10,7 @@ import {
 } from "react-router";
 
 import ShellPage, { Divide, Section } from "~/components/shell-page";
-import { Button } from "~/components/ui/button";
+import { ButtonLink } from "~/components/ui/button";
 import { Checkbox } from "~/components/ui/checkbox";
 import { Label } from "~/components/ui/label";
 import { Switch } from "~/components/ui/switch";
@@ -50,6 +50,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
       isExpectationModeActive,
       hasTransactions: transactions.length > 0,
     },
+    sheetId: params.id,
     sum: {
       totalOut,
       totalIn,
@@ -57,6 +58,24 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
     },
   };
 };
+
+// const sheets = [
+//   {
+//     title: "Tagihan Jan 2025",
+//     id: "Tagihan-Jan-2025",
+//     day: "Kamis",
+//   },
+//   {
+//     title: "Tagihan Feb 2025",
+//     id: "Tagihan-Feb-2025",
+//     day: "Rabu",
+//   },
+//   {
+//     title: "Tagihan Des 2024",
+//     id: "Tagihan-Des-2024",
+//     day: "Senin",
+//   },
+// ]
 
 const mockTransactions = [
   {
@@ -142,22 +161,7 @@ function Content() {
     <div className="flex flex-col gap-3 mb-24">
       <SheetSum />
       <AvailableMinus />
-      <InfoMessage />
       <SheetTransactions />
-    </div>
-  );
-}
-
-function InfoMessage() {
-  const {
-    bool: { isExpectationModeActive },
-  } = useLoaderData<typeof loader>();
-  if (isExpectationModeActive) return <></>;
-  return (
-    <div className="mx-auto w-full max-w-[240px]">
-      <p className="text-center text-sm text-neutral-600 mb-6 mt-2">
-        *Selalu jaga Dana Tersedia Anda, demi kelancaran finansial.
-      </p>
     </div>
   );
 }
@@ -170,7 +174,7 @@ function SheetSum() {
       <Section className="bg-white dark:bg-black border border-neutral-200 dark:border-neutral-800 p-0 lg:p-0 rounded-xl 2xl:rounded-2xl">
         <AccordionItem value="item" className="border-none">
           <AccordionTrigger className="px-4 py-5 lg:py-6 lg:px-6 bg-neutral-50 lg:bg-white">
-            <h2 className="text-sm font-bold">Hitungan {title}</h2>
+            <h2 className="text-sm font-bold">Penjumlahan {title}</h2>
           </AccordionTrigger>
           <AccordionContent className="pb-0">
             <Divide>
@@ -215,9 +219,11 @@ function AvailableMinus() {
 }
 
 function SheetTransactions() {
+  const { sheetId } = useLoaderData<typeof loader>();
   return (
     <Section className="bg-white dark:bg-black border border-neutral-200 dark:border-neutral-800 p-0 lg:p-0 rounded-xl 2xl:rounded-2xl">
-      <Button
+      <ButtonLink
+        to={`/sheets/create/${sheetId}`}
         variant="outlined-primary"
         className="!h-14 lg:!h-20 bg-neutral-50 inline-flex gap-2 rounded-t-xl 2xl:rounded-t-2xl rounded-b-none border-t-transparent border-x-transparent border-b"
       >
@@ -236,7 +242,7 @@ function SheetTransactions() {
           <path d="M5 12h14M12 5v14"></path>
         </svg>
         <span>Buat transaksi</span>
-      </Button>
+      </ButtonLink>
       <div className="px-4 py-5 lg:py-6 lg:px-6 bg-neutral-50 lg:bg-white flex justify-between items-center">
         <h2 className="text-sm font-bold">Transaksi</h2>
         <ExpectationMode />
@@ -364,11 +370,11 @@ function Transaction(props: TTransaction) {
     );
   }
   return (
-    <Link key={id} to={`/sheets/edit/${id}`}>
-      <TransactionContentLayout id={id}>
+    <TransactionContentLayout id={id}>
+      <Link key={id} to={`/sheets/edit/${id}`}>
         <TransactionContent {...props} />
-      </TransactionContentLayout>
-    </Link>
+      </Link>
+    </TransactionContentLayout>
   );
 }
 function TransactionCheckbox({

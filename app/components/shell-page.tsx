@@ -44,12 +44,7 @@ export function Section({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
 
 export function Divide({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
-    <div
-      className={cn(
-        "divide-y divide-neutral-200 dark:divide-neutral-800",
-        props.className,
-      )}
-    >
+    <div className={cn("divide-y divide-neutral-200", props.className)}>
       {props.children}
     </div>
   );

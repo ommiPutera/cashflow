@@ -1,6 +1,6 @@
 {
-  "name": "Expend Sheet",
-  "short_name": "Expend Sheet",
+  "name": "Expense Sheet",
+  "short_name": "Expense Sheet",
   "icons": [
     {
       "src": "/android-chrome-192x192.png",
