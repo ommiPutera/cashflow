@@ -39,7 +39,7 @@ function Sheet({ title, id, day }: TSheet) {
     <ButtonLink
       to={`/sheets/${id}`}
       variant="transparent"
-      className="px-4 lg:px-6 active:scale-[0.97] active:bg-transparent h-14 lg:h-16 flex w-full items-center hover:bg-neutral-50 cursor-pointer rounded-none border-x-0"
+      className="px-4 lg:px-6 active:scale-[0.99] active:bg-transparent h-14 lg:h-16 flex w-full items-center hover:bg-neutral-50 cursor-pointer rounded-none border-x-0"
     >
       <div className="flex flex-col w-full">
         <span className="text-sm font-medium text-wrap">{title}</span>

@@ -130,7 +130,7 @@ export default function Edit() {
           <Link
             to={`/sheets/${sheetId}`}
             prefetch="viewport"
-            className="p-0 h-fit active:scale-[0.97] font-normal inline-flex items-center tap-highlight-transparent"
+            className="p-0 h-fit active:scale-[0.99] font-normal inline-flex items-center tap-highlight-transparent"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"

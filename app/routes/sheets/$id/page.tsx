@@ -14,6 +14,12 @@ import { Button } from "~/components/ui/button";
 import { Checkbox } from "~/components/ui/checkbox";
 import { Label } from "~/components/ui/label";
 import { Switch } from "~/components/ui/switch";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "~/components/ui/accordion";
 
 import { toIDR } from "~/utils/currency";
 
@@ -110,7 +116,7 @@ function Header() {
       <Link
         to="/sheets"
         prefetch="viewport"
-        className="p-0 h-fit active:scale-[0.97] font-normal inline-flex items-center tap-highlight-transparent"
+        className="p-0 h-fit active:scale-[0.99] font-normal inline-flex items-center tap-highlight-transparent"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -143,6 +149,10 @@ function Content() {
 }
 
 function InfoMessage() {
+  const {
+    bool: { isExpectationModeActive },
+  } = useLoaderData<typeof loader>();
+  if (isExpectationModeActive) return <></>;
   return (
     <div className="mx-auto w-full max-w-[240px]">
       <p className="text-center text-sm text-neutral-600 mb-6 mt-2">
@@ -155,26 +165,35 @@ function InfoMessage() {
 function SheetSum() {
   const { sum } = useLoaderData<typeof loader>();
   const title = useParams().id?.replace(/-/g, " ");
-
   return (
-    <Section className="bg-white dark:bg-black border border-neutral-200 dark:border-neutral-800 p-0 lg:p-0 rounded-xl 2xl:rounded-2xl">
-      <div className="px-4 py-5 lg:py-6 lg:px-6 bg-neutral-50 border-b lg:border-none lg:bg-white">
-        <h2 className="text-sm font-bold">Hitungan {title}</h2>
-      </div>
-      <Divide>
-        <SumItem
-          title="Pengeluaran"
-          totalAmount={toIDR(sum.totalOut)}
-          from="out"
-        />
-        <SumItem title="Pemasukan" totalAmount={toIDR(sum.totalIn)} from="in" />
-        <SumItem
-          title="Dana Tersedia"
-          totalAmount={toIDR(sum.available)}
-          from="available"
-        />
-      </Divide>
-    </Section>
+    <Accordion type="single" defaultValue="item" collapsible asChild>
+      <Section className="bg-white dark:bg-black border border-neutral-200 dark:border-neutral-800 p-0 lg:p-0 rounded-xl 2xl:rounded-2xl">
+        <AccordionItem value="item" className="border-none">
+          <AccordionTrigger className="px-4 py-5 lg:py-6 lg:px-6 bg-neutral-50 lg:bg-white">
+            <h2 className="text-sm font-bold">Hitungan {title}</h2>
+          </AccordionTrigger>
+          <AccordionContent className="pb-0">
+            <Divide>
+              <SumItem
+                title="Pemasukan"
+                totalAmount={toIDR(sum.totalIn)}
+                from="in"
+              />
+              <SumItem
+                title="Pengeluaran"
+                totalAmount={toIDR(sum.totalOut)}
+                from="out"
+              />
+              <SumItem
+                title="Dana Tersedia"
+                totalAmount={toIDR(sum.available)}
+                from="available"
+              />
+            </Divide>
+          </AccordionContent>
+        </AccordionItem>
+      </Section>
+    </Accordion>
   );
 }
 
@@ -218,7 +237,7 @@ function SheetTransactions() {
         </svg>
         <span>Buat transaksi</span>
       </Button>
-      <div className="px-4 py-5 lg:py-6 lg:px-6 bg-neutral-50 border-b lg:border-none lg:bg-white flex justify-between items-center">
+      <div className="px-4 py-5 lg:py-6 lg:px-6 bg-neutral-50 lg:bg-white flex justify-between items-center">
         <h2 className="text-sm font-bold">Transaksi</h2>
         <ExpectationMode />
       </div>
@@ -308,14 +327,14 @@ function ExpectationSum() {
     <Section className="bg-neutral-50 m-2 dark:bg-black border border-neutral-200 dark:border-neutral-800 p-0 lg:p-0 rounded-xl 2xl:rounded-2xl">
       <Divide>
         <SumItem
-          title="Pengeluaran"
-          totalAmount={toIDR(totalOut || 0)}
-          from="out"
-        />
-        <SumItem
           title="Pemasukan"
           totalAmount={toIDR(totalIn || 0)}
           from="in"
+        />
+        <SumItem
+          title="Pengeluaran"
+          totalAmount={toIDR(totalOut || 0)}
+          from="out"
         />
         <SumItem
           title="Dana Tersedia"
@@ -385,7 +404,7 @@ function TransactionContentLayout({
       htmlFor={id}
       className="px-4 lg:px-6 h-14 lg:h-16 flex w-full items-center hover:bg-neutral-50 cursor-pointer rounded-none border-x-0"
     >
-      <div className="active:scale-[0.97] active:bg-transparent w-full">
+      <div className="active:scale-[0.99] active:bg-transparent w-full">
         {props.children}
       </div>
     </label>
@@ -449,7 +468,7 @@ function ExpectationMode() {
   } = useLoaderData<typeof loader>();
   const [, setSearchParams] = useSearchParams();
   return (
-    <div className="flex items-center space-x-2">
+    <div className="flex items-center space-x-2 active:scale-[0.99]">
       <Switch
         disabled={!hasTransactions}
         id="expectation-mode"
