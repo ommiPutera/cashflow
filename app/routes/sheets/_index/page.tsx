@@ -11,6 +11,27 @@ export default function Sheets() {
   return (
     <ShellPage>
       <div className="flex flex-col gap-3 mb-24">
+        <ButtonLink
+          to="/sheets/create"
+          variant="outlined-primary"
+          className="!h-14 lg:!h-20 bg-neutral-50 inline-flex gap-2 rounded-t-xl 2xl:rounded-t-2xl border"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            fill="none"
+            stroke="currentColor"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="3"
+            className="w-4 h-4 lg:w-5 lg:h-5"
+            viewBox="0 0 24 24"
+          >
+            <path d="M5 12h14M12 5v14"></path>
+          </svg>
+          <span>Buat baru</span>
+        </ButtonLink>
         {data.map((item) => (
           <SheetsLinks key={item.id} {...item} />
         ))}

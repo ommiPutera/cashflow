@@ -44,9 +44,9 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
   };
 };
 
-const createBankSchema = z.object({
+const createTransactionchema = z.object({
   name: z
-    .string({ required_error: "Nama transaksi harus diunggah" })
+    .string({ required_error: "Nama transaksi harus diisi" })
     .max(30, "Maksimal 30 karakter"),
   type: z
     .string({ required_error: "Tipe transaksi harus diisi" })
@@ -66,9 +66,9 @@ export default function Create() {
   const [form] = useForm({
     id: formId,
     lastResult: actionData,
-    constraint: getZodConstraint(createBankSchema),
+    constraint: getZodConstraint(createTransactionchema),
     onValidate: ({ formData }) =>
-      parseWithZod(formData, { schema: createBankSchema }),
+      parseWithZod(formData, { schema: createTransactionchema }),
     shouldValidate: "onInput",
   });
 

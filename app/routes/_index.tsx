@@ -1,7 +1,11 @@
-import type { MetaFunction } from "react-router";
+import type { LoaderFunction, MetaFunction } from "react-router";
 
 export const meta: MetaFunction = () => {
   return [{ title: "Cashflow" }, { name: "", content: "" }];
+};
+
+export const loader: LoaderFunction = async () => {
+  return {};
 };
 
 export default function Index() {
