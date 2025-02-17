@@ -5,26 +5,25 @@ import {
   useFetcher,
 } from "react-router";
 
-import { Footer } from "~/components/footer";
 import { PublicNavigation } from "~/components/navigation";
+import ShellPage from "~/components/shell-page";
+import { Button } from "~/components/ui/button";
+import { Input } from "~/components/ui/input";
+import { Label } from "~/components/ui/label";
 
 import { authenticator } from "~/lib/auth.server";
 import { getSession } from "~/lib/session.server";
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  // Check for existing session.
   const session = await getSession(request.headers.get("Cookie"));
   const user = session.get("user");
 
-  // If the user is already authenticated, redirect to sheets.
   if (user) return redirect("/sheets");
-
   return null;
 }
 
 export async function action({ request }: ActionFunctionArgs) {
   try {
-    // Authenticate the user via TOTP (Form submission).
     return await authenticator.authenticate("TOTP", request);
   } catch (error) {
     console.log("error", error);
@@ -47,45 +46,43 @@ export default function Route() {
   const errors = fetcher.data?.error;
 
   return (
-    <div className="mx-auto flex min-h-screen h-full w-full justify-between items-center flex-col px-6">
-      {/* Navigation */}
+    <ShellPage noNavigation>
       <PublicNavigation />
-
-      {/* Email Form */}
-      <div className="w-full max-w-80 relative bottom-8 flex flex-col justify-center gap-6">
-        <div className="flex w-full flex-col items-center gap-1">
-          <span className="mb-4 h-full text-6xl animate-bounce transition text-center duration-200 hover:-translate-y-1">
-            👋
-          </span>
-          <h1 className="text-center text-2xl font-semibold tracking-tight">
-            Welcome back!
+      <div className="my-28 items-center w-full mx-auto text-center flex flex-col gap-4">
+        <div className="flex flex-col gap-2">
+          <h1 className="text-2xl font-bold tracking-tight text-neutral-800">
+            Log in ke akun kamu
           </h1>
-          <p className="text-center text-base font-normal text-gray-600">
-            Log in or sign in to your account
+          <p className="text-base font-semib max-w-xs text-neutral-600">
+            Selamat datang kembali
           </p>
         </div>
-        <fetcher.Form method="post" className="space-y-2">
-          {errors && <p style={{ color: "red" }}>{errors}</p>}
-          <input
-            type="email"
-            name="email"
-            placeholder="Enter your email"
-            className="h-10 rounded-lg w-full border-2 border-gray-200 bg-transparent px-4 text-sm font-medium placeholder:text-gray-400"
-            required
-            disabled={isSubmitting}
-          />
-          <button
+        <fetcher.Form method="post" className="space-y-2 w-full">
+          <div className="grid w-full items-center gap-2 py-4">
+            <Label htmlFor="email-address" className="font-semibold text-left">
+              Alamat Email
+            </Label>
+            <Input
+              id="email-address"
+              placeholder="Masukkan alamat email"
+              error={errors}
+              type="email"
+              name="email"
+              required
+              disabled={isSubmitting}
+            />
+            {errors && <p className="text-danger-500 text-sm">{errors}</p>}
+          </div>
+          <Button
             type="submit"
-            className="flex h-9 items-center justify-center font-medium bg-gray-800 text-white w-full rounded-lg"
+            variant="primary"
+            className="w-full rounded-full"
             disabled={isSubmitting}
           >
-            {isSubmitting ? "Sending..." : "Continue with Email"}
-          </button>
+            {isSubmitting ? "Tunggu..." : "Lanjutkan dengan Email"}
+          </Button>
         </fetcher.Form>
       </div>
-
-      {/* Footer */}
-      <Footer />
-    </div>
+    </ShellPage>
   );
 }

@@ -52,7 +52,7 @@ authenticator.use(
         // My email sending function.
         // await sendEmail(email, code, magicLink);
         await resend.emails.send({
-          from: "omiputrakarunia@gmail.com",
+          from: "Ommi <onboarding@resend.dev>",
           to: email,
           subject: "Verify",
           html: `<p>OTP <strong>${code}</strong>! <br /> ${magicLink}</p>`,

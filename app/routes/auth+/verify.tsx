@@ -9,9 +9,11 @@ import {
   useLoaderData,
 } from "react-router";
 
-import { Footer } from "~/components/footer";
 import { PublicNavigation } from "~/components/navigation";
 
+import ShellPage from "~/components/shell-page";
+import { Button } from "~/components/ui/button";
+import { Input } from "~/components/ui/input";
 import { authenticator } from "~/lib/auth.server";
 import { getSession } from "~/lib/session.server";
 
@@ -94,55 +96,46 @@ export default function VerifyPage() {
   const errors = fetcher.data?.error || error;
 
   return (
-    <div className="mx-auto flex min-h-screen h-full w-full justify-between items-center flex-col px-6">
-      {/* Navigation */}
+    <ShellPage noNavigation>
       <PublicNavigation />
-
-      <div className="w-full max-w-80 relative bottom-8 flex flex-col justify-center gap-6">
-        <div className="flex w-full flex-col items-center gap-1">
-          <span className="mb-4 h-full text-6xl animate-bounce transition text-center duration-200 hover:-translate-y-1">
-            💌
-          </span>
-          <h1 className="text-center text-2xl font-semibold tracking-tight">
-            Check your email
+      <div className="my-28 items-center w-full mx-auto text-center flex flex-col gap-4">
+        <div className="flex flex-col gap-2">
+          <h1 className="text-2xl font-bold tracking-tight text-neutral-800">
+            Periksa email kamu
           </h1>
-          <p className="text-center text-base font-normal text-gray-600">
+          <p className="text-base font-semib max-w-xs text-neutral-600">
+            {" "}
             {email ? (
-              <>We sent a code at {email}</>
+              <>Kami mengirim kode otp pada {email}</>
             ) : (
-              <>Check your email for a verification code</>
+              <>Periksa email Anda untuk kode verifikasi</>
             )}
           </p>
         </div>
-
-        <fetcher.Form method="post" className="space-y-4">
+        <fetcher.Form method="post" className="space-y-2 w-full">
           <input type="hidden" name="code" value={value} />
-          <input
+          <Input
             minLength={6}
             maxLength={6}
             required
             value={value}
             onChange={(e) => setValue(e.target.value)}
             disabled={isSubmitting}
-            placeholder="Enter the 6-digit code"
-            className="h-10 rounded-lg w-full border-2 border-gray-200 bg-transparent px-4 text-sm font-medium placeholder:text-gray-400"
+            placeholder="Masuk 6 digit kode OTP"
           />
-          <button
+          <Button
             type="submit"
-            className="flex h-9 items-center justify-center disabled:opacity-50 font-medium bg-gray-800 text-white w-full rounded-lg"
+            variant="primary"
+            className="w-full rounded-full"
             disabled={isSubmitting || value.length !== 6}
           >
-            {isSubmitting ? "Verifying..." : "Verify Code"}
-          </button>
+            {isSubmitting ? "Memverifikasi..." : "Verifikasi Kode OTP"}
+          </Button>
         </fetcher.Form>
-
         {errors && <p className="text-sm text-red-500 text-center">{errors}</p>}
-
-        {/* Request New Code. */}
-        {/* Email is already in session, so no input it's required. */}
-        <div className="flex flex-col">
+        <div className="flex flex-col mt-8 gap-2">
           <p className="text-sm text-gray-600 text-center font-normal">
-            Didnt receive the code?
+            Tidak menerima kodenya?
           </p>
           <fetcher.Form
             method="POST"
@@ -150,18 +143,17 @@ export default function VerifyPage() {
             autoComplete="off"
             className="flex w-full flex-col gap-2"
           >
-            <button
+            <Button
+              variant="outlined-primary"
+              size="sm"
               type="submit"
-              className="flex h-8 items-center justify-center font-medium bg-transparent text-gray-800 w-full"
+              className="w-full rounded-full"
             >
-              Request a new code
-            </button>
+              Minta kode baru
+            </Button>
           </fetcher.Form>
         </div>
       </div>
-
-      {/* Footer */}
-      <Footer />
-    </div>
+    </ShellPage>
   );
 }

@@ -4,12 +4,14 @@ import Navigation from "~/components/navigation";
 
 import { cn } from "~/lib/utils";
 
+import { Footer } from "./footer";
+
 export default function ShellPage({
   noNavigation,
   ...props
 }: React.HTMLAttributes<HTMLDivElement> & { noNavigation?: boolean }) {
   return (
-    <div className="mx-auto w-full max-w-[var(--shell-page-width)] min-h-screen mb-12">
+    <div className="mx-auto w-full max-w-[var(--shell-page-width)] mb-12">
       <div className="flex flex-col relative">
         <div className="relative overflow-hidden">
           <div className="h-fit relative">
@@ -19,12 +21,13 @@ export default function ShellPage({
             <main
               role="main"
               className={cn(
-                "px-4 py-7 lg:px-14 overflow-scroll",
+                "px-4 py-7 lg:px-14 overflow-scroll min-h-svh h-full",
                 props.className,
               )}
             >
               {props.children}
             </main>
+            <Footer />
           </div>
         </div>
       </div>

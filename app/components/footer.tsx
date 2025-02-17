@@ -4,19 +4,18 @@ export function Footer() {
       <footer className="flex min-h-[80px] items-center justify-center">
         <div className="flex items-center">
           <p className="flex items-center whitespace-nowrap text-center text-sm font-medium text-gray-600">
-            Source code is available on&nbsp;
+            Expense Sheet by
             <a
               href="https://github.com/dev-xo/remix-auth-totp"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center font-semibold text-gray-800 transition duration-200 hover:-translate-y-1"
+              className="flex items-center ml-1 font-semibold text-gray-800 transition duration-200 hover:-translate-y-1"
             >
-              Github
+              Ommi Putera
             </a>
           </p>
         </div>
       </footer>
-      <div className="blobs" />
     </>
   );
 }
