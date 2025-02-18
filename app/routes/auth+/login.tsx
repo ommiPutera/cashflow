@@ -1,3 +1,4 @@
+import { User } from "@prisma/client";
 import {
   ActionFunctionArgs,
   LoaderFunctionArgs,
@@ -16,7 +17,7 @@ import { getSession } from "~/lib/session.server";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const session = await getSession(request.headers.get("Cookie"));
-  const user = session.get("user");
+  const user: User = session.get("user");
 
   if (user) return redirect("/sheets");
   return null;

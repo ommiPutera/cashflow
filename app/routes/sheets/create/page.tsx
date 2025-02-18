@@ -1,13 +1,4 @@
 import {
-  ActionFunctionArgs,
-  Link,
-  MetaFunction,
-  useActionData,
-  useFetcher,
-} from "react-router";
-import { z } from "zod";
-
-import {
   FormProvider,
   getFormProps,
   getInputProps,
@@ -15,12 +6,25 @@ import {
   useForm,
 } from "@conform-to/react";
 import { getZodConstraint, parseWithZod } from "@conform-to/zod";
+import { User } from "@prisma/client";
+
+import {
+  ActionFunctionArgs,
+  Link,
+  MetaFunction,
+  useActionData,
+  useFetcher,
+} from "react-router";
+import { dataWithError, redirectWithSuccess } from "remix-toast";
+import { z } from "zod";
+import { ErrorMessage } from "~/components/errors";
 
 import ShellPage, { Section } from "~/components/shell-page";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 
+import { getSession } from "~/lib/session.server";
 import { createSheet } from "~/utils/sheet.server";
 
 export const meta: MetaFunction = () => {
@@ -30,15 +34,22 @@ export const meta: MetaFunction = () => {
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
+
   const title = formData.get("title");
 
-  if (typeof title === "string" && title) {
-    const newSheet = await createSheet(title, "test");
-    console.log("newSheet: ", newSheet);
-  }
+  const submission = parseWithZod(formData, { schema: createSheetSchema });
+  if (submission.status !== "success") return submission.reply();
 
-  console.log("title: ", title);
-  return {};
+  const session = await getSession(request.headers.get("Cookie"));
+  const user: User = session.get("user");
+
+  if (typeof title === "string" && title) {
+    const newSheet = await createSheet(title, user.id);
+    if (newSheet.message !== "ok") {
+      return dataWithError(submission.reply(), newSheet.message);
+    }
+  }
+  return redirectWithSuccess("/sheets", "Berhasil");
 };
 
 const createSheetSchema = z.object({
@@ -88,7 +99,7 @@ export default function Create() {
           <Section className="bg-white border border-neutral-200 dark:border-neutral-800 p-0 lg:p-0 rounded-xl 2xl:rounded-2xl">
             <div className="h-2 bg-primary-500 w-full"></div>
             <div className="px-4 py-5 lg:py-6 lg:px-6 flex justify-between items-center">
-              <h2 className="text-sm font-bold">Buat Sheet: Baru</h2>
+              <h2 className="text-sm font-bold">Buat Lembar: Baru</h2>
             </div>
           </Section>
           <fetcher.Form
@@ -132,6 +143,9 @@ function FormCreateTransaction() {
             })}
             key={titleField.key}
           />
+          {titleField.errors && (
+            <ErrorMessage>{titleField.errors}</ErrorMessage>
+          )}
         </div>
       </Section>
     </div>

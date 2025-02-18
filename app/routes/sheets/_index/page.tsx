@@ -1,22 +1,90 @@
-import { type MetaFunction } from "react-router";
+import { User, type Sheet } from "@prisma/client";
 
-import ShellPage, { Divide, Section } from "~/components/shell-page";
+import {
+  LoaderFunctionArgs,
+  useLoaderData,
+  type MetaFunction,
+} from "react-router";
+import { format } from "date-fns";
+import { id } from "date-fns/locale";
+
 import Navigation from "~/components/navigation";
+import ShellPage, { Divide, Section } from "~/components/shell-page";
 import { ButtonLink } from "~/components/ui/button";
+import { getSession } from "~/lib/session.server";
+
+import { getGroupedSheets, getSheets } from "~/utils/sheet.server";
 
 export const meta: MetaFunction = () => {
-  return [{ title: "Sheets" }, { name: "", content: "" }];
+  return [{ title: "Lembaran" }, { name: "", content: "" }];
 };
+
+export async function loader({ request }: LoaderFunctionArgs) {
+  const session = await getSession(request.headers.get("Cookie"));
+  const user: User = session.get("user");
+
+  const groupedSheets = await getGroupedSheets(user.id);
+  const sheets = await getSheets(user.id);
+  return { groupedSheets, sheets };
+}
 
 export default function Sheets() {
   return (
     <ShellPage>
       <Navigation />
       <div className="flex flex-col gap-3 my-6 lg:my-12 mx-auto">
+        <CreateSheet />
+        <EmptyState />
+        <GroupedSheet />
+      </div>
+    </ShellPage>
+  );
+}
+
+function CreateSheet() {
+  const { sheets } = useLoaderData<typeof loader>();
+  if (!sheets.length) return <></>;
+  return (
+    <ButtonLink
+      to="/sheets/create"
+      className="!h-16 lg:!h-24 w-fit lg:px-12 lg:mb-12 shadow-md fixed bottom-6 right-6 lg:bottom-12 lg:right-12 bg-neutral-50 gap-2 rounded-2xl 2xl:rounded-4xl border inline-flex"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="3"
+        viewBox="0 0 24 24"
+      >
+        <path d="M5 12h14M12 5v14"></path>
+      </svg>
+      <span className="text-sm font-bold lg:text-base lg:font-semibold">
+        Buat baru
+      </span>
+    </ButtonLink>
+  );
+}
+
+function EmptyState() {
+  const { sheets } = useLoaderData<typeof loader>();
+  if (sheets.length) return <></>;
+  return (
+    <Section className="bg-white dark:bg-black border border-neutral-200 dark:border-neutral-800 p-0 lg:p-0 rounded-xl 2xl:rounded-2xl">
+      <div className="my-28 items-center w-full mx-auto text-center flex flex-col gap-3 max-w-xs lg:max-w-sm">
+        <h1 className="text-2xl font-semibold tracking-tight text-neutral-500">
+          Lembaran kosong
+        </h1>
+        <p className="text-base font-medium text-neutral-400">
+          Buat lembar pengeluaran baru, dan semuanya akan muncul di sini
+        </p>
         <ButtonLink
           to="/sheets/create"
           variant="outlined-primary"
-          className="!h-14 lg:!h-20 w-full lg:w-fit lg:px-12 lg:mb-12 bg-neutral-50 inline-flex gap-2 rounded-t-xl 2xl:rounded-t-2xl border"
+          className="w-fit rounded-full mt-4"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -27,85 +95,90 @@ export default function Sheets() {
             strokeLinecap="round"
             strokeLinejoin="round"
             strokeWidth="3"
-            className="w-4 h-4 lg:w-5 lg:h-5"
             viewBox="0 0 24 24"
           >
             <path d="M5 12h14M12 5v14"></path>
           </svg>
           <span>Buat baru</span>
         </ButtonLink>
-        {data.map((item) => (
-          <SheetsLinks key={item.id} {...item} />
-        ))}
       </div>
-    </ShellPage>
+    </Section>
   );
 }
 
-function SheetsLinks({ title, sheets }: TData) {
+function GroupedSheet() {
+  const { groupedSheets } = useLoaderData<typeof loader>();
+  const groups = [
+    {
+      propKey: "today",
+      title: "Hari ini",
+    },
+    {
+      propKey: "yesterday",
+      title: "Kemarin",
+    },
+    {
+      propKey: "last30Days",
+      title: "30 hari sebelumnya",
+    },
+    {
+      propKey: "more",
+    },
+  ];
+  return groups.map((group) => {
+    if (!groupedSheets[group.propKey as keyof typeof groupedSheets].length) {
+      return <></>;
+    }
+    return (
+      <SheetsLinks
+        key={group.propKey}
+        title={group.title}
+        sheets={groupedSheets[group.propKey as keyof typeof groupedSheets]}
+      />
+    );
+  });
+}
+type TGroupSheet = {
+  title?: string;
+  sheets: Sheet[];
+};
+function SheetsLinks({ title, sheets }: TGroupSheet) {
   return (
     <Section className="bg-white dark:bg-black border border-neutral-200 dark:border-neutral-800 p-0 lg:p-0 rounded-xl 2xl:rounded-2xl">
-      <div className="px-4 py-3 lg:py-4 lg:px-6 bg-neutral-50 border-b lg:border-none lg:bg-white">
-        <h2 className="text-sm font-bold">{title}</h2>
-      </div>
+      {title && (
+        <div className="px-4 py-3 lg:py-4 lg:px-6 bg-neutral-50 border-b lg:border-none lg:bg-white">
+          <h2 className="text-sm font-bold">{title}</h2>
+        </div>
+      )}
       <Divide>
         {sheets.map((sheet) => (
-          <Sheet key={sheet.id} {...sheet} />
+          <SheetItem key={sheet.id} {...sheet} />
         ))}
       </Divide>
     </Section>
   );
 }
-
-function Sheet({ title, id, day }: TSheet) {
+function SheetItem({ title, titleId, createdAt }: Sheet) {
+  const date = format(new Date(createdAt), "MM/dd/yyyy", {
+    locale: id,
+  });
+  const time = format(new Date(createdAt), "hh:mm:ss", {
+    locale: id,
+  });
   return (
     <ButtonLink
-      to={`/sheets/${id}`}
+      to={`/sheets/${titleId}`}
       variant="transparent"
       className="px-4 lg:px-6 active:scale-[0.99] active:bg-transparent h-14 lg:h-16 flex w-full items-center hover:bg-neutral-50 cursor-pointer rounded-none border-x-0"
     >
       <div className="flex flex-col w-full">
         <span className="text-sm font-medium text-wrap">{title}</span>
         <span className="text-sm font-normal text-neutral-500 text-wrap">
-          {day}
+          {date}
+          <br />
+          {time}
         </span>
       </div>
     </ButtonLink>
   );
 }
-
-type TData = {
-  id: string;
-  title: string;
-  sheets: TSheet[];
-};
-type TSheet = { title: string; id: string; day: string };
-const data: TData[] = [
-  {
-    id: "123abc",
-    title: "Kemarin",
-    sheets: [
-      {
-        title: "Tagihan Jan 2025",
-        id: "Tagihan-Jan-2025",
-        day: "Kamis",
-      },
-      {
-        title: "Tagihan Feb 2025",
-        id: "Tagihan-Feb-2025",
-        day: "Rabu",
-      },
-    ],
-  },
-  {
-    id: "321cba",
-    title: "30 hari sebelumnya",
-    sheets: [
-      {
-        title: "Tagihan Des 2024",
-        id: "Tagihan-Des-2024",
-        day: "Senin",
-      },
-    ],
-  },
-];

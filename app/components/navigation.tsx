@@ -6,25 +6,27 @@ export default function Navigation() {
   const location = useLocation();
   const tabs = [
     {
-      title: "Sheets",
+      title: "Beranda",
       to: "/sheets",
     },
     {
-      title: "Pengaturan",
-      to: "/setting",
+      title: "Akun",
+      to: "/account",
     },
   ];
   return (
     <>
       <nav className="fixed top-0 w-full bg-background left-0 flex items-center justify-center z-20 shadow-sm border-b lg:border-b-transparent lg:shadow-none h-[var(--header-height-mobile)] lg:h-[var(--header-height)]">
         <div className="max-w-screen-2xl lg:px-14 flex flex-col lg:flex-row items-center w-full h-full justify-between lg:gap-2 mx-auto px-6">
-          <Link
-            to="/"
-            prefetch="intent"
-            className="flex-1 lg:flex-initial inline-flex justify-start items-center tap-highlight-transparent w-fit h-full"
-          >
-            <img src="/text-logo.png" alt="" className="h-7 block" />
-          </Link>
+          <div className="flex-1 inline-flex">
+            <Link
+              to="/"
+              prefetch="intent"
+              className="flex justify-start items-center tap-highlight-transparent w-fit h-full"
+            >
+              <img src="/text-logo.png" alt="" className="h-7 block" />
+            </Link>
+          </div>
           <div
             className={cn(
               "flex flex-1 justify-center items-center lg:justify-end w-full h-full",
@@ -37,17 +39,19 @@ export default function Navigation() {
                   to={tab.to}
                   key={tab.title}
                   className={cn(
-                    "h-full w-full lg:w-fit lg:px-8 border-b-[1.5px] border-neutral-100 inline-flex justify-center items-center lg:border-transparent",
-                    isMatch && "border-primary-500",
+                    "h-full w-full lg:w-fit lg:px-4 border-b-[1.5px] border-neutral-100 inline-flex justify-center items-center lg:border-transparent",
+                    isMatch && "border-neutral-950",
                   )}
                 >
                   <div
                     className={cn(
-                      "flex gap-1 items-center text-neutral-400",
-                      isMatch && "text-primary-500",
+                      "flex gap-1 items-center text-neutral-300",
+                      isMatch && "text-neutral-950",
                     )}
                   >
-                    <span className="text-sm font-bold">{tab.title}</span>
+                    <span className="text-sm font-bold lg:text-base lg:font-semibold">
+                      {tab.title}
+                    </span>
                   </div>
                 </Link>
               );

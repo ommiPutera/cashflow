@@ -3,17 +3,24 @@ import { subDays, startOfDay } from "date-fns";
 
 const prisma = new PrismaClient();
 
-export async function getSheets() {
+type TGroupSheets = {
+  today: Sheet[];
+  yesterday: Sheet[];
+  last30Days: Sheet[];
+  more: Sheet[];
+};
+export async function getGroupedSheets(userId: string): Promise<TGroupSheets> {
   const now = new Date();
   const todayStart = startOfDay(now);
   const yesterdayStart = subDays(todayStart, 1);
   const last30DaysStart = subDays(todayStart, 30);
 
   const sheets = await prisma.sheet.findMany({
+    where: { userId },
     orderBy: { createdAt: "desc" },
   });
 
-  const groupedSheets: Record<string, Sheet[]> = {
+  const groupedSheets: TGroupSheets = {
     today: [],
     yesterday: [],
     last30Days: [],
@@ -37,23 +44,39 @@ export async function getSheets() {
   return groupedSheets;
 }
 
+export async function getSheets(userId: string): Promise<Sheet[]> {
+  const sheets = await prisma.sheet.findMany({
+    where: { userId },
+    orderBy: { createdAt: "desc" },
+  });
+  return sheets;
+}
+
 export async function createSheet(
   title: string,
   userId: string,
-): Promise<Sheet | string> {
+): Promise<{ data: Sheet | null; message: string }> {
   const existingSheet = await prisma.sheet.findFirst({
     where: { title, userId },
   });
   if (existingSheet) {
-    return "Sheet dengan judul ini sudah ada..";
+    return {
+      data: null,
+      message: "Sheet dengan judul ini sudah ada..",
+    };
   }
-
   const newSheet = await prisma.sheet.create({
     data: {
       title: title,
+      titleId: generateTitleId(title),
       userId,
     },
   });
-
-  return newSheet;
+  return {
+    data: newSheet,
+    message: "ok",
+  };
+}
+function generateTitleId(title: string): string {
+  return title.split(" ").join("-");
 }

@@ -1,6 +1,7 @@
-import { useState } from "react";
-
 import { Cookie } from "@mjackson/headers";
+import { User } from "@prisma/client";
+
+import { useState } from "react";
 import {
   ActionFunctionArgs,
   LoaderFunctionArgs,
@@ -10,10 +11,10 @@ import {
 } from "react-router";
 
 import { PublicNavigation } from "~/components/navigation";
-
 import ShellPage from "~/components/shell-page";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
+
 import { authenticator } from "~/lib/auth.server";
 import { getSession } from "~/lib/session.server";
 
@@ -25,7 +26,7 @@ import { getSession } from "~/lib/session.server";
 export async function loader({ request }: LoaderFunctionArgs) {
   // Check for existing session.
   const session = await getSession(request.headers.get("Cookie"));
-  const user = session.get("user");
+  const user: User = session.get("user");
 
   // If the user is already authenticated, redirect to sheets.
   if (user) return redirect("/sheets");
