@@ -1,33 +1,41 @@
+import { type Transaction, type User } from "@prisma/client";
 import React from "react";
 import {
   ActionFunctionArgs,
   Link,
   LoaderFunctionArgs,
   MetaFunction,
+  redirect,
+  useFetcher,
   useLoaderData,
   useParams,
   useSearchParams,
 } from "react-router";
 
 import ShellPage, { Divide, Section } from "~/components/shell-page";
-import { Button, ButtonLink } from "~/components/ui/button";
-import { Checkbox } from "~/components/ui/checkbox";
-import { Label } from "~/components/ui/label";
-import { Switch } from "~/components/ui/switch";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "~/components/ui/accordion";
-
-import { toIDR } from "~/utils/currency";
+import { Button, ButtonLink } from "~/components/ui/button";
+import { Checkbox } from "~/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
+import { Label } from "~/components/ui/label";
+import { Switch } from "~/components/ui/switch";
+
+import { toIDR } from "~/utils/currency";
+import { deleteSheet, getSheet } from "~/utils/sheet.server";
+
+import { getSession } from "~/lib/session.server";
 
 export const meta: MetaFunction = ({ params }) => {
   const title = params.id?.split("-").join(" ");
@@ -36,7 +44,14 @@ export const meta: MetaFunction = ({ params }) => {
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
-  console.log("formData: ", JSON.stringify(formData));
+  const id = formData.get("id");
+
+  const session = await getSession(request.headers.get("Cookie"));
+  const user: User = session.get("user");
+  if (typeof id !== "string" || !user) return {};
+  const sheet = await deleteSheet(id, user.id);
+  if (sheet) return redirect("/sheets");
+
   return {};
 };
 
@@ -44,18 +59,28 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const url = new URL(request.url);
   const isExpectationModeActive =
     url.searchParams.get("expectation-mode") === "1";
-  const transactions = mockTransactions.filter(
-    (trx) => trx.sheetId === params.id,
-  );
+
+  const session = await getSession(request.headers.get("Cookie"));
+  const user: User = session.get("user");
+  const sheet = await getSheet(params.id || "", user.id);
+  if (!sheet) return redirect("/sheets");
+
+  const transactions: Transaction[] = [];
+
+  const isPinned = true;
 
   const totalOut = 100000;
   const totalIn = 250000;
   return {
     transactions,
+    flag: {
+      isPinned,
+    },
     bool: {
       isExpectationModeActive,
       hasTransactions: transactions.length > 0,
     },
+    sheet,
     sheetId: params.id,
     sum: {
       totalOut,
@@ -64,67 +89,6 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
     },
   };
 };
-
-// const sheets = [
-//   {
-//     title: "Tagihan Jan 2025",
-//     id: "Tagihan-Jan-2025",
-//     day: "Kamis",
-//   },
-//   {
-//     title: "Tagihan Feb 2025",
-//     id: "Tagihan-Feb-2025",
-//     day: "Rabu",
-//   },
-//   {
-//     title: "Tagihan Des 2024",
-//     id: "Tagihan-Des-2024",
-//     day: "Senin",
-//   },
-// ]
-
-const mockTransactions = [
-  {
-    id: "1",
-    sheetId: "Tagihan-Jan-2025",
-    name: "Kredivo",
-    type: "out",
-    nominal: 890000,
-    notes: null,
-  },
-  {
-    id: "2",
-    sheetId: "Tagihan-Jan-2025",
-    name: "Traveloka",
-    type: "out",
-    nominal: 1780000,
-    notes: "Lunas",
-  },
-  {
-    id: "3",
-    sheetId: "Tagihan-Jan-2025",
-    name: "Transfer",
-    type: "in",
-    nominal: 90000000,
-    notes: "Sudah diterima",
-  },
-  {
-    id: "4",
-    sheetId: "Tagihan-Des-2024",
-    name: "Bayar listrik",
-    type: "out",
-    nominal: 201500,
-    notes: null,
-  },
-  {
-    id: "5",
-    sheetId: "Tagihan-Feb-2025",
-    name: "Jajan Indomaret",
-    type: "out",
-    nominal: 11200,
-    notes: null,
-  },
-];
 
 export default function Sheet() {
   return (
@@ -179,27 +143,71 @@ function Header() {
             </svg>
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-[160px]">
-          <DropdownMenuItem className="text-danger-500 hover:!text-danger-500 hover:!bg-red-50">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              fill="none"
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              className="lucide lucide-trash-2"
-              viewBox="0 0 24 24"
-            >
-              <path d="M3 6h18M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2M10 11v6M14 11v6"></path>
-            </svg>
-            <span>Hapus</span>
-          </DropdownMenuItem>
+        <DropdownMenuContent align="end" className="w-[240px]">
+          <DropdownMenuGroup>
+            <PinnedSheet />
+            <DropdownMenuSeparator />
+            <DeleteSheet />
+          </DropdownMenuGroup>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
+  );
+}
+
+function PinnedSheet() {
+  const {
+    flag: { isPinned },
+  } = useLoaderData<typeof loader>();
+  return (
+    <DropdownMenuItem className="justify-between">
+      <span>{isPinned ? "Lepas Pin" : "Pin"}</span>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+        viewBox="0 0 24 24"
+      >
+        {isPinned ? (
+          <path d="M12 17v5M15 9.34V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H7.89M2 2l20 20M9 9v1.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h11"></path>
+        ) : (
+          <path d="M12 17v5M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"></path>
+        )}
+      </svg>
+    </DropdownMenuItem>
+  );
+}
+
+function DeleteSheet() {
+  const { sheet } = useLoaderData<typeof loader>();
+  const fetcher = useFetcher();
+  return (
+    <DropdownMenuItem
+      className="text-danger-500 hover:!text-danger-500 hover:!bg-red-50 justify-between"
+      onClick={() =>
+        fetcher.submit({ id: sheet.id }, { action: ".", method: "post" })
+      }
+    >
+      <span>Hapus</span>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+        viewBox="0 0 24 24"
+      >
+        <path d="M3 6h18M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2M10 11v6M14 11v6"></path>
+      </svg>
+    </DropdownMenuItem>
   );
 }
 
@@ -399,7 +407,7 @@ function ExpectationSum() {
   );
 }
 
-function Transaction(props: TTransaction) {
+function Transaction(props: Transaction) {
   const {
     bool: { isExpectationModeActive },
   } = useLoaderData<typeof loader>();
@@ -463,7 +471,7 @@ function TransactionContentLayout({
     </label>
   );
 }
-function TransactionContent({ type, nominal, name }: TTransaction) {
+function TransactionContent({ type, nominal, name }: Transaction) {
   return (
     <div className="flex justify-between items-center w-full flex-wrap">
       <div className="flex items-center gap-3">

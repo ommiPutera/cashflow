@@ -1,4 +1,5 @@
-import { PrismaClient, Sheet } from "@prisma/client";
+import { PrismaClient, type Sheet } from "@prisma/client";
+
 import { subDays, startOfDay } from "date-fns";
 
 const prisma = new PrismaClient();
@@ -16,7 +17,7 @@ export async function getGroupedSheets(userId: string): Promise<TGroupSheets> {
   const last30DaysStart = subDays(todayStart, 30);
 
   const sheets = await prisma.sheet.findMany({
-    where: { userId },
+    where: { userId, deletedAt: null },
     orderBy: { createdAt: "desc" },
   });
 
@@ -46,7 +47,15 @@ export async function getGroupedSheets(userId: string): Promise<TGroupSheets> {
 
 export async function getSheets(userId: string): Promise<Sheet[]> {
   const sheets = await prisma.sheet.findMany({
-    where: { userId },
+    where: { userId, deletedAt: null },
+    orderBy: { createdAt: "desc" },
+  });
+  return sheets;
+}
+
+export async function getDeletedSheets(userId: string): Promise<Sheet[]> {
+  const sheets = await prisma.sheet.findMany({
+    where: { userId, deletedAt: { not: null } },
     orderBy: { createdAt: "desc" },
   });
   return sheets;
@@ -68,8 +77,9 @@ export async function createSheet(
   const newSheet = await prisma.sheet.create({
     data: {
       title: title,
-      titleId: generateTitleId(title),
+      titleId: title.split(" ").join("-"),
       userId,
+      deletedAt: null,
     },
   });
   return {
@@ -77,6 +87,31 @@ export async function createSheet(
     message: "ok",
   };
 }
-function generateTitleId(title: string): string {
-  return title.split(" ").join("-");
+
+export async function getSheet(
+  titleId: string,
+  userId: string,
+): Promise<Sheet | null> {
+  const sheet = await prisma.sheet.findUnique({
+    where: { titleId, userId },
+  });
+  if (!sheet) {
+    return null;
+  }
+  return sheet;
+}
+
+export async function deleteSheet(
+  id: string,
+  userId: string,
+): Promise<Sheet | null> {
+  const existingSheet = await prisma.sheet.findUnique({
+    where: { id, userId },
+  });
+  if (!existingSheet) return null;
+
+  return await prisma.sheet.update({
+    where: { id, userId },
+    data: { deletedAt: new Date() },
+  });
 }

@@ -48,9 +48,8 @@ function CreateSheet() {
   return (
     <ButtonLink
       to="/sheets/create"
-      className="!h-16 lg:!h-20 w-fit lg:px-12 lg:mb-12 overflow-hidden shadow-md fixed bottom-12 right-6 lg:bottom-12 lg:right-12 bg-neutral-50 gap-2 rounded-2xl 2xl:rounded-4xl border inline-flex"
+      className="!h-16 lg:!h-20 w-fit px-6 lg:mb-12 text-primary-500 overflow-hidden shadow-sm [&_svg]:size-4 fixed bottom-12 right-6 lg:bottom-12 lg:right-12 bg-neutral-50 gap-3 rounded-2xl 2xl:rounded-4xl border inline-flex"
     >
-      <div className="h-2 w-full top-0 bg-primary-500 absolute"></div>
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="24"
@@ -59,14 +58,12 @@ function CreateSheet() {
         stroke="currentColor"
         strokeLinecap="round"
         strokeLinejoin="round"
-        strokeWidth="3"
+        strokeWidth="2"
         viewBox="0 0 24 24"
       >
         <path d="M5 12h14M12 5v14"></path>
       </svg>
-      <span className="text-sm font-bold lg:text-base lg:font-semibold">
-        Buat Lembar
-      </span>
+      <span className="text-sm font-medium">Buat Lembar</span>
     </ButtonLink>
   );
 }

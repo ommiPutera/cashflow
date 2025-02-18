@@ -37,7 +37,7 @@ export default function Navigation() {
             )}
           >
             {tabs.map((tab) => {
-              const isMatch = location.pathname === tab.to;
+              const isMatch = location.pathname.startsWith(tab.to);
               return (
                 <Link
                   to={tab.to}

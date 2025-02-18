@@ -10,21 +10,22 @@ import { User } from "@prisma/client";
 
 import {
   ActionFunctionArgs,
+  Form,
   Link,
   MetaFunction,
   useActionData,
-  useFetcher,
 } from "react-router";
 import { dataWithError, redirectWithSuccess } from "remix-toast";
 import { z } from "zod";
-import { ErrorMessage } from "~/components/errors";
 
+import { ErrorMessage } from "~/components/errors";
 import ShellPage, { Section } from "~/components/shell-page";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 
 import { getSession } from "~/lib/session.server";
+
 import { createSheet } from "~/utils/sheet.server";
 
 export const meta: MetaFunction = () => {
@@ -34,7 +35,6 @@ export const meta: MetaFunction = () => {
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
-
   const title = formData.get("title");
 
   const submission = parseWithZod(formData, { schema: createSheetSchema });
@@ -59,7 +59,6 @@ const createSheetSchema = z.object({
 });
 const formId = "create-sheet";
 export default function Create() {
-  const fetcher = useFetcher();
   const actionData = useActionData<typeof action>();
   const [form] = useForm({
     id: formId,
@@ -102,7 +101,7 @@ export default function Create() {
               <h2 className="text-sm font-bold">Buat Lembar Baru</h2>
             </div>
           </Section>
-          <fetcher.Form
+          <Form
             action="."
             method="post"
             className="flex relative flex-col gap-3 h-full pb-32"
@@ -117,7 +116,7 @@ export default function Create() {
             >
               Buat
             </Button>
-          </fetcher.Form>
+          </Form>
         </div>
       </ShellPage>
     </FormProvider>

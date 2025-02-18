@@ -10,12 +10,12 @@ import Navigation from "~/components/navigation";
 import ShellPage, { Divide, Section } from "~/components/shell-page";
 import { ButtonLink } from "~/components/ui/button";
 
-import { getSheets } from "~/utils/sheet.server";
+import { getDeletedSheets, getSheets } from "~/utils/sheet.server";
 
 import { getSession } from "~/lib/session.server";
 
 export const meta: MetaFunction = () => {
-  return [{ title: "Account" }, { name: "", content: "" }];
+  return [{ title: "Folder" }, { name: "", content: "" }];
 };
 
 export async function loader({ request }: LoaderFunctionArgs) {
@@ -23,11 +23,12 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const user: User = session.get("user");
 
   const sheetsCount = (await getSheets(user.id)).length;
-  return { sheetsCount };
+  const deletedSheets = (await getDeletedSheets(user.id)).length;
+  return { sheetsCount, deletedSheets };
 }
 
 export default function Index() {
-  const { sheetsCount } = useLoaderData<typeof loader>();
+  const { sheetsCount, deletedSheets } = useLoaderData<typeof loader>();
   return (
     <ShellPage>
       <Navigation />
@@ -66,7 +67,7 @@ export default function Index() {
               </span>
             </ButtonLink>
             <ButtonLink
-              to="/sheets"
+              to="/folder/deleted"
               variant="transparent"
               className="px-4 lg:px-6 active:scale-[0.99] [&_svg]:size-5 active:bg-transparent h-14 lg:h-16 flex w-full items-center hover:bg-primary-50 cursor-pointer rounded-none border-x-0"
             >
@@ -89,7 +90,7 @@ export default function Index() {
                 </span>
               </div>
               <span className="text-sm font-normal text-neutral-500 text-wrap">
-                0
+                {deletedSheets}
               </span>
             </ButtonLink>
           </Divide>

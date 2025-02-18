@@ -23,10 +23,13 @@ model User {
 }
 
 model Sheet {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  title     String   @unique
-  titleId   String   @unique
-  createdAt DateTime @default(now())
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  title     String    @unique
+  titleId   String    @unique
+  createdAt DateTime  @default(now())
+  deletedAt DateTime?
+
+  pinned Boolean @default(false)
 
   transactions Transaction[]
 
