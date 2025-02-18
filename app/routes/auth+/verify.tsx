@@ -18,27 +18,18 @@ import { Input } from "~/components/ui/input";
 import { authenticator } from "~/lib/auth.server";
 import { getSession } from "~/lib/session.server";
 
-/**
- * Loader function that checks if the user is already authenticated.
- * - If the user is already authenticated, redirect to sheets.
- * - If the user is not authenticated, check if the intent is to verify via magic-link URL.
- */
 export async function loader({ request }: LoaderFunctionArgs) {
-  // Check for existing session.
   const session = await getSession(request.headers.get("Cookie"));
   const user: User = session.get("user");
 
-  // If the user is already authenticated, redirect to sheets.
   if (user) return redirect("/sheets");
 
-  // Get the TOTP cookie and the token from the URL.
   const cookie = new Cookie(request.headers.get("Cookie") || "");
   const totpCookie = cookie.get("_totp");
 
   const url = new URL(request.url);
   const token = url.searchParams.get("t");
 
-  // Authenticate the user via magic-link URL.
   if (token) {
     try {
       return await authenticator.authenticate("TOTP", request);
@@ -49,14 +40,12 @@ export async function loader({ request }: LoaderFunctionArgs) {
     }
   }
 
-  // Get the email from the TOTP cookie.
   let email = null;
   if (totpCookie) {
     const params = new URLSearchParams(totpCookie);
     email = params.get("email");
   }
 
-  // If no email is found, redirect to login.
   if (!email) return redirect("/auth/login");
 
   return { email };

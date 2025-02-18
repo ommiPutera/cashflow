@@ -24,7 +24,7 @@ export default function Navigation() {
         <div className="max-w-screen-2xl lg:px-14 flex flex-col lg:flex-row items-center w-full h-full justify-between lg:gap-2 mx-auto">
           <div className="flex-1 inline-flex">
             <Link
-              to="/"
+              to="/sheets"
               prefetch="intent"
               className="flex justify-start items-center tap-highlight-transparent w-fit h-full"
             >
@@ -44,14 +44,14 @@ export default function Navigation() {
                   key={tab.title}
                   prefetch="intent"
                   className={cn(
-                    "h-full w-full lg:w-fit lg:px-6 cursor-pointer border-b-[1.5px] border-neutral-100 inline-flex justify-center items-center lg:border-transparent",
-                    isMatch && "border-neutral-950",
+                    "h-full w-full lg:w-fit lg:px-6 cursor-pointer border-b-[3px] border-white inline-flex justify-center items-center lg:border-transparent",
+                    isMatch && "border-primary-500",
                   )}
                 >
                   <div
                     className={cn(
                       "flex gap-1 items-center text-neutral-500",
-                      isMatch && "text-neutral-950",
+                      isMatch && "text-primary-500",
                     )}
                   >
                     <span className="text-sm font-bold lg:text-base lg:font-semibold">

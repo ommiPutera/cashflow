@@ -54,9 +54,6 @@ export default function Route() {
           <h1 className="text-2xl font-bold tracking-tight text-neutral-800">
             Log in ke akun kamu
           </h1>
-          <p className="text-base font-medium text-neutral-600">
-            Selamat datang kembali
-          </p>
         </div>
         <fetcher.Form method="post" className="w-full">
           <div className="grid w-full items-center gap-2 py-4">

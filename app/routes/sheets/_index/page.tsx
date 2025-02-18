@@ -58,12 +58,12 @@ function CreateSheet() {
         stroke="currentColor"
         strokeLinecap="round"
         strokeLinejoin="round"
-        strokeWidth="2"
+        strokeWidth="3"
         viewBox="0 0 24 24"
       >
         <path d="M5 12h14M12 5v14"></path>
       </svg>
-      <span className="text-sm font-medium">Buat Lembar</span>
+      <span className="text-sm font-bold">Buat Lembar</span>
     </ButtonLink>
   );
 }
@@ -72,9 +72,9 @@ function EmptyState() {
   const { sheets } = useLoaderData<typeof loader>();
   if (sheets.length) return <></>;
   return (
-    <Section className="bg-white dark:bg-black border border-neutral-200 dark:border-neutral-800 p-0 lg:p-0 rounded-xl 2xl:rounded-2xl">
+    <Section className="bg-white dark:bg-black border-transparent p-0 lg:p-0 rounded-xl 2xl:rounded-2xl">
       <div className="my-28 items-center w-full mx-auto text-center flex flex-col gap-3 max-w-xs lg:max-w-sm">
-        <h1 className="text-2xl font-semibold tracking-tight text-neutral-500">
+        <h1 className="text-xl font-semibold tracking-tight text-neutral-400">
           Lembaran kosong
         </h1>
         <p className="text-base font-medium text-neutral-400">
@@ -110,7 +110,7 @@ function GroupedSheet() {
   const groups = [
     {
       propKey: "today",
-      title: "Hari ini",
+      title: "Hari Ini",
     },
     {
       propKey: "yesterday",
@@ -118,7 +118,7 @@ function GroupedSheet() {
     },
     {
       propKey: "last30Days",
-      title: "30 hari sebelumnya",
+      title: "30 Hari Sebelumnya",
     },
     {
       propKey: "more",

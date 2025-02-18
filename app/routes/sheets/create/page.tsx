@@ -95,8 +95,8 @@ export default function Create() {
           </Link>
         </div>
         <div className="flex flex-col gap-2 mb-52 lg:mb-0">
-          <Section className="bg-white border border-neutral-200 dark:border-neutral-800 p-0 lg:p-0 rounded-xl 2xl:rounded-2xl">
-            <div className="h-2 bg-primary-500 w-full"></div>
+          <Section className="bg-white border border-neutral-200 dark:border-neutral-800 p-0 lg:p-0 rounded-b-xl 2xl:rounded-b-2xl overflow-hidden">
+            <div className="h-1.5 bg-primary-500 w-full"></div>
             <div className="px-4 py-5 lg:py-6 lg:px-6 flex justify-between items-center">
               <h2 className="text-sm font-bold">Buat Lembar Baru</h2>
             </div>
@@ -111,7 +111,6 @@ export default function Create() {
             <Button
               variant="primary"
               type="submit"
-              size="sm"
               className="border-2 font-bold w-fit px-8 border-primary-500 text-white"
             >
               Buat
