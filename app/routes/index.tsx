@@ -1,12 +1,11 @@
-// import { Link } from "react-router";
 import { PublicNavigation } from "~/components/navigation";
 import ShellPage from "~/components/shell-page";
 import { ButtonLink } from "~/components/ui/button";
 
 export function meta() {
   return [
-    { title: "Cashflow" },
-    { name: "description", content: "Welcome to React Router!" },
+    { title: "Expense Sheet" },
+    { name: "Expense Sheet", content: "Welcome to Expense Sheet!" },
   ];
 }
 
@@ -16,11 +15,11 @@ export default function Home() {
       <PublicNavigation />
       <div className="my-28 items-center w-full mx-auto text-center flex flex-col gap-3 max-w-xs lg:max-w-sm">
         <h1 className="text-2xl font-bold tracking-tight text-neutral-800">
-          Semua pengeluaran direncanakan.
+          Semua pengeluaran direncanakan
         </h1>
         <p className="text-base font-medium text-neutral-600">
           Catat arus kas, rencanakan pengeluaran, dan dapatkan gambaran keuangan
-          yang lebih baik.
+          yang lebih baik
         </p>
         <ButtonLink
           to="/auth/login"

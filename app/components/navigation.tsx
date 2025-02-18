@@ -10,6 +10,10 @@ export default function Navigation() {
       to: "/sheets",
     },
     {
+      title: "Folder",
+      to: "/folder",
+    },
+    {
       title: "Akun",
       to: "/account",
     },
@@ -17,14 +21,14 @@ export default function Navigation() {
   return (
     <>
       <nav className="fixed top-0 w-full bg-background left-0 flex items-center justify-center z-20 shadow-sm border-b lg:border-b-transparent lg:shadow-none h-[var(--header-height-mobile)] lg:h-[var(--header-height)]">
-        <div className="max-w-screen-2xl lg:px-14 flex flex-col lg:flex-row items-center w-full h-full justify-between lg:gap-2 mx-auto px-6">
+        <div className="max-w-screen-2xl lg:px-14 flex flex-col lg:flex-row items-center w-full h-full justify-between lg:gap-2 mx-auto">
           <div className="flex-1 inline-flex">
             <Link
               to="/"
               prefetch="intent"
               className="flex justify-start items-center tap-highlight-transparent w-fit h-full"
             >
-              <img src="/text-logo.png" alt="" className="h-7 block" />
+              <img src="/text-logo.png" alt="" className="h-8 block" />
             </Link>
           </div>
           <div
@@ -38,14 +42,15 @@ export default function Navigation() {
                 <Link
                   to={tab.to}
                   key={tab.title}
+                  prefetch="intent"
                   className={cn(
-                    "h-full w-full lg:w-fit lg:px-4 border-b-[1.5px] border-neutral-100 inline-flex justify-center items-center lg:border-transparent",
+                    "h-full w-full lg:w-fit lg:px-6 cursor-pointer border-b-[1.5px] border-neutral-100 inline-flex justify-center items-center lg:border-transparent",
                     isMatch && "border-neutral-950",
                   )}
                 >
                   <div
                     className={cn(
-                      "flex gap-1 items-center text-neutral-300",
+                      "flex gap-1 items-center text-neutral-500",
                       isMatch && "text-neutral-950",
                     )}
                   >
@@ -74,7 +79,7 @@ export function PublicNavigation() {
             prefetch="intent"
             className="flex-1 lg:flex-initial inline-flex justify-start items-center tap-highlight-transparent w-fit h-full"
           >
-            <img src="/text-logo.png" alt="" className="h-7 block" />
+            <img src="/text-logo.png" alt="" className="h-8 block" />
           </Link>
           <div className="flex items-center justify-end gap-2 h-full flex-1">
             <a

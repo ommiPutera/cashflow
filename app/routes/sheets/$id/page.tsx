@@ -10,7 +10,7 @@ import {
 } from "react-router";
 
 import ShellPage, { Divide, Section } from "~/components/shell-page";
-import { ButtonLink } from "~/components/ui/button";
+import { Button, ButtonLink } from "~/components/ui/button";
 import { Checkbox } from "~/components/ui/checkbox";
 import { Label } from "~/components/ui/label";
 import { Switch } from "~/components/ui/switch";
@@ -22,6 +22,12 @@ import {
 } from "~/components/ui/accordion";
 
 import { toIDR } from "~/utils/currency";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "~/components/ui/dropdown-menu";
 
 export const meta: MetaFunction = ({ params }) => {
   const title = params.id?.split("-").join(" ");
@@ -131,7 +137,7 @@ export default function Sheet() {
 
 function Header() {
   return (
-    <div className="w-full h-12">
+    <div className="w-full h-12 flex justify-between items-start">
       <Link
         to="/sheets"
         prefetch="viewport"
@@ -152,6 +158,47 @@ function Header() {
         </svg>
         <span className="text-xs font-medium">Kembali</span>
       </Link>
+      <DropdownMenu modal={false}>
+        <DropdownMenuTrigger asChild>
+          <Button className="p-1 !h-7 !w-7 rounded-full border bg-white dark:bg-black">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              fill="none"
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              className="lucide lucide-ellipsis"
+              viewBox="0 0 24 24"
+            >
+              <circle cx="12" cy="12" r="1"></circle>
+              <circle cx="19" cy="12" r="1"></circle>
+              <circle cx="5" cy="12" r="1"></circle>
+            </svg>
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="w-[160px]">
+          <DropdownMenuItem className="text-danger-500 hover:!text-danger-500 hover:!bg-red-50">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              fill="none"
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              className="lucide lucide-trash-2"
+              viewBox="0 0 24 24"
+            >
+              <path d="M3 6h18M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2M10 11v6M14 11v6"></path>
+            </svg>
+            <span>Hapus</span>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   );
 }
@@ -223,7 +270,7 @@ function SheetTransactions() {
   return (
     <Section className="bg-white dark:bg-black border border-neutral-200 dark:border-neutral-800 p-0 lg:p-0 rounded-xl 2xl:rounded-2xl">
       <ButtonLink
-        to={`/sheets/create/${sheetId}`}
+        to={`/sheets/${sheetId}/create`}
         variant="outlined-primary"
         className="!h-14 lg:!h-20 bg-neutral-50 inline-flex gap-2 rounded-t-xl 2xl:rounded-t-2xl rounded-b-none border-t-transparent border-x-transparent border-b"
       >
@@ -408,7 +455,7 @@ function TransactionContentLayout({
   return (
     <label
       htmlFor={id}
-      className="px-4 lg:px-6 min-h-14 lg:h-16 flex w-full items-center hover:bg-neutral-50 cursor-pointer rounded-none border-x-0"
+      className="px-4 lg:px-6 min-h-14 lg:h-16 flex w-full items-center hover:bg-primary-50 cursor-pointer rounded-none border-x-0"
     >
       <div className="active:scale-[0.99] active:bg-transparent w-full">
         {props.children}
@@ -557,7 +604,7 @@ function SumItem({ title, totalAmount, from }: TSumItem) {
       symbol;
   }
   return (
-    <div className="px-4 lg:px-6 h-14 lg:h-16 flex w-full items-center hover:bg-neutral-50 cursor-pointer">
+    <div className="px-4 lg:px-6 h-14 lg:h-16 flex w-full items-center hover:bg-primary-50 cursor-pointer">
       <div className="flex justify-between items-center w-full flex-wrap">
         <span className="text-sm font-medium text-wrap">{title}</span>
         <span className="text-sm inline-flex gap-2 font-semibold text-neutral-700 text-wrap">

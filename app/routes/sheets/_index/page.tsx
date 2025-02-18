@@ -11,12 +11,13 @@ import { id } from "date-fns/locale";
 import Navigation from "~/components/navigation";
 import ShellPage, { Divide, Section } from "~/components/shell-page";
 import { ButtonLink } from "~/components/ui/button";
+
 import { getSession } from "~/lib/session.server";
 
 import { getGroupedSheets, getSheets } from "~/utils/sheet.server";
 
 export const meta: MetaFunction = () => {
-  return [{ title: "Lembaran" }, { name: "", content: "" }];
+  return [{ title: "Beranda" }, { name: "", content: "" }];
 };
 
 export async function loader({ request }: LoaderFunctionArgs) {
@@ -47,8 +48,9 @@ function CreateSheet() {
   return (
     <ButtonLink
       to="/sheets/create"
-      className="!h-16 lg:!h-24 w-fit lg:px-12 lg:mb-12 shadow-md fixed bottom-6 right-6 lg:bottom-12 lg:right-12 bg-neutral-50 gap-2 rounded-2xl 2xl:rounded-4xl border inline-flex"
+      className="!h-16 lg:!h-20 w-fit lg:px-12 lg:mb-12 overflow-hidden shadow-md fixed bottom-12 right-6 lg:bottom-12 lg:right-12 bg-neutral-50 gap-2 rounded-2xl 2xl:rounded-4xl border inline-flex"
     >
+      <div className="h-2 w-full top-0 bg-primary-500 absolute"></div>
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="24"
@@ -63,7 +65,7 @@ function CreateSheet() {
         <path d="M5 12h14M12 5v14"></path>
       </svg>
       <span className="text-sm font-bold lg:text-base lg:font-semibold">
-        Buat baru
+        Buat Lembar
       </span>
     </ButtonLink>
   );
@@ -162,23 +164,24 @@ function SheetItem({ title, titleId, createdAt }: Sheet) {
   const date = format(new Date(createdAt), "MM/dd/yyyy", {
     locale: id,
   });
-  const time = format(new Date(createdAt), "hh:mm:ss", {
+  const time = format(new Date(createdAt), "hh:mm", {
     locale: id,
   });
   return (
     <ButtonLink
       to={`/sheets/${titleId}`}
       variant="transparent"
-      className="px-4 lg:px-6 active:scale-[0.99] active:bg-transparent h-14 lg:h-16 flex w-full items-center hover:bg-neutral-50 cursor-pointer rounded-none border-x-0"
+      className="px-4 lg:px-6 active:scale-[0.99] active:bg-transparent h-14 lg:h-16 flex w-full items-center hover:bg-primary-50 cursor-pointer rounded-none border-x-0"
     >
       <div className="flex flex-col w-full">
         <span className="text-sm font-medium text-wrap">{title}</span>
         <span className="text-sm font-normal text-neutral-500 text-wrap">
-          {date}
-          <br />
           {time}
         </span>
       </div>
+      <span className="text-sm font-normal text-neutral-500 text-wrap">
+        {date}
+      </span>
     </ButtonLink>
   );
 }
