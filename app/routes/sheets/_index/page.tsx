@@ -1,6 +1,7 @@
 import { type MetaFunction } from "react-router";
 
 import ShellPage, { Divide, Section } from "~/components/shell-page";
+import Navigation from "~/components/navigation";
 import { ButtonLink } from "~/components/ui/button";
 
 export const meta: MetaFunction = () => {
@@ -10,11 +11,12 @@ export const meta: MetaFunction = () => {
 export default function Sheets() {
   return (
     <ShellPage>
-      <div className="flex flex-col gap-3 mb-24">
+      <Navigation />
+      <div className="flex flex-col gap-3 my-6 lg:my-12 mx-auto">
         <ButtonLink
           to="/sheets/create"
           variant="outlined-primary"
-          className="!h-14 lg:!h-20 bg-neutral-50 inline-flex gap-2 rounded-t-xl 2xl:rounded-t-2xl border"
+          className="!h-14 lg:!h-20 w-full lg:w-fit lg:px-12 lg:mb-12 bg-neutral-50 inline-flex gap-2 rounded-t-xl 2xl:rounded-t-2xl border"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"

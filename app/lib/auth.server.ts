@@ -3,26 +3,20 @@ import { TOTPStrategy } from "remix-auth-totp";
 import { redirect } from "react-router";
 import { Resend } from "resend";
 
+import { PrismaClient } from "@prisma/client";
+
 const resend = new Resend("re_G4eFM8hG_74d41fNLcSQJzCNWmDbAVdix");
 
 import { getSession, commitSession } from "./session.server";
 
-/**
- * Authenticator instance.
- *
- * The user object represents the authenticated user's data (Currently a "mock" user).
- * You may want to extend this type to match your database schema (e.g. add id, name, role, etc.).
- */
+const prisma = new PrismaClient();
+
 type User = {
   email: string;
 };
 
 export const authenticator = new Authenticator<User>();
 
-/**
- * Authenticate the user using TOTP Strategy.
- * @param request
- */
 authenticator.use(
   new TOTPStrategy(
     {
@@ -67,33 +61,24 @@ authenticator.use(
       },
     },
     async ({ email, request }) => {
-      /**
-       * TODO: Implement user lookup functionality.
-       *
-       * This is where you would call your database to look up the user.
-       * If the user is not found, you may want to create a new user.
-       *
-       * Parameters available:
-       * @param email - The user's email address.
-       */
+      let user = await prisma.user.findFirst({
+        where: { email },
+      });
 
-      // My lookup / create user function.
-      // const user = await findUserByEmail(email);
-
-      // Development Only.
-      // Create a "mock" user.
-      const user = {
-        email: email,
-      };
+      if (!user) {
+        user = await prisma.user.create({
+          data: {
+            email,
+            name: "",
+          },
+        });
+      }
 
       // Store user in session.
       const session = await getSession(request.headers.get("Cookie"));
       session.set("user", user);
 
-      // Commit session.
       const sessionCookie = await commitSession(session);
-
-      // Redirect to your authenticated route.
       throw redirect("/sheets", {
         headers: {
           "Set-Cookie": sessionCookie,

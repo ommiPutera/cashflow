@@ -9,8 +9,6 @@ export async function loader({ request }: LoaderFunctionArgs) {
   if (!user) {
     return redirect("/auth/login");
   }
-  console.log("Dashboard user", user);
-
   return { user };
 }
 

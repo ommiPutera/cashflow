@@ -74,7 +74,7 @@ export default function Create() {
 
   return (
     <FormProvider context={form.context}>
-      <ShellPage noNavigation>
+      <ShellPage>
         <div className="w-full h-12">
           <Link
             to={`/sheets/${sheetId}`}

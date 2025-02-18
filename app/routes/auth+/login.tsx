@@ -46,18 +46,18 @@ export default function Route() {
   const errors = fetcher.data?.error;
 
   return (
-    <ShellPage noNavigation>
+    <ShellPage>
       <PublicNavigation />
-      <div className="my-28 items-center w-full mx-auto text-center flex flex-col gap-4">
+      <div className="my-28 items-center w-full mx-auto text-center flex flex-col gap-12 max-w-xs">
         <div className="flex flex-col gap-2">
           <h1 className="text-2xl font-bold tracking-tight text-neutral-800">
             Log in ke akun kamu
           </h1>
-          <p className="text-base font-semib max-w-xs text-neutral-600">
+          <p className="text-base font-medium text-neutral-600">
             Selamat datang kembali
           </p>
         </div>
-        <fetcher.Form method="post" className="space-y-2 w-full">
+        <fetcher.Form method="post" className="w-full">
           <div className="grid w-full items-center gap-2 py-4">
             <Label htmlFor="email-address" className="font-semibold text-left">
               Alamat Email

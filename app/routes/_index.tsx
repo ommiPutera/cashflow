@@ -12,13 +12,13 @@ export function meta() {
 
 export default function Home() {
   return (
-    <ShellPage noNavigation>
+    <ShellPage>
       <PublicNavigation />
-      <div className="my-28 items-center w-full mx-auto text-center flex flex-col gap-3">
+      <div className="my-28 items-center w-full mx-auto text-center flex flex-col gap-3 max-w-xs lg:max-w-sm">
         <h1 className="text-2xl font-bold tracking-tight text-neutral-800">
           Semua pengeluaran direncanakan.
         </h1>
-        <p className="text-base font-medium max-w-xs text-neutral-600">
+        <p className="text-base font-medium text-neutral-600">
           Catat arus kas, rencanakan pengeluaran, dan dapatkan gambaran keuangan
           yang lebih baik.
         </p>

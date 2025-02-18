@@ -122,7 +122,7 @@ const mockTransactions = [
 
 export default function Sheet() {
   return (
-    <ShellPage noNavigation>
+    <ShellPage>
       <Header />
       <Content />
     </ShellPage>
