@@ -1,6 +1,8 @@
 import { User } from "@prisma/client";
 import { LoaderFunctionArgs, Outlet, redirect } from "react-router";
 
+import { SidebarWrapper } from "~/components/sidebar";
+
 import { getSession } from "~/lib/session.server";
 
 export async function loader({ request }: LoaderFunctionArgs) {
@@ -15,8 +17,8 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
 export default function Layout() {
   return (
-    <div>
+    <SidebarWrapper>
       <Outlet />
-    </div>
+    </SidebarWrapper>
   );
 }

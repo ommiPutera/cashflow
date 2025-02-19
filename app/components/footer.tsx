@@ -6,7 +6,7 @@ export function Footer() {
           <p className="flex items-center whitespace-nowrap text-center text-sm font-medium text-gray-600">
             Expense Sheet by
             <a
-              href="https://github.com/dev-xo/remix-auth-totp"
+              href="https://www.ommiputera.me/"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center ml-1 font-semibold text-gray-800 transition duration-200 hover:-translate-y-1"

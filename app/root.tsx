@@ -1,3 +1,5 @@
+import { type User } from "@prisma/client";
+
 import React from "react";
 import type { LinksFunction, LoaderFunctionArgs } from "react-router";
 import {
@@ -18,6 +20,8 @@ import { useToast } from "~/hooks/use-toast";
 import interStyles from "~/styles/inter.css?url";
 import tailwindStyles from "~/styles/tailwind.css?url";
 
+import { getSession } from "./lib/session.server";
+
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: tailwindStyles },
   { rel: "stylesheet", href: interStyles },
@@ -26,7 +30,9 @@ export const links: LinksFunction = () => [
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { toast, headers } = await getToast(request);
-  return data({ toastData: toast }, { headers });
+  const session = await getSession(request.headers.get("Cookie"));
+  const user: User = session.get("user");
+  return data({ toastData: toast, user }, { headers });
 };
 
 export function Layout({ children }: { children: React.ReactNode }) {

@@ -145,8 +145,9 @@ function SheetsLinks({ title, sheets }: TGroupSheet) {
   return (
     <Section className="bg-white dark:bg-black border border-neutral-200 dark:border-neutral-800 p-0 lg:p-0 rounded-xl 2xl:rounded-2xl">
       {title && (
-        <div className="px-4 py-3 lg:py-4 lg:px-6 bg-neutral-50 border-b lg:border-none lg:bg-white">
+        <div className="px-4 py-3 inline-flex justify-between items-center lg:py-4 lg:px-6 bg-neutral-50 border-b lg:border-none lg:bg-white">
           <h2 className="text-sm font-bold">{title}</h2>
+          <span className="text-xs font-semibold">Terakhir dibuka</span>
         </div>
       )}
       <Divide>
@@ -158,7 +159,7 @@ function SheetsLinks({ title, sheets }: TGroupSheet) {
   );
 }
 function SheetItem({ title, titleId, createdAt }: Sheet) {
-  const date = format(new Date(createdAt), "MM/dd/yyyy", {
+  const date = format(new Date(createdAt), "dd MMM yyyy", {
     locale: id,
   });
   const time = format(new Date(createdAt), "hh:mm", {
@@ -172,12 +173,9 @@ function SheetItem({ title, titleId, createdAt }: Sheet) {
     >
       <div className="flex flex-col w-full">
         <span className="text-sm font-medium text-wrap">{title}</span>
-        <span className="text-sm font-normal text-neutral-500 text-wrap">
-          {time}
-        </span>
       </div>
-      <span className="text-sm font-normal text-neutral-500 text-wrap">
-        {date}
+      <span className="text-xs font-normal text-neutral-500 whitespace-nowrap">
+        {date}:{time} WIB
       </span>
     </ButtonLink>
   );

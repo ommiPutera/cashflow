@@ -44,13 +44,15 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const session = await getSession(request.headers.get("Cookie"));
   const user: User = session.get("user");
 
+  let titleId = "";
   if (typeof title === "string" && title) {
     const newSheet = await createSheet(title, user.id);
     if (newSheet.message !== "ok") {
       return dataWithError(submission.reply(), newSheet.message);
     }
+    titleId = newSheet.data?.titleId || "";
   }
-  return redirectWithSuccess("/sheets", "Berhasil");
+  return redirectWithSuccess(`/sheets/${titleId}`, "Berhasil");
 };
 
 const createSheetSchema = z.object({
