@@ -32,7 +32,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 export default function Sheets() {
   return (
     <ShellPage>
-      <Navigation />
+      <Navigation noNavigationOnMobile={false} />
       <div className="flex flex-col gap-3 my-6 lg:my-12 mx-auto">
         <CreateSheet />
         <EmptyState />
@@ -48,7 +48,7 @@ function CreateSheet() {
   return (
     <ButtonLink
       to="/sheets/create"
-      className="!h-16 lg:!h-20 w-fit px-6 lg:mb-12 text-primary-500 overflow-hidden shadow-sm [&_svg]:size-4 fixed bottom-12 right-6 lg:bottom-12 lg:right-12 bg-neutral-50 gap-3 rounded-2xl 2xl:rounded-4xl border inline-flex"
+      className="w-fit lg:hidden px-6 text-primary-500 overflow-hidden shadow-sm [&_svg]:size-4 fixed bottom-12 right-6 bg-neutral-50 gap-3 rounded-2xl border inline-flex"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"

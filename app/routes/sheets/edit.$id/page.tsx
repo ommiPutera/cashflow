@@ -26,6 +26,8 @@ import { InputNumber } from "~/components/ui/input-number";
 import { Label } from "~/components/ui/label";
 import { Textarea } from "~/components/ui/textarea";
 import { ToggleGroup, ToggleGroupItem } from "~/components/ui/toggle-group";
+import Navigation from "~/components/navigation";
+
 import { cn } from "~/lib/utils";
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
@@ -124,6 +126,7 @@ export default function Edit() {
   return (
     <FormProvider context={form.context}>
       <ShellPage>
+        <Navigation />
         <div className="w-full h-12">
           <Link
             to={`/sheets/${sheetId}`}
@@ -192,8 +195,8 @@ function FormEditTransaction() {
         </p>
       </div>
       <div className="border-b border-neutral-400 border-dashed w-full mb-6"></div>
-      <Section className="bg-white border border-neutral-200 dark:border-neutral-800 p-0 lg:p-0 rounded-b-xl 2xl:rounded-b-2xl overflow-hidden">
-        <div className="h-1.5 bg-primary-500 w-full"></div>
+      <Section className="bg-white border border-neutral-200 dark:border-neutral-800 p-0 lg:p-0 rounded-xl 2xl:rounded-2xl overflow-hidden">
+        <div className="h-1 bg-primary-500 w-full"></div>
         <div className="px-4 py-5 lg:py-6 lg:px-6 flex flex-col">
           <p className="text-sm text-neutral-500 font-semibold">{title}</p>
           <p className="text-sm font-bold">

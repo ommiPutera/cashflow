@@ -8,20 +8,22 @@ export default function ShellPage({
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
   return (
-    <div className="mx-auto w-full max-w-[var(--shell-page-width)] lg:max-w-screen-sm mb-12">
-      <div className="flex flex-col relative">
-        <div className="relative overflow-hidden">
-          <div className="h-fit relative">
-            <main
-              role="main"
-              className={cn(
-                "px-4 py-8 lg:py-14 lg:px-14 overflow-scroll min-h-svh h-full",
-                props.className,
-              )}
-            >
-              {props.children}
-            </main>
-            <Footer />
+    <div className="lg:ml-[var(--sidebar-width)]">
+      <div className="mx-auto w-full max-w-[var(--shell-page-width)] lg:max-w-screen-sm mb-12">
+        <div className="flex flex-col relative">
+          <div className="relative overflow-hidden">
+            <div className="h-fit relative">
+              <main
+                role="main"
+                className={cn(
+                  "px-4 py-8 lg:py-14 lg:px-14 overflow-scroll min-h-svh h-full",
+                  props.className,
+                )}
+              >
+                {props.children}
+              </main>
+              <Footer />
+            </div>
           </div>
         </div>
       </div>

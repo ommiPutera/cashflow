@@ -11,7 +11,7 @@ export const meta: MetaFunction = () => {
 export default function Index() {
   return (
     <ShellPage>
-      <Navigation />
+      <Navigation noNavigationOnMobile={false} />
       <h1>Account</h1>
       <br />
       <ButtonLink

@@ -9,6 +9,7 @@ import {
   useLoaderData,
 } from "react-router";
 
+import Navigation from "~/components/navigation";
 import ShellPage, { Section } from "~/components/shell-page";
 import { Button } from "~/components/ui/button";
 import {
@@ -20,7 +21,7 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 
-import { getSheet, deleteSheet } from "~/utils/sheet.server";
+import { deleteSheet, getSheet } from "~/utils/sheet.server";
 
 import { getSession } from "~/lib/session.server";
 
@@ -83,6 +84,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 export default function Sheet() {
   return (
     <ShellPage>
+      <Navigation />
       <Header />
       <div className="flex flex-col gap-3 mb-24">
         <SheetSum />

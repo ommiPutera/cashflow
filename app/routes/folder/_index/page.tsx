@@ -31,7 +31,7 @@ export default function Index() {
   const { sheetsCount, deletedSheets } = useLoaderData<typeof loader>();
   return (
     <ShellPage>
-      <Navigation />
+      <Navigation noNavigationOnMobile={false} />
       <div className="flex flex-col gap-3 my-6 lg:my-12 mx-auto">
         <Section className="bg-white dark:bg-black border border-neutral-200 dark:border-neutral-800 p-0 lg:p-0 rounded-xl 2xl:rounded-2xl">
           <div className="px-4 py-3 lg:py-4 lg:px-6 bg-neutral-50 border-b lg:border-none lg:bg-white">
