@@ -48,7 +48,7 @@ function CreateSheet() {
   return (
     <ButtonLink
       to="/sheets/create"
-      className="w-fit lg:hidden px-6 text-primary-500 overflow-hidden shadow-sm [&_svg]:size-4 fixed bottom-12 right-6 bg-neutral-50 gap-3 rounded-2xl border inline-flex"
+      className="w-fit lg:hidden px-6 z-40 text-primary-500 overflow-hidden shadow-sm [&_svg]:size-4 fixed bottom-12 right-6 bg-neutral-50 gap-3 rounded-2xl border inline-flex"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"

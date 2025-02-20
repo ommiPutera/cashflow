@@ -22,6 +22,13 @@ import tailwindStyles from "~/styles/tailwind.css?url";
 
 import { getSession } from "./lib/session.server";
 
+export function meta() {
+  return [
+    { title: "Expense Sheet" },
+    { name: "description", content: "Welcome to Expense Sheet" },
+  ];
+}
+
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: tailwindStyles },
   { rel: "stylesheet", href: interStyles },

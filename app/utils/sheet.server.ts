@@ -66,7 +66,7 @@ export async function createSheet(
   userId: string,
 ): Promise<{ data: Sheet | null; message: string }> {
   const existingSheet = await prisma.sheet.findFirst({
-    where: { title, userId },
+    where: { titleId: title.replace(/\s/g, "").split(" ").join("-"), userId },
   });
   if (existingSheet) {
     return {
@@ -113,5 +113,24 @@ export async function deleteSheet(
   return await prisma.sheet.update({
     where: { id, userId },
     data: { deletedAt: new Date() },
+  });
+}
+
+export async function recoverSheet(
+  id: string,
+  userId: string,
+): Promise<Sheet | null> {
+  return await prisma.sheet.update({
+    where: { id, userId },
+    data: { deletedAt: null },
+  });
+}
+
+export async function deletePermanentlySheet(
+  id: string,
+  userId: string,
+): Promise<Sheet | null> {
+  return await prisma.sheet.delete({
+    where: { id, userId },
   });
 }

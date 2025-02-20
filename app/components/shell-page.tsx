@@ -3,6 +3,7 @@ import React from "react";
 import { cn } from "~/lib/utils";
 
 import { Footer } from "./footer";
+import { Loading } from "./loading";
 
 export default function ShellPage({
   ...props
@@ -29,7 +30,10 @@ export default function ShellPage({
   );
 }
 
-export function Section({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
+export function Section({
+  loading,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement> & { loading?: boolean }) {
   return (
     <div
       className={cn(
@@ -37,6 +41,11 @@ export function Section({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
         props.className,
       )}
     >
+      {loading && (
+        <div className="bg-black/20 absolute w-full h-full flex flex-col items-center justify-center">
+          <Loading dark />
+        </div>
+      )}
       {props.children}
     </div>
   );

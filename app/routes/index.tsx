@@ -2,13 +2,6 @@ import { PublicNavigation } from "~/components/navigation";
 import ShellPage from "~/components/shell-page";
 import { ButtonLink } from "~/components/ui/button";
 
-export function meta() {
-  return [
-    { title: "Expense Sheet" },
-    { name: "Expense Sheet", content: "Welcome to Expense Sheet!" },
-  ];
-}
-
 export default function Home() {
   return (
     <ShellPage>
