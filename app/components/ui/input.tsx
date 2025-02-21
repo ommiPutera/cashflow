@@ -9,7 +9,7 @@ const inputVariants = cva(
     variants: {
       variant: {
         default:
-          "border-neutral-300 hover:border-neutral-800 hover:disabled:border-neutral-300 disabled:border-neutral-300 disabled:bg-neutral-100 disabled:text-neutral-500 disabled:opacity-100 focus-visible:border-primary-500",
+          "border-border hover:border-neutral-800 hover:disabled:border-neutral-300 disabled:border-neutral-300 disabled:bg-neutral-100 disabled:text-neutral-500 disabled:opacity-100 focus-visible:border-primary-500",
       },
       inputSize: {
         sm: "h-11 lg:h-9 rounded-lg px-3 text-sm",

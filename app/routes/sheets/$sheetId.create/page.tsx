@@ -103,7 +103,7 @@ export default function Create() {
           <Section className="bg-white border border-neutral-200 dark:border-neutral-800 p-0 lg:p-0 rounded-xl 2xl:rounded-2xl overflow-hidden">
             <div className="h-1 bg-primary-500 w-full"></div>
             <div className="px-4 py-5 lg:py-6 lg:px-6 flex justify-between items-center">
-              <h2 className="text-sm font-bold">
+              <h2 className="text-lg font-bold koh-santepheap-bold">
                 Buat Transaksi di Lembar{" "}
                 <span className="underline">{title}</span>
               </h2>
@@ -139,6 +139,7 @@ function FormCreateTransaction() {
           <Label
             htmlFor={nominalField.id}
             className="font-semibold text-center"
+            required
           >
             Nominal
           </Label>
@@ -163,7 +164,7 @@ function FormCreateTransaction() {
       </Section>
       <Section className="bg-white border border-neutral-200 dark:border-neutral-800 rounded-xl 2xl:rounded-2xl">
         <div className="grid w-full items-center gap-2 py-4">
-          <Label htmlFor={nameField.id} className="font-semibold">
+          <Label htmlFor={nameField.id} className="font-semibold" required>
             Nama Transaksi
           </Label>
           <Input
@@ -179,7 +180,7 @@ function FormCreateTransaction() {
       </Section>
       <Section className="bg-white border border-neutral-200 dark:border-neutral-800 rounded-xl 2xl:rounded-2xl">
         <div className="grid w-full items-center gap-2 py-4">
-          <Label htmlFor={typeField.id} className="font-semibold">
+          <Label htmlFor={typeField.id} className="font-semibold" required>
             Tipe Transaksi
           </Label>
           <Type />

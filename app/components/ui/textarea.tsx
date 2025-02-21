@@ -9,7 +9,7 @@ const textareaVariants = cva(
     variants: {
       variant: {
         default:
-          "border-neutral-300 hover:border-neutral-800 focus-visible:border-primary-500",
+          "border-border hover:border-neutral-800 focus-visible:border-primary-500",
       },
     },
     defaultVariants: {

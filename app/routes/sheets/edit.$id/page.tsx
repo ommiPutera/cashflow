@@ -199,9 +199,9 @@ function FormEditTransaction() {
         <div className="h-1 bg-primary-500 w-full"></div>
         <div className="px-4 py-5 lg:py-6 lg:px-6 flex flex-col">
           <p className="text-sm text-neutral-500 font-semibold">{title}</p>
-          <p className="text-sm font-bold">
+          <h2 className="text-lg font-bold koh-santepheap-bold">
             Ubah Transaksi: <span className="underline">{name}</span>
-          </p>
+          </h2>
         </div>
       </Section>
       <Section className="bg-white border border-neutral-200 dark:border-neutral-800 rounded-xl 2xl:rounded-2xl">

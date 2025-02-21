@@ -25,6 +25,27 @@ export const tabs = [
     ),
   },
   {
+    title: "Goals",
+    to: "/goals",
+    icon: (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+        viewBox="0 0 24 24"
+      >
+        <circle cx="8" cy="8" r="6"></circle>
+        <path d="M18.09 10.37A6 6 0 1 1 10.34 18M7 6h1v4"></path>
+        <path d="m16.71 13.88.7.71-2.82 2.82"></path>
+      </svg>
+    ),
+  },
+  {
     title: "Folder",
     to: "/folder",
     icon: (
@@ -108,7 +129,7 @@ export default function Navigation({
                           isMatch && "text-primary-500",
                         )}
                       >
-                        <span className="text-sm font-bold lg:text-base lg:font-semibold">
+                        <span className="text-xs font-bold lg:text-base lg:font-semibold">
                           {tab.title}
                         </span>
                       </div>
@@ -166,7 +187,7 @@ export function SVGLogo() {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="175"
+      width="155"
       height="auto"
       fill="none"
       viewBox="0 0 155 33"

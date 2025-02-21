@@ -63,12 +63,10 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
   const session = await getSession(request.headers.get("Cookie"));
   const user: User = session.get("user");
-  console.log("actionType: ", actionType);
   if (typeof id !== "string" || !user || !actionType) return {};
 
   if (actionType === "RECOVER") {
     await recoverSheet(id, user.id);
-    console.log("here");
     return redirect("/folder/deleted");
   }
   if (actionType === "DELETE_PERMANENTLY") {

@@ -125,7 +125,7 @@ export default function VerifyPage() {
               type="submit"
               variant="primary"
               className="w-full rounded-full"
-              disabled={isSubmitting || value.length !== 6}
+              disabled={isSubmitting}
             >
               {isSubmitting ? "Memverifikasi..." : "Verifikasi Kode OTP"}
             </Button>

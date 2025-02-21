@@ -174,8 +174,10 @@ function SheetItem({ title, titleId, createdAt }: Sheet) {
       <div className="flex flex-col w-full">
         <span className="text-sm font-medium text-wrap">{title}</span>
       </div>
-      <span className="text-xs font-normal text-neutral-500 whitespace-nowrap">
-        {date}:{time} WIB
+      <span className="text-xs font-normal text-right text-neutral-500 whitespace-nowrap">
+        {time} WIB
+        <br />
+        {date}
       </span>
     </ButtonLink>
   );

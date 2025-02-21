@@ -14,12 +14,13 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  email     String   @unique
-  name      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  sheets    Sheet[]
+  id             String          @id @default(auto()) @map("_id") @db.ObjectId
+  email          String          @unique
+  name           String
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  sheets         Sheet[]
+  financialGoals FinancialGoal[]
 }
 
 model Sheet {
@@ -27,6 +28,7 @@ model Sheet {
   title     String    @unique
   titleId   String    @unique
   createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
   pinned Boolean @default(false)
@@ -38,20 +40,43 @@ model Sheet {
 }
 
 model Transaction {
-  id        String          @id @default(auto()) @map("_id") @db.ObjectId
-  sheetId   String          @map("sheet_id") @db.ObjectId
+  id        String           @id @default(auto()) @map("_id") @db.ObjectId
+  sheetId   String           @map("sheet_id") @db.ObjectId
   name      String
   type      TransactionType
+  class     TransactionClass
   nominal   Int
   notes     String?
-  createdAt DateTime        @default(now())
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
 
   sheet Sheet @relation(fields: [sheetId], references: [id], onDelete: Cascade)
 
-  @@index([sheetId]) // Index for faster queries
+  financialGoalId String?        @db.ObjectId
+  financialGoal   FinancialGoal? @relation(fields: [financialGoalId], references: [id])
+
+  @@index([sheetId])
+}
+
+model FinancialGoal {
+  id            String        @id @default(auto()) @map("_id") @db.ObjectId
+  title         String
+  description   String?
+  targetAmount  Float
+  currentAmount Float         @default(0)
+  dueDate       DateTime?
+  userId        String        @db.ObjectId
+  user          User          @relation(fields: [userId], references: [id])
+  transactions  Transaction[]
 }
 
 enum TransactionType {
   in
   out
+}
+
+enum TransactionClass {
+  fixed
+  variable
+  occasional
 }

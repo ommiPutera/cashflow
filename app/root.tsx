@@ -30,6 +30,16 @@ export function meta() {
 }
 
 export const links: LinksFunction = () => [
+  { rel: "preconnect", href: "https://fonts.googleapis.com" },
+  {
+    rel: "preconnect",
+    href: "https://fonts.gstatic.com",
+    crossOrigin: "anonymous",
+  },
+  {
+    rel: "stylesheet",
+    href: "https://fonts.googleapis.com/css2?family=Koh+Santepheap:wght@100;300;400;700;900&family=Playwrite+GB+S:ital,wght@0,100..400;1,100..400&display=swap",
+  },
   { rel: "stylesheet", href: tailwindStyles },
   { rel: "stylesheet", href: interStyles },
   { rel: "manifest", href: "/site.webmanifest" },
