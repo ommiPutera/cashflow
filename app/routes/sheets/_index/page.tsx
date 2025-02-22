@@ -129,7 +129,7 @@ function GroupedSheet() {
   ];
   return groups.map((group) => {
     if (!groupedSheets[group.propKey as keyof typeof groupedSheets].length) {
-      return <div key={group.propKey}></div>;
+      return null;
     }
     return (
       <SheetsLinks

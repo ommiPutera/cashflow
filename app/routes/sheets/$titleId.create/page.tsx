@@ -3,6 +3,7 @@ import {
   Link,
   LoaderFunctionArgs,
   MetaFunction,
+  redirect,
   useActionData,
   useFetcher,
   useLoaderData,
@@ -27,12 +28,17 @@ import { InputNumber } from "~/components/ui/input-number";
 import { Label, labelVariants } from "~/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
 import { Textarea } from "~/components/ui/textarea";
-
-import { cn } from "~/lib/utils";
 import { ToggleGroup, ToggleGroupItem } from "~/components/ui/toggle-group";
 
+import { cn } from "~/lib/utils";
+
+import { createTransaction } from "~/utils/transaction.server";
+import { getSheet } from "~/utils/sheet.server";
+import { getSession } from "~/lib/session.server";
+import { User } from "@prisma/client";
+
 export const meta: MetaFunction = ({ params }) => {
-  const title = `Buat Transaksi | ${params.sheetId?.split("-").join(" ")}`;
+  const title = `Buat Transaksi | ${params.titleId?.split("-").join(" ")}`;
   return [{ title }, { name: "", content: "" }];
 };
 
@@ -40,13 +46,44 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
   const submission = parseWithZod(formData, { schema: createTransactionchema });
 
-  console.log("formData: ", submission.payload);
+  console.log("formData: ", submission.payload); //
+
+  const { titleId, id, name, type, classification, nominal, notes } =
+    submission.payload;
+
+  if (
+    typeof titleId === "string" &&
+    typeof id === "string" &&
+    typeof name === "string" &&
+    typeof notes === "string" &&
+    typeof classification === "string" &&
+    typeof nominal === "string" &&
+    (type === "in" || type === "out")
+  ) {
+    const nominalValue = nominal?.split("Rp")[1].split(".").join("");
+    const newTransaction = await createTransaction(
+      id,
+      name,
+      type,
+      parseInt(nominalValue),
+      classification,
+      notes,
+    );
+    if (newTransaction) return redirect(`/sheets/${titleId}`);
+    console.log("newTransaction: ", newTransaction);
+  }
+
   return {};
 };
 
-export const loader = async ({ params }: LoaderFunctionArgs) => {
+export const loader = async ({ params, request }: LoaderFunctionArgs) => {
+  const session = await getSession(request.headers.get("Cookie"));
+  const user: User = session.get("user");
+
+  const sheet = await getSheet(params.titleId || "", user.id);
+  console.log("sheet: ", sheet);
   return {
-    sheetId: params.sheetId,
+    ...sheet,
   };
 };
 
@@ -80,8 +117,8 @@ const createTransactionchema = z
 
 const formId = "create-transaction";
 export default function Create() {
-  const { sheetId } = useLoaderData<typeof loader>();
-  const title = sheetId?.replace(/-/g, " ");
+  const { titleId } = useLoaderData<typeof loader>();
+  const title = titleId?.replace(/-/g, " ");
 
   const fetcher = useFetcher();
   const actionData = useActionData<typeof action>();
@@ -101,7 +138,7 @@ export default function Create() {
         <Navigation />
         <div className="w-full h-12">
           <Link
-            to={`/sheets/${sheetId}`}
+            to={`/sheets/${titleId}`}
             prefetch="viewport"
             className="p-0 h-fit active:scale-[0.99] font-normal inline-flex items-center tap-highlight-transparent"
           >
@@ -149,6 +186,8 @@ export default function Create() {
 }
 
 function FormCreateTransaction() {
+  const { id, titleId } = useLoaderData<typeof loader>();
+
   const [nominalMeta] = useField("nominal");
   const [nameMeta] = useField("name");
   const [notesMeta] = useField("notes");
@@ -156,6 +195,8 @@ function FormCreateTransaction() {
 
   return (
     <div className="flex flex-col gap-2 h-full">
+      <input type="hidden" name="id" value={id} />
+      <input type="hidden" name="titleId" value={titleId} />
       <Section className="bg-white border border-neutral-200 dark:border-neutral-800 rounded-xl 2xl:rounded-2xl">
         <div className="grid w-full items-start gap-2 py-4">
           <Label htmlFor={nominalMeta.id} className="font-semibold" required>

@@ -40,15 +40,15 @@ model Sheet {
 }
 
 model Transaction {
-  id        String           @id @default(auto()) @map("_id") @db.ObjectId
-  sheetId   String           @map("sheet_id") @db.ObjectId
+  id        String          @id @default(auto()) @map("_id") @db.ObjectId
+  sheetId   String          @map("sheet_id") @db.ObjectId
   name      String
   type      TransactionType
-  class     TransactionClass
+  class     String?
   nominal   Int
   notes     String?
-  createdAt DateTime         @default(now())
-  updatedAt DateTime         @updatedAt
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
 
   sheet Sheet @relation(fields: [sheetId], references: [id], onDelete: Cascade)
 
@@ -73,10 +73,4 @@ model FinancialGoal {
 enum TransactionType {
   in
   out
-}
-
-enum TransactionClass {
-  fixed
-  variable
-  occasional
 }

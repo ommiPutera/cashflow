@@ -1,4 +1,4 @@
-import { type Transaction, type User } from "@prisma/client";
+import { type User } from "@prisma/client";
 import {
   ActionFunctionArgs,
   Link,
@@ -25,6 +25,7 @@ import { deleteSheet, getSheet } from "~/utils/sheet.server";
 
 import { getSession } from "~/lib/session.server";
 
+import { getTransactionsBySheet } from "~/utils/transaction.server";
 import SheetSum from "./sheet-sum";
 import Transactions from "./transactions";
 
@@ -56,7 +57,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const sheet = await getSheet(params.id || "", user.id);
   if (!sheet) return redirect("/sheets");
 
-  const transactions: Transaction[] = [];
+  const transactions = await getTransactionsBySheet(sheet.id);
 
   const isPinned = true;
 
