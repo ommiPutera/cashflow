@@ -16,7 +16,7 @@ const Label = React.forwardRef<
 >(({ className, required = false, ...props }, ref) => (
   <LabelPrimitive.Root
     ref={ref}
-    className={cn(labelVariants(), className)}
+    className={cn(labelVariants(), "koh-santepheap-bold", className)}
     {...props}
   >
     {props.children}
@@ -29,4 +29,4 @@ const Label = React.forwardRef<
 ));
 Label.displayName = LabelPrimitive.Root.displayName;
 
-export { Label };
+export { Label, labelVariants };

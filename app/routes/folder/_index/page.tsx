@@ -32,6 +32,7 @@ export default function Index() {
     <ShellPage>
       <Navigation noNavigationOnMobile={false} />
       <div className="flex flex-col gap-3 my-6 lg:my-12 mx-auto">
+        <h2 className="text-lg font-bold koh-santepheap-bold mb-2">Folder</h2>
         <Wealth />
         <Folder />
       </div>
@@ -113,7 +114,7 @@ function Folder() {
   return (
     <Section className="bg-white dark:bg-black border border-neutral-200 dark:border-neutral-800 p-0 lg:p-0 rounded-xl 2xl:rounded-2xl">
       <div className="px-4 py-3 lg:py-4 lg:px-6 bg-neutral-50 border-b lg:border-none lg:bg-white">
-        <h2 className="text-sm font-bold">Folder Lainnya</h2>
+        <h2 className="text-sm font-bold">Lembar</h2>
       </div>
       <Divide>
         <ButtonLink

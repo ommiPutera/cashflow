@@ -25,27 +25,6 @@ export const tabs = [
     ),
   },
   {
-    title: "Goals",
-    to: "/goals",
-    icon: (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="24"
-        fill="none"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="2"
-        viewBox="0 0 24 24"
-      >
-        <circle cx="8" cy="8" r="6"></circle>
-        <path d="M18.09 10.37A6 6 0 1 1 10.34 18M7 6h1v4"></path>
-        <path d="m16.71 13.88.7.71-2.82 2.82"></path>
-      </svg>
-    ),
-  },
-  {
     title: "Folder",
     to: "/folder",
     icon: (
@@ -61,6 +40,27 @@ export const tabs = [
         viewBox="0 0 24 24"
       >
         <path d="m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2"></path>
+      </svg>
+    ),
+  },
+  {
+    title: "Goals",
+    to: "/goals",
+    icon: (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+        viewBox="0 0 24 24"
+      >
+        <path d="M12 13V2l8 4-8 4"></path>
+        <path d="M20.561 10.222a9 9 0 1 1-12.55-5.29"></path>
+        <path d="M8.002 9.997a5 5 0 1 0 8.9 2.02"></path>
       </svg>
     ),
   },
@@ -188,7 +188,6 @@ export function SVGLogo() {
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width="155"
-      height="auto"
       fill="none"
       viewBox="0 0 155 33"
     >

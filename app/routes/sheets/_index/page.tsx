@@ -34,6 +34,9 @@ export default function Sheets() {
     <ShellPage>
       <Navigation noNavigationOnMobile={false} />
       <div className="flex flex-col gap-3 my-6 lg:my-12 mx-auto">
+        <h2 className="text-lg font-bold koh-santepheap-bold mb-2">
+          Lembar Anda
+        </h2>
         <CreateSheet />
         <EmptyState />
         <GroupedSheet />
@@ -126,7 +129,7 @@ function GroupedSheet() {
   ];
   return groups.map((group) => {
     if (!groupedSheets[group.propKey as keyof typeof groupedSheets].length) {
-      return <></>;
+      return <div key={group.propKey}></div>;
     }
     return (
       <SheetsLinks

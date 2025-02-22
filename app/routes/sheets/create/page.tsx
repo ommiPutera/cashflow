@@ -36,10 +36,10 @@ export const meta: MetaFunction = () => {
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
-  const title = formData.get("title");
 
   const submission = parseWithZod(formData, { schema: createSheetSchema });
   if (submission.status !== "success") return submission.reply();
+  const title = submission.payload.title;
 
   const session = await getSession(request.headers.get("Cookie"));
   const user: User = session.get("user");
@@ -70,6 +70,7 @@ export default function Create() {
     onValidate: ({ formData }) =>
       parseWithZod(formData, { schema: createSheetSchema }),
     shouldValidate: "onInput",
+    shouldRevalidate: "onInput",
   });
 
   return (
