@@ -46,8 +46,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
   const submission = parseWithZod(formData, { schema: createTransactionchema });
 
-  console.log("formData: ", submission.payload); //
-
   const { titleId, id, name, type, classification, nominal, notes } =
     submission.payload;
 
@@ -283,7 +281,7 @@ export function ClassificationSurvey() {
       className={cn(
         "hidden",
         typeMeta.value === "out" &&
-          "block bg-white border border-neutral-200 dark:border-neutral-800 rounded-xl 2xl:rounded-2xl",
+        "block bg-white border border-neutral-200 dark:border-neutral-800 rounded-xl 2xl:rounded-2xl",
       )}
     >
       <div className="grid w-full items-center gap-4 py-4">
@@ -390,63 +388,4 @@ function Type() {
       </ToggleGroup>
     </div>
   );
-  // return (
-  //   <div className="flex w-full items-center gap-2">
-  //     <input type="hidden" name={meta.name} value={String(meta.value)} />
-  //     <Button
-  //       {...form.update.getButtonProps({
-  //         name: meta.name,
-  //         value: "in"
-  //       })}
-  //       data-state={meta.value === "in" ? "on" : "off"}
-  //       aria-label="Pemasukan"
-  //       className="w-full h-14 bg-white border data-[state=on]:border-green-500 data-[state=on]:text-green-600 data-[state=on]:bg-green-50"
-  //     >
-  //       <span>
-  //         <svg
-  //           xmlns="http://www.w3.org/2000/svg"
-  //           width="24"
-  //           height="24"
-  //           fill="none"
-  //           stroke="currentColor"
-  //           strokeLinecap="round"
-  //           strokeLinejoin="round"
-  //           strokeWidth="2"
-  //           className="text-green-500 w-4 h-4 lg:w-5 lg:h-5"
-  //           viewBox="0 0 24 24"
-  //         >
-  //           <path d="M12 17V3M6 11l6 6 6-6M19 21H5"></path>
-  //         </svg>
-  //       </span>
-  //       <span>Pemasukan</span>
-  //     </Button>
-  //     <Button
-  //       {...form.update.getButtonProps({
-  //         name: meta.name,
-  //         value: "out"
-  //       })}
-  //       data-state={meta.value === "out" ? "on" : "off"}
-  //       aria-label="Pengeluaran"
-  //       className="w-full h-14 bg-white border data-[state=on]:border-danger-500 data-[state=on]:text-danger-400 data-[state=on]:bg-danger-50"
-  //     >
-  //       <span>
-  //         <svg
-  //           xmlns="http://www.w3.org/2000/svg"
-  //           width="24"
-  //           height="24"
-  //           fill="none"
-  //           stroke="currentColor"
-  //           strokeLinecap="round"
-  //           strokeLinejoin="round"
-  //           strokeWidth="2"
-  //           className="text-danger-500 w-4 h-4 lg:w-5 lg:h-5"
-  //           viewBox="0 0 24 24"
-  //         >
-  //           <path d="M7 7h10v10M7 17 17 7"></path>
-  //         </svg>
-  //       </span>
-  //       <span>Pengeluaran</span>
-  //     </Button>
-  //   </div>
-  // )
 }

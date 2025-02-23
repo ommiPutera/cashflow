@@ -2,7 +2,6 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-// Create a Transaction
 export const createTransaction = async (
   sheetId: string,
   name: string,
@@ -28,7 +27,26 @@ export const createTransaction = async (
   }
 };
 
-// Get all Transactions for a specific sheet
+export async function getTotalInAndOut(sheetId: string) {
+  const transactions = await prisma.transaction.findMany({
+    where: { sheetId },
+    select: { type: true, nominal: true },
+  });
+
+  let totalIn = 0;
+  let totalOut = 0;
+
+  for (const transaction of transactions) {
+    if (transaction.type === "in") {
+      totalIn += transaction.nominal;
+    } else if (transaction.type === "out") {
+      totalOut += transaction.nominal;
+    }
+  }
+
+  return { totalIn, totalOut };
+}
+
 export const getTransactionsBySheet = async (sheetId: string) => {
   try {
     return await prisma.transaction.findMany({
@@ -41,7 +59,6 @@ export const getTransactionsBySheet = async (sheetId: string) => {
   }
 };
 
-// Get a single Transaction by ID
 export const getTransactionById = async (id: string) => {
   try {
     return await prisma.transaction.findUnique({
@@ -53,22 +70,26 @@ export const getTransactionById = async (id: string) => {
   }
 };
 
-// Update a Transaction
 export const updateTransaction = async (
   id: string,
-  data: Partial<{
-    name: string;
-    type: "in" | "out";
-    class: "fixed" | "variable" | "occasional";
-    nominal: number;
-    notes?: string;
-    financialGoalId?: string;
-  }>,
+  sheetId: string,
+  name: string,
+  type: "in" | "out",
+  nominal: number,
+  classification?: string,
+  notes?: string,
 ) => {
   try {
     return await prisma.transaction.update({
       where: { id },
-      data,
+      data: {
+        sheetId,
+        name,
+        type,
+        class: classification,
+        nominal,
+        notes,
+      },
     });
   } catch (error) {
     console.error("Error updating transaction:", error);
@@ -76,7 +97,6 @@ export const updateTransaction = async (
   }
 };
 
-// Delete a Transaction
 export const deleteTransaction = async (id: string) => {
   try {
     return await prisma.transaction.delete({

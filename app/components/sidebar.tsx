@@ -15,7 +15,7 @@ export default function Sidebar() {
   const location = useLocation();
   return (
     <div className="hidden lg:block">
-      <div className="fixed left-0 top-0 px-6 h-svh w-[var(--sidebar-width)] bg-neutral-50 border-r">
+      <div className="fixed left-0 top-0 px-6 h-svh w-[var(--sidebar-width)] bg-neutral-50">
         <div className="h-28 mx-5">
           <Link
             to="/sheets"

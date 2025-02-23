@@ -101,6 +101,16 @@ export async function getSheet(
   return sheet;
 }
 
+export async function getSheetById(id: string): Promise<Sheet | null> {
+  const sheet = await prisma.sheet.findUnique({
+    where: { id },
+  });
+  if (!sheet) {
+    return null;
+  }
+  return sheet;
+}
+
 export async function deleteSheet(
   id: string,
   userId: string,

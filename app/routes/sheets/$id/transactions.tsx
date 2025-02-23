@@ -124,7 +124,7 @@ function ListTransactions() {
       <Divide>
         <ExpectationSum />
         {trxs ? (
-          transactions.map((trx) => <Transaction key={trx.id} {...trx} />)
+          transactions.map((trx) => <TransactionItem key={trx.id} {...trx} />)
         ) : (
           <EmptyTransaction />
         )}
@@ -174,7 +174,7 @@ function ExpectationSum() {
   );
 }
 
-function Transaction(props: Transaction) {
+function TransactionItem(props: Transaction) {
   const {
     bool: { isExpectationModeActive },
   } = useLoaderData<typeof loader>();
@@ -192,11 +192,11 @@ function Transaction(props: Transaction) {
     );
   }
   return (
-    <TransactionContentLayout id={id}>
-      <Link key={id} to={`/sheets/edit/${id}`}>
+    <Link key={id} to={`/sheets/edit/${id}`}>
+      <TransactionContentLayout id={id}>
         <TransactionContent {...props} />
-      </Link>
-    </TransactionContentLayout>
+      </TransactionContentLayout>
+    </Link>
   );
 }
 function TransactionCheckbox({

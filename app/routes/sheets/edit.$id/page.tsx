@@ -4,6 +4,7 @@ import {
   Link,
   LoaderFunctionArgs,
   MetaFunction,
+  redirect,
   useActionData,
   useFetcher,
   useLoaderData,
@@ -23,89 +24,105 @@ import ShellPage, { Section } from "~/components/shell-page";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { InputNumber } from "~/components/ui/input-number";
-import { Label } from "~/components/ui/label";
+import { Label, labelVariants } from "~/components/ui/label";
 import { Textarea } from "~/components/ui/textarea";
 import { ToggleGroup, ToggleGroupItem } from "~/components/ui/toggle-group";
 import Navigation from "~/components/navigation";
 
 import { cn } from "~/lib/utils";
 
+import {
+  getTransactionById,
+  updateTransaction,
+} from "~/utils/transaction.server";
+import { getSheetById } from "~/utils/sheet.server";
+import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
+import { ErrorMessage } from "~/components/errors";
+
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
   const title = data?.name;
   return [{ title }, { name: "", content: "" }];
 };
 
-export const action = async ({ request }: ActionFunctionArgs) => {
+export const action = async ({ request, params }: ActionFunctionArgs) => {
   const formData = await request.formData();
-  console.log("formData: ", JSON.stringify(formData));
+  const submission = parseWithZod(formData, { schema: editTransactionSchema });
+
+  const { titleId, sheetId, name, type, classification, nominal, notes } =
+    submission.payload;
+  const transactionId = params.id || "";
+
+  if (
+    typeof titleId === "string" &&
+    typeof sheetId === "string" &&
+    typeof name === "string" &&
+    typeof notes === "string" &&
+    typeof classification === "string" &&
+    typeof nominal === "string" &&
+    (type === "in" || type === "out")
+  ) {
+    const nominalValue = nominal?.split("Rp")[1].split(".").join("");
+    const newTransaction = await updateTransaction(
+      transactionId,
+      sheetId,
+      name,
+      type,
+      parseInt(nominalValue),
+      type === "out" ? classification : "",
+      notes,
+    );
+    if (newTransaction) return redirect(`/sheets/${titleId}`);
+  }
+
   return {};
 };
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
-  const trx = transactions.find((t) => t.id === params.id);
+  const transaction = await getTransactionById(params.id || "");
+  const sheet = await getSheetById(transaction?.sheetId || "");
   return {
-    ...trx,
+    ...transaction,
+    ...sheet,
   };
 };
 
-const transactions = [
-  {
-    id: "1",
-    sheetId: "Tagihan-Jan-2025",
-    name: "Kredivo",
-    type: "out",
-    nominal: 890000,
-    notes: null,
-  },
-  {
-    id: "2",
-    sheetId: "Tagihan-Jan-2025",
-    name: "Traveloka",
-    type: "out",
-    nominal: 1780000,
-    notes: "Lunas",
-  },
-  {
-    id: "3",
-    sheetId: "Tagihan-Jan-2025",
-    name: "Transfer",
-    type: "in",
-    nominal: 90000000,
-    notes: "Sudah diterima",
-  },
-  {
-    id: "4",
-    sheetId: "Tagihan-Des-2024",
-    name: "Bayar listrik",
-    type: "out",
-    nominal: 201500,
-    notes: null,
-  },
-  {
-    id: "5",
-    sheetId: "Tagihan-Feb-2025",
-    name: "Jajan Indomaret",
-    type: "out",
-    nominal: 11200,
-    notes: null,
-  },
-];
-
-const editTransactionSchema = z.object({
-  name: z
-    .string({ required_error: "Nama transaksi harus diunggah" })
-    .max(30, "Maksimal 30 karakter"),
-  type: z
-    .string({ required_error: "Tipe transaksi harus diisi" })
-    .max(30, "Maksimal 30 karakter"),
-  nominal: z
-    .string({ required_error: "Nominal transaksi harus diisi" })
-    .max(30, "Maksimal 30 karakter"),
-  notes: z.string().max(30, "Maksimal 30 karakter").optional(),
-});
+const editTransactionSchema = z
+  .object({
+    name: z
+      .string({ required_error: "Nama transaksi harus diisi" })
+      .max(30, "Maksimal 30 karakter"),
+    nominal: z
+      .string({ required_error: "Nominal transaksi harus diisi" })
+      .max(30, "Maksimal 30 karakter"),
+    notes: z.string().max(30, "Maksimal 30 karakter").optional(),
+    type: z.enum(["in", "out"], {
+      errorMap: () => ({ message: "Tipe transaksi harus diisi" }),
+    }),
+  })
+  .and(
+    z.discriminatedUnion("type", [
+      z.object({
+        type: z.literal("in"),
+        classification: z.enum(["fixed", "variable", "occasional"]).optional(),
+      }),
+      z.object({
+        type: z.literal("out"),
+        classification: z.enum(["fixed", "variable", "occasional"], {
+          errorMap: () => ({ message: "Pertanyaan harus dijawab" }),
+        }),
+      }),
+    ]),
+  );
 const formId = "edit-transaction";
 export default function Edit() {
-  const { name, nominal, notes, sheetId } = useLoaderData<typeof loader>();
+  const {
+    name,
+    nominal,
+    notes,
+    type,
+    class: classification,
+    titleId,
+  } = useLoaderData<typeof loader>();
 
   const fetcher = useFetcher();
   const actionData = useActionData<typeof action>();
@@ -119,6 +136,8 @@ export default function Edit() {
       name,
       nominal: nominal?.toString(),
       notes,
+      type,
+      classification,
     },
     shouldValidate: "onInput",
   });
@@ -129,7 +148,7 @@ export default function Edit() {
         <Navigation />
         <div className="w-full h-12">
           <Link
-            to={`/sheets/${sheetId}`}
+            to={`/sheets/${titleId}`}
             prefetch="viewport"
             className="p-0 h-fit active:scale-[0.99] font-normal inline-flex items-center tap-highlight-transparent"
           >
@@ -157,7 +176,7 @@ export default function Edit() {
             {...getFormProps(form)}
           >
             <FormEditTransaction />
-            <div className="fixed left-0 bottom-0 py-6 px-4 bg-background w-full">
+            <div className="fixed left-0 lg:left-[var(--sidebar-width)] 2xl:left-0 bg-background bottom-0 py-6 px-4 w-full lg:w-[calc(100%_-_var(--sidebar-width))]">
               <div className="max-w-[var(--shell-page-width)] lg:max-w-[406px] mx-auto w-full flex flex-col gap-2 justify-between">
                 <Button
                   variant="primary"
@@ -179,15 +198,17 @@ export default function Edit() {
 }
 
 function FormEditTransaction() {
-  const { name, sheetId, type } = useLoaderData<typeof loader>();
-  const title = sheetId?.replace(/-/g, " ");
+  const { name, titleId, sheetId } = useLoaderData<typeof loader>();
+  const title = titleId?.replace(/-/g, " ");
 
-  const [nameField] = useField("name");
-  const [notesField] = useField("notes");
-  const [typeField] = useField("type");
+  const [nameMeta] = useField("name");
+  const [notesMeta] = useField("notes");
+  const [typeMeta] = useField("type");
 
   return (
     <div className="flex flex-col gap-2 h-full mb-52 lg:mb-0">
+      <input type="hidden" name="sheetId" value={sheetId} />
+      <input type="hidden" name="titleId" value={titleId} />
       <Nominal />
       <div className="mx-auto w-full max-w-[240px]">
         <p className="text-center text-sm text-neutral-600 mb-4">
@@ -206,43 +227,45 @@ function FormEditTransaction() {
       </Section>
       <Section className="bg-white border border-neutral-200 dark:border-neutral-800 rounded-xl 2xl:rounded-2xl">
         <div className="grid w-full items-center gap-2 py-4">
-          <Label htmlFor={nameField.id} className="font-semibold">
+          <Label htmlFor={nameMeta.id} className="font-semibold">
             Nama Transaksi
           </Label>
           <Input
             placeholder="Masukkan nama transaksi"
-            error={!!nameField.errors}
-            {...getInputProps(nameField, {
+            error={!!nameMeta.errors}
+            {...getInputProps(nameMeta, {
               type: "text",
-              ariaDescribedBy: nameField.descriptionId,
+              ariaDescribedBy: nameMeta.descriptionId,
             })}
-            key={nameField.key}
+            key={nameMeta.key}
           />
         </div>
       </Section>
       <Section className="bg-white border border-neutral-200 dark:border-neutral-800 rounded-xl 2xl:rounded-2xl">
         <div className="grid w-full items-center gap-2 py-4">
-          <Label htmlFor={typeField.id} className="font-semibold">
+          <Label htmlFor={typeMeta.id} className="font-semibold" required>
             Tipe Transaksi
           </Label>
-          <Type type={type ?? ""} />
+          <Type />
+          {typeMeta.errors && <ErrorMessage>{typeMeta.errors}</ErrorMessage>}
         </div>
       </Section>
+      <ClassificationSurvey />
       <Section className="bg-white border border-neutral-200 dark:border-neutral-800 rounded-xl 2xl:rounded-2xl">
         <div className="grid w-full items-center gap-2 py-4">
-          <Label htmlFor={notesField.id} className="font-semibold">
+          <Label htmlFor={notesMeta.id} className="font-semibold">
             Catatan
           </Label>
           <Textarea
             placeholder="Masukkan catatan terkait transaksi"
             rows={4}
             maxLength={32}
-            error={!!notesField.errors}
-            {...getInputProps(notesField, {
+            error={!!notesMeta.errors}
+            {...getInputProps(notesMeta, {
               type: "text",
-              ariaDescribedBy: notesField.descriptionId,
+              ariaDescribedBy: notesMeta.descriptionId,
             })}
-            key={notesField.key}
+            key={notesMeta.key}
           />
         </div>
       </Section>
@@ -250,15 +273,15 @@ function FormEditTransaction() {
   );
 }
 function Nominal() {
-  const { name, notes, type, sheetId } = useLoaderData<typeof loader>();
-  const title = sheetId?.replace(/-/g, " ");
+  const { name, notes, type, titleId } = useLoaderData<typeof loader>();
+  const title = titleId?.replace(/-/g, " ");
 
-  const [nominalField] = useField("nominal");
+  const [nominalMeta] = useField("nominal");
   return (
     <div className="flex flex-col w-full items-center justify-center min-h-[calc(100svh-19rem)] lg:min-h-[calc(100svh-35.5rem)] lg:my-32">
       {type === "out" ? (
         <Label
-          htmlFor={nominalField.id}
+          htmlFor={nominalMeta.id}
           className="bg-danger-50 h-12 w-12 mb-4 flex justify-center items-center rounded-full border border-danger-200"
         >
           <span>
@@ -280,7 +303,7 @@ function Nominal() {
         </Label>
       ) : (
         <Label
-          htmlFor={nominalField.id}
+          htmlFor={nominalMeta.id}
           className="bg-green-50 h-12 w-12 mb-4 flex justify-center items-center rounded-full border border-green-400"
         >
           <span>
@@ -302,14 +325,14 @@ function Nominal() {
         </Label>
       )}
       <Label
-        htmlFor={nominalField.id}
+        htmlFor={nominalMeta.id}
         className="text-base font-semibold text-neutral-700"
       >
         {name}
       </Label>
       {notes && (
         <Label
-          htmlFor={nominalField.id}
+          htmlFor={nominalMeta.id}
           className="text-xs font-normal truncate text-neutral-500"
         >
           {notes}
@@ -317,11 +340,11 @@ function Nominal() {
       )}
       <InputNumber
         placeholder="Rp"
-        className="border-none bg-transparent text-center px-0 text-4xl font-bold"
-        error={!!nominalField.errors}
-        {...getInputProps(nominalField, {
+        className="border-none bg-transparent text-center px-0 text-4xl font-extrabold"
+        error={!!nominalMeta.errors}
+        {...getInputProps(nominalMeta, {
           type: "text",
-          ariaDescribedBy: nominalField.descriptionId,
+          ariaDescribedBy: nominalMeta.descriptionId,
         })}
         prefix="Rp"
         pattern="[0-9]*"
@@ -330,10 +353,10 @@ function Nominal() {
         decimalSeparator=","
         allowNegative={false}
         maxLength={14}
-        key={nominalField.key}
+        key={nominalMeta.key}
       />
       <Label
-        htmlFor={nominalField.id}
+        htmlFor={nominalMeta.id}
         className="text-base mt-2 text-primary-600 font-semibold"
       >
         {title}
@@ -341,25 +364,74 @@ function Nominal() {
     </div>
   );
 }
-function Type({ type }: { type: TTransaction["type"] }) {
-  const [field, meta] = useField("type");
 
-  const [value, setValue] = React.useState(type);
+export function ClassificationSurvey() {
+  const [meta, form] = useField("classification");
+  const [typeMeta] = useField("type");
+
+  return (
+    <Section
+      className={cn(
+        "hidden",
+        typeMeta.value === "out" &&
+        "block bg-white border border-neutral-200 dark:border-neutral-800 rounded-xl 2xl:rounded-2xl",
+      )}
+    >
+      <div className="grid w-full items-center gap-4 py-4">
+        <input
+          type="hidden"
+          name={meta.name}
+          value={String(meta.value || "")}
+        />
+        <Label className="font-semibold" required>
+          Apakah nominal pengeluaran ini biasanya sama setiap bulan?
+        </Label>
+        <RadioGroup
+          onValueChange={(value) => {
+            if (value) {
+              form.update({ name: meta.name, value });
+            }
+          }}
+          defaultValue={String(meta.initialValue)}
+        >
+          <div className="flex items-center space-x-4">
+            <RadioGroupItem value="fixed" id="fixed" />
+            <label className={labelVariants()} htmlFor="fixed">
+              Ya, selalu sama
+            </label>
+          </div>
+          <div className="flex items-center space-x-4">
+            <RadioGroupItem value="variable" id="variable" />
+            <label className={labelVariants()} htmlFor="variable">
+              Ya, sering tapi nominalnya berubah
+            </label>
+          </div>
+          <div className="flex items-center space-x-4">
+            <RadioGroupItem value="occasional" id="occasional" />
+            <label className={labelVariants()} htmlFor="occasional">
+              Tidak, ini hanya terjadi karena keadaan mendesak{" "}
+            </label>
+          </div>
+        </RadioGroup>
+        {meta.errors && <ErrorMessage>{meta.errors}</ErrorMessage>}
+      </div>
+    </Section>
+  );
+}
+
+function Type() {
+  const [meta, form] = useField("type");
   return (
     <div>
-      <input
-        {...getInputProps(field, {
-          type: "hidden",
-          ariaDescribedBy: field.descriptionId,
-        })}
-      />
+      <input type="hidden" name={meta.name} value={String(meta.value || "")} />
       <ToggleGroup
         type="single"
-        onValueChange={(v) => {
-          setValue(v);
-          meta.validate();
+        onValueChange={(value) => {
+          if (value) {
+            form.update({ name: meta.name, value });
+          }
         }}
-        defaultValue={value}
+        defaultValue={String(meta.initialValue || "")}
         className="flex w-full items-center gap-2"
       >
         <ToggleGroupItem

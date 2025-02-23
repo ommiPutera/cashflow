@@ -25,7 +25,10 @@ import { deleteSheet, getSheet } from "~/utils/sheet.server";
 
 import { getSession } from "~/lib/session.server";
 
-import { getTransactionsBySheet } from "~/utils/transaction.server";
+import {
+  getTotalInAndOut,
+  getTransactionsBySheet,
+} from "~/utils/transaction.server";
 import SheetSum from "./sheet-sum";
 import Transactions from "./transactions";
 
@@ -58,11 +61,12 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   if (!sheet) return redirect("/sheets");
 
   const transactions = await getTransactionsBySheet(sheet.id);
+  const sum = await getTotalInAndOut(sheet.id);
+  const totalIn = sum.totalIn;
+  const totalOut = sum.totalOut;
 
   const isPinned = true;
 
-  const totalIn = 0;
-  const totalOut = 0;
   return {
     transactions,
     flag: {
