@@ -80,7 +80,7 @@
 
     --shell-page-width: 550px;
 
-    --sidebar-width: 270px;
+    --sidebar-width: 240px;
 
     --header-height: 96px;
     --header-height-mobile: 114px;
@@ -151,12 +151,12 @@
   textarea::selection {
     color: inherit;
   }
-  input:-webkit-autofill,
+  /* input:-webkit-autofill,
   input:-webkit-autofill:focus {
     transition:
       background-color 0s 600000s,
       color 0s 600000s !important;
-  }
+  } */
 }
 
 @layer utilities {

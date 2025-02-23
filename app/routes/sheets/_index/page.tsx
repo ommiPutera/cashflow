@@ -120,6 +120,10 @@ function GroupedSheet() {
       title: "Kemarin",
     },
     {
+      propKey: "last7Days",
+      title: "7 Hari Sebelumnya",
+    },
+    {
       propKey: "last30Days",
       title: "30 Hari Sebelumnya",
     },
@@ -161,11 +165,11 @@ function SheetsLinks({ title, sheets }: TGroupSheet) {
     </Section>
   );
 }
-function SheetItem({ title, titleId, createdAt }: Sheet) {
-  const date = format(new Date(createdAt), "dd MMM yyyy", {
+function SheetItem({ title, titleId, updatedAt }: Sheet) {
+  const date = format(new Date(updatedAt), "dd MMM yyyy", {
     locale: id,
   });
-  const time = format(new Date(createdAt), "hh:mm", {
+  const time = format(new Date(updatedAt), "hh:mm", {
     locale: id,
   });
   return (

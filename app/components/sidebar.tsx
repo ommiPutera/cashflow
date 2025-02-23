@@ -15,8 +15,8 @@ export default function Sidebar() {
   const location = useLocation();
   return (
     <div className="hidden lg:block">
-      <div className="fixed left-0 top-0 px-6 h-svh w-[var(--sidebar-width)] bg-neutral-50">
-        <div className="h-28 mx-5">
+      <div className="fixed left-0 top-0 px-3 h-svh w-[var(--sidebar-width)] bg-neutral-50">
+        <div className="h-28 mx-3">
           <Link
             to="/sheets"
             prefetch="intent"
@@ -44,7 +44,7 @@ export default function Sidebar() {
             >
               <path d="M5 12h14M12 5v14"></path>
             </svg>
-            <span className="text-sm font-bold">Buat Lembar</span>
+            <span className="text-sm font-medium">Buat Lembar</span>
           </ButtonLink>
           <div className="flex flex-col">
             {tabs.map((tab) => {
@@ -56,7 +56,7 @@ export default function Sidebar() {
                   key={tab.title}
                   prefetch="intent"
                   className={cn(
-                    "px-5 justify-start text-neutral-500 font-semibold border border-transparent gap-6 hover:bg-primary-50",
+                    "px-5 justify-start text-neutral-500 font-medium border border-transparent gap-6 hover:bg-primary-50",
                     isMatch && "text-primary-500",
                   )}
                 >

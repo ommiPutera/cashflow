@@ -176,7 +176,7 @@ export default function Edit() {
             {...getFormProps(form)}
           >
             <FormEditTransaction />
-            <div className="fixed left-0 lg:left-[var(--sidebar-width)] 2xl:left-0 bg-background bottom-0 py-6 px-4 w-full lg:w-[calc(100%_-_var(--sidebar-width))]">
+            <div className="fixed left-0 lg:left-[var(--sidebar-width)] bg-background bottom-0 py-6 px-4 w-full lg:w-[calc(100%_-_var(--sidebar-width))] 2xl:w-[calc(100%_-_var(--sidebar-width)_-_var(--sidebar-width))]">
               <div className="max-w-[var(--shell-page-width)] lg:max-w-[406px] mx-auto w-full flex flex-col gap-2 justify-between">
                 <Button
                   variant="primary"
@@ -227,7 +227,7 @@ function FormEditTransaction() {
       </Section>
       <Section className="bg-white border border-neutral-200 dark:border-neutral-800 rounded-xl 2xl:rounded-2xl">
         <div className="grid w-full items-center gap-2 py-4">
-          <Label htmlFor={nameMeta.id} className="font-semibold">
+          <Label htmlFor={nameMeta.id} className="font-semibold" required>
             Nama Transaksi
           </Label>
           <Input
@@ -374,7 +374,7 @@ export function ClassificationSurvey() {
       className={cn(
         "hidden",
         typeMeta.value === "out" &&
-        "block bg-white border border-neutral-200 dark:border-neutral-800 rounded-xl 2xl:rounded-2xl",
+          "block bg-white border border-neutral-200 dark:border-neutral-800 rounded-xl 2xl:rounded-2xl",
       )}
     >
       <div className="grid w-full items-center gap-4 py-4">

@@ -7,6 +7,7 @@ const prisma = new PrismaClient();
 type TGroupSheets = {
   today: Sheet[];
   yesterday: Sheet[];
+  last7Days: Sheet[];
   last30Days: Sheet[];
   more: Sheet[];
 };
@@ -14,28 +15,32 @@ export async function getGroupedSheets(userId: string): Promise<TGroupSheets> {
   const now = new Date();
   const todayStart = startOfDay(now);
   const yesterdayStart = subDays(todayStart, 1);
+  const last7aysStart = subDays(todayStart, 7);
   const last30DaysStart = subDays(todayStart, 30);
 
   const sheets = await prisma.sheet.findMany({
     where: { userId, deletedAt: null },
-    orderBy: { createdAt: "desc" },
+    orderBy: { updatedAt: "desc" },
   });
 
   const groupedSheets: TGroupSheets = {
     today: [],
     yesterday: [],
+    last7Days: [],
     last30Days: [],
     more: [],
   };
 
   for (const sheet of sheets) {
-    const createdAt = new Date(sheet.createdAt);
+    const updatedAt = new Date(sheet.updatedAt);
 
-    if (createdAt >= todayStart) {
+    if (updatedAt >= todayStart) {
       groupedSheets.today.push(sheet);
-    } else if (createdAt >= yesterdayStart) {
+    } else if (updatedAt >= yesterdayStart) {
       groupedSheets.yesterday.push(sheet);
-    } else if (createdAt >= last30DaysStart) {
+    } else if (updatedAt >= last7aysStart) {
+      groupedSheets.last7Days.push(sheet);
+    } else if (updatedAt >= last30DaysStart) {
       groupedSheets.last30Days.push(sheet);
     } else {
       groupedSheets.more.push(sheet);
@@ -98,6 +103,10 @@ export async function getSheet(
   if (!sheet) {
     return null;
   }
+  await prisma.sheet.update({
+    where: { id: sheet.id },
+    data: { updatedAt: new Date() },
+  });
   return sheet;
 }
 
@@ -108,6 +117,10 @@ export async function getSheetById(id: string): Promise<Sheet | null> {
   if (!sheet) {
     return null;
   }
+  await prisma.sheet.update({
+    where: { id },
+    data: { updatedAt: new Date() },
+  });
   return sheet;
 }
 
