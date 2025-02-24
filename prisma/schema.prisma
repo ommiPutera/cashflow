@@ -40,15 +40,17 @@ model Sheet {
 }
 
 model Transaction {
-  id        String          @id @default(auto()) @map("_id") @db.ObjectId
-  sheetId   String          @map("sheet_id") @db.ObjectId
-  name      String
-  type      TransactionType
-  class     String?
-  nominal   Int
-  notes     String?
-  createdAt DateTime        @default(now())
-  updatedAt DateTime        @updatedAt
+  id                           String          @id @default(auto()) @map("_id") @db.ObjectId
+  sheetId                      String          @map("sheet_id") @db.ObjectId
+  name                         String
+  type                         TransactionType
+  expenseexpenseClassification String?
+  nominal                      Int
+  notes                        String?
+  createdAt                    DateTime        @default(now())
+  updatedAt                    DateTime        @updatedAt
+  assets                       Boolean
+  liabilities                  Boolean
 
   sheet Sheet @relation(fields: [sheetId], references: [id], onDelete: Cascade)
 

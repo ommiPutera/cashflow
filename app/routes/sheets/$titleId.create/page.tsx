@@ -46,27 +46,38 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
   const submission = parseWithZod(formData, { schema: createTransactionchema });
 
-  const { titleId, id, name, type, classification, nominal, notes } =
-    submission.payload;
+  const {
+    titleId,
+    id,
+    name,
+    type,
+    expenseClassification,
+    nominal,
+    notes,
+    balanceSheet,
+  } = submission.payload;
 
   if (
     typeof titleId === "string" &&
     typeof id === "string" &&
     typeof name === "string" &&
     typeof notes === "string" &&
-    typeof classification === "string" &&
+    typeof expenseClassification === "string" &&
+    typeof balanceSheet === "string" &&
     typeof nominal === "string" &&
     (type === "in" || type === "out")
   ) {
     const nominalValue = nominal?.split("Rp")[1].split(".").join("");
-    const newTransaction = await createTransaction(
-      id,
+    const newTransaction = await createTransaction({
+      sheetId: id,
       name,
       type,
-      parseInt(nominalValue),
-      classification,
+      nominal: parseInt(nominalValue),
+      assets: balanceSheet === "assets",
+      liabilities: balanceSheet === "liabilities",
+      expenseClassification,
       notes,
-    );
+    });
     if (newTransaction) return redirect(`/sheets/${titleId}`);
     console.log("newTransaction: ", newTransaction);
   }
@@ -79,7 +90,6 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const user: User = session.get("user");
 
   const sheet = await getSheet(params.titleId || "", user.id);
-  console.log("sheet: ", sheet);
   return {
     ...sheet,
   };
@@ -94,6 +104,7 @@ const createTransactionchema = z
       .string({ required_error: "Nominal transaksi harus diisi" })
       .max(30, "Maksimal 30 karakter"),
     notes: z.string().max(30, "Maksimal 30 karakter").optional(),
+    balanceSheet: z.string({ required_error: "Pertanyaan harus dijawab" }),
     type: z.enum(["in", "out"], {
       errorMap: () => ({ message: "Tipe transaksi harus diisi" }),
     }),
@@ -102,11 +113,13 @@ const createTransactionchema = z
     z.discriminatedUnion("type", [
       z.object({
         type: z.literal("in"),
-        classification: z.enum(["fixed", "variable", "occasional"]).optional(),
+        expenseClassification: z
+          .enum(["fixed", "variable", "occasional"])
+          .optional(),
       }),
       z.object({
         type: z.literal("out"),
-        classification: z.enum(["fixed", "variable", "occasional"], {
+        expenseClassification: z.enum(["fixed", "variable", "occasional"], {
           errorMap: () => ({ message: "Pertanyaan harus dijawab" }),
         }),
       }),
@@ -248,7 +261,8 @@ function FormCreateTransaction() {
           {typeMeta.errors && <ErrorMessage>{typeMeta.errors}</ErrorMessage>}
         </div>
       </Section>
-      <ClassificationSurvey />
+      <ExpenseClassification />
+      <BalanceSheet />
       <Section className="bg-white border border-neutral-200 dark:border-neutral-800 rounded-xl 2xl:rounded-2xl">
         <div className="grid w-full items-center gap-2 py-4">
           <Label htmlFor={notesMeta.id} className="font-semibold">
@@ -257,7 +271,7 @@ function FormCreateTransaction() {
           <Textarea
             placeholder="Masukkan catatan terkait transaksi"
             rows={4}
-            maxLength={32}
+            maxLength={72}
             error={!!notesMeta.errors}
             {...getInputProps(notesMeta, {
               type: "text",
@@ -272,8 +286,8 @@ function FormCreateTransaction() {
   );
 }
 
-export function ClassificationSurvey() {
-  const [meta, form] = useField("classification");
+export function ExpenseClassification() {
+  const [meta, form] = useField("expenseClassification");
   const [typeMeta] = useField("type");
 
   return (
@@ -316,6 +330,46 @@ export function ClassificationSurvey() {
             <RadioGroupItem value="occasional" id="occasional" />
             <label className={labelVariants()} htmlFor="occasional">
               Tidak, ini hanya terjadi karena keadaan mendesak{" "}
+            </label>
+          </div>
+        </RadioGroup>
+        {meta.errors && <ErrorMessage>{meta.errors}</ErrorMessage>}
+      </div>
+    </Section>
+  );
+}
+
+function BalanceSheet() {
+  const [meta, form] = useField("balanceSheet");
+  return (
+    <Section className="block bg-white border border-neutral-200 dark:border-neutral-800 rounded-xl 2xl:rounded-2xl">
+      <div className="grid w-full items-center gap-4 py-4">
+        <input
+          type="hidden"
+          name={meta.name}
+          value={String(meta.value || "")}
+        />
+        <Label className="font-semibold" required>
+          Apakah transaksi ini dimasa depan akan menambah nilai kekayaan Anda
+          atau justru merupakan kewajiban yang harus Anda bayar?
+        </Label>
+        <RadioGroup
+          onValueChange={(value) => {
+            if (value) {
+              form.update({ name: meta.name, value });
+            }
+          }}
+        >
+          <div className="flex items-center space-x-4">
+            <RadioGroupItem value="assets" id="assets" />
+            <label className={labelVariants()} htmlFor="assets">
+              Menambah nilai kekayaan (Aset)
+            </label>
+          </div>
+          <div className="flex items-center space-x-4">
+            <RadioGroupItem value="liabilities" id="liabilities" />
+            <label className={labelVariants()} htmlFor="liabilities">
+              Menambah kewajiban yang harus dibayar (Liabilitas)
             </label>
           </div>
         </RadioGroup>

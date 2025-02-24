@@ -2,24 +2,19 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export const createTransaction = async (
-  sheetId: string,
-  name: string,
-  type: "in" | "out",
-  nominal: number,
-  classification?: string,
-  notes?: string,
-) => {
+export const createTransaction = async (data: {
+  sheetId: string;
+  name: string;
+  type: "in" | "out";
+  nominal: number;
+  assets: boolean;
+  liabilities: boolean;
+  expenseClassification?: string;
+  notes?: string;
+}) => {
   try {
     return await prisma.transaction.create({
-      data: {
-        sheetId,
-        name,
-        type,
-        class: classification,
-        nominal,
-        notes,
-      },
+      data: { ...data },
     });
   } catch (error) {
     console.error("Error creating transaction:", error);
@@ -70,26 +65,24 @@ export const getTransactionById = async (id: string) => {
   }
 };
 
-export const updateTransaction = async (
-  id: string,
-  sheetId: string,
-  name: string,
-  type: "in" | "out",
-  nominal: number,
-  classification?: string,
-  notes?: string,
-) => {
+export const updateTransaction = async ({
+  id,
+  ...data
+}: {
+  id: string;
+  sheetId: string;
+  name: string;
+  type: "in" | "out";
+  nominal: number;
+  assets: boolean;
+  liabilities: boolean;
+  expenseClassification?: string;
+  notes?: string;
+}) => {
   try {
     return await prisma.transaction.update({
       where: { id },
-      data: {
-        sheetId,
-        name,
-        type,
-        class: classification,
-        nominal,
-        notes,
-      },
+      data: { ...data },
     });
   } catch (error) {
     console.error("Error updating transaction:", error);

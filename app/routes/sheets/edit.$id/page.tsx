@@ -32,6 +32,7 @@ import Navigation from "~/components/navigation";
 import { cn } from "~/lib/utils";
 
 import {
+  deleteTransaction,
   getTransactionById,
   updateTransaction,
 } from "~/utils/transaction.server";
@@ -44,33 +45,57 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
   return [{ title }, { name: "", content: "" }];
 };
 
+enum ActionType {
+  DELETE = "DELETE",
+  UPDATE = "UPDATE",
+}
 export const action = async ({ request, params }: ActionFunctionArgs) => {
   const formData = await request.formData();
   const submission = parseWithZod(formData, { schema: editTransactionSchema });
 
-  const { titleId, sheetId, name, type, classification, nominal, notes } =
-    submission.payload;
+  const {
+    titleId,
+    sheetId,
+    name,
+    type,
+    expenseClassification,
+    nominal,
+    notes,
+    balanceSheet,
+  } = submission.payload;
   const transactionId = params.id || "";
 
+  const actionType = submission.payload.actionType as
+    | keyof typeof ActionType
+    | null;
+  if (actionType === ActionType.DELETE) {
+    const transansation = await deleteTransaction(transactionId);
+    if (transansation) return redirect(`/sheets/${titleId}`);
+  }
+
   if (
+    actionType === ActionType.UPDATE &&
     typeof titleId === "string" &&
     typeof sheetId === "string" &&
     typeof name === "string" &&
     typeof notes === "string" &&
-    typeof classification === "string" &&
+    typeof expenseClassification === "string" &&
+    typeof balanceSheet === "string" &&
     typeof nominal === "string" &&
     (type === "in" || type === "out")
   ) {
     const nominalValue = nominal?.split("Rp")[1].split(".").join("");
-    const newTransaction = await updateTransaction(
-      transactionId,
+    const newTransaction = await updateTransaction({
+      id: transactionId,
       sheetId,
       name,
       type,
-      parseInt(nominalValue),
-      type === "out" ? classification : "",
+      nominal: parseInt(nominalValue),
+      expenseClassification: type === "out" ? expenseClassification : "",
+      assets: balanceSheet === "assets",
+      liabilities: balanceSheet === "liabilities",
       notes,
-    );
+    });
     if (newTransaction) return redirect(`/sheets/${titleId}`);
   }
 
@@ -94,7 +119,8 @@ const editTransactionSchema = z
     nominal: z
       .string({ required_error: "Nominal transaksi harus diisi" })
       .max(30, "Maksimal 30 karakter"),
-    notes: z.string().max(30, "Maksimal 30 karakter").optional(),
+    notes: z.string().max(72, "Maksimal 72 karakter").optional(),
+    balanceSheet: z.string({ required_error: "Pertanyaan harus dijawab" }),
     type: z.enum(["in", "out"], {
       errorMap: () => ({ message: "Tipe transaksi harus diisi" }),
     }),
@@ -103,11 +129,13 @@ const editTransactionSchema = z
     z.discriminatedUnion("type", [
       z.object({
         type: z.literal("in"),
-        classification: z.enum(["fixed", "variable", "occasional"]).optional(),
+        expenseClassification: z
+          .enum(["fixed", "variable", "occasional"])
+          .optional(),
       }),
       z.object({
         type: z.literal("out"),
-        classification: z.enum(["fixed", "variable", "occasional"], {
+        expenseClassification: z.enum(["fixed", "variable", "occasional"], {
           errorMap: () => ({ message: "Pertanyaan harus dijawab" }),
         }),
       }),
@@ -115,14 +143,8 @@ const editTransactionSchema = z
   );
 const formId = "edit-transaction";
 export default function Edit() {
-  const {
-    name,
-    nominal,
-    notes,
-    type,
-    class: classification,
-    titleId,
-  } = useLoaderData<typeof loader>();
+  const { name, nominal, notes, type, assets, expenseClassification, titleId } =
+    useLoaderData<typeof loader>();
 
   const fetcher = useFetcher();
   const actionData = useActionData<typeof action>();
@@ -137,7 +159,8 @@ export default function Edit() {
       nominal: nominal?.toString(),
       notes,
       type,
-      classification,
+      expenseClassification,
+      balanceSheet: assets ? "assets" : "liabilities",
     },
     shouldValidate: "onInput",
   });
@@ -176,8 +199,8 @@ export default function Edit() {
             {...getFormProps(form)}
           >
             <FormEditTransaction />
-            <div className="fixed left-0 lg:left-[var(--sidebar-width)] bg-background bottom-0 py-6 px-4 w-full lg:w-[calc(100%_-_var(--sidebar-width))] 2xl:w-[calc(100%_-_var(--sidebar-width)_-_var(--sidebar-width))]">
-              <div className="max-w-[var(--shell-page-width)] lg:max-w-[406px] mx-auto w-full flex flex-col gap-2 justify-between">
+            <div className="fixed left-0 lg:left-[var(--sidebar-width)] backdrop-blur-sm bg-background/80 bottom-0 py-6 px-4 w-full lg:w-[calc(100%_-_var(--sidebar-width))] 2xl:w-[calc(100%_-_var(--sidebar-width)_-_var(--sidebar-width))]">
+              <div className="max-w-[var(--shell-page-width)] lg:max-w-[520px] mx-auto w-full flex flex-col gap-2 justify-between">
                 <Button
                   variant="primary"
                   type="submit"
@@ -209,6 +232,7 @@ function FormEditTransaction() {
     <div className="flex flex-col gap-2 h-full mb-52 lg:mb-0">
       <input type="hidden" name="sheetId" value={sheetId} />
       <input type="hidden" name="titleId" value={titleId} />
+      <input type="hidden" name="actionType" value={ActionType.UPDATE} />
       <Nominal />
       <div className="mx-auto w-full max-w-[240px]">
         <p className="text-center text-sm text-neutral-600 mb-4">
@@ -218,11 +242,13 @@ function FormEditTransaction() {
       <div className="border-b border-neutral-400 border-dashed w-full mb-6"></div>
       <Section className="bg-white border border-neutral-200 dark:border-neutral-800 p-0 lg:p-0 rounded-xl 2xl:rounded-2xl overflow-hidden">
         <div className="h-1 bg-primary-500 w-full"></div>
-        <div className="px-4 py-5 lg:py-6 lg:px-6 flex flex-col">
-          <p className="text-sm text-neutral-500 font-semibold">{title}</p>
+        <div className="px-4 py-5 lg:py-6 lg:px-6 flex flex-col gap-2">
           <h2 className="text-lg font-bold koh-santepheap-bold">
             Ubah Transaksi: <span className="underline">{name}</span>
           </h2>
+          <p className="text-sm font-medium">
+            Transaksi ini tercatat pada lembar <b>{title}</b>
+          </p>
         </div>
       </Section>
       <Section className="bg-white border border-neutral-200 dark:border-neutral-800 rounded-xl 2xl:rounded-2xl">
@@ -250,7 +276,8 @@ function FormEditTransaction() {
           {typeMeta.errors && <ErrorMessage>{typeMeta.errors}</ErrorMessage>}
         </div>
       </Section>
-      <ClassificationSurvey />
+      <ExpenseClassification />
+      <BalanceSheet />
       <Section className="bg-white border border-neutral-200 dark:border-neutral-800 rounded-xl 2xl:rounded-2xl">
         <div className="grid w-full items-center gap-2 py-4">
           <Label htmlFor={notesMeta.id} className="font-semibold">
@@ -259,7 +286,7 @@ function FormEditTransaction() {
           <Textarea
             placeholder="Masukkan catatan terkait transaksi"
             rows={4}
-            maxLength={32}
+            maxLength={72}
             error={!!notesMeta.errors}
             {...getInputProps(notesMeta, {
               type: "text",
@@ -365,8 +392,8 @@ function Nominal() {
   );
 }
 
-export function ClassificationSurvey() {
-  const [meta, form] = useField("classification");
+export function ExpenseClassification() {
+  const [meta, form] = useField("expenseClassification");
   const [typeMeta] = useField("type");
 
   return (
@@ -485,8 +512,54 @@ function Type() {
   );
 }
 
+function BalanceSheet() {
+  const [meta, form] = useField("balanceSheet");
+  return (
+    <Section className="block bg-white border border-neutral-200 dark:border-neutral-800 rounded-xl 2xl:rounded-2xl">
+      <div className="grid w-full items-center gap-4 py-4">
+        <input
+          type="hidden"
+          name={meta.name}
+          value={String(meta.value || "")}
+        />
+        <Label className="font-semibold" required>
+          Apakah transaksi ini dimasa depan akan menambah nilai kekayaan Anda
+          atau justru merupakan kewajiban yang harus Anda bayar?
+        </Label>
+        <RadioGroup
+          onValueChange={(value) => {
+            if (value) {
+              form.update({ name: meta.name, value });
+            }
+          }}
+          defaultValue={String(meta.initialValue)}
+        >
+          <div className="flex items-center space-x-4">
+            <RadioGroupItem value="assets" id="assets" />
+            <label className={labelVariants()} htmlFor="assets">
+              Menambah nilai kekayaan (Aset)
+            </label>
+          </div>
+          <div className="flex items-center space-x-4">
+            <RadioGroupItem value="liabilities" id="liabilities" />
+            <label className={labelVariants()} htmlFor="liabilities">
+              Menambah kewajiban yang harus dibayar (Liabilitas)
+            </label>
+          </div>
+        </RadioGroup>
+        {meta.errors && <ErrorMessage>{meta.errors}</ErrorMessage>}
+      </div>
+    </Section>
+  );
+}
+
 function DeleteTransaction() {
   const [isRequest, setIsRequest] = React.useState(false);
+
+  const fetcher = useFetcher({ key: "transaction-delete" });
+  const isSubmitting = fetcher.state !== "idle" || fetcher.formData != null;
+
+  const { titleId } = useLoaderData<typeof loader>();
   return (
     <div>
       <Button
@@ -507,15 +580,20 @@ function DeleteTransaction() {
           isRequest && "flex",
         )}
       >
-        <Button
-          variant="outlined-danger"
-          type="button"
-          size="sm"
-          onClick={() => setIsRequest(true)}
-          className="border-none w-full rounded-none bg-danger-50 h-10 lg:h-9"
-        >
-          Ya, Hapus
-        </Button>
+        <fetcher.Form action="." method="post" className="w-full">
+          <input type="hidden" name="actionType" value={ActionType.DELETE} />
+          <input type="hidden" name="titleId" value={titleId} />
+          <Button
+            variant="outlined-danger"
+            type="submit"
+            size="sm"
+            disabled={isSubmitting}
+            onClick={() => setIsRequest(true)}
+            className="border-none w-full rounded-none bg-danger-50 h-10 lg:h-9"
+          >
+            Ya, Hapus
+          </Button>
+        </fetcher.Form>
         <Button
           variant="transparent"
           type="button"
