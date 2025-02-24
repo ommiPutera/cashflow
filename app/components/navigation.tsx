@@ -44,7 +44,7 @@ export const tabs = [
     ),
   },
   {
-    title: "Target",
+    title: "Goals",
     to: "/goals",
     icon: (
       <svg

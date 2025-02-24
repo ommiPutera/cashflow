@@ -523,8 +523,8 @@ function BalanceSheet() {
           value={String(meta.value || "")}
         />
         <Label className="font-semibold" required>
-          Apakah transaksi ini dimasa depan akan menambah nilai kekayaan Anda
-          atau justru merupakan kewajiban yang harus Anda bayar?
+          Apakah transaksi ini akan menambah nilai kekayaan Anda atau justru
+          kewajiban yang harus Anda bayar?
         </Label>
         <RadioGroup
           onValueChange={(value) => {

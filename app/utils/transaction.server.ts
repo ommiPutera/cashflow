@@ -100,3 +100,24 @@ export const deleteTransaction = async (id: string) => {
     throw new Error("Failed to delete transaction");
   }
 };
+
+export async function getTotalLiabilitiesAndAssets(userId: string) {
+  const transactions = await prisma.transaction.findMany({
+    where: { sheet: { userId } },
+    select: { nominal: true, assets: true, liabilities: true },
+  });
+
+  let totalAssets = 0;
+  let totalLiabilities = 0;
+
+  for (const transaction of transactions) {
+    if (transaction.assets) {
+      totalAssets += transaction.nominal;
+    }
+    if (transaction.liabilities) {
+      totalLiabilities += transaction.nominal;
+    }
+  }
+
+  return { totalAssets, totalLiabilities };
+}
