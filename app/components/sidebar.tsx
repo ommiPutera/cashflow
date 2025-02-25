@@ -7,7 +7,7 @@ import { cn } from "~/lib/utils";
 
 export function SidebarWrapper({ children }: { children: React.ReactNode }) {
   return (
-    <div className="lg:ml-[var(--sidebar-width)] 2xl:ml-0">{children}</div>
+    <div className="lg:ml-[var(--sidebar-width)] xl:ml-0">{children}</div>
   );
 }
 
@@ -15,8 +15,8 @@ export default function Sidebar() {
   const location = useLocation();
   return (
     <div className="hidden lg:block">
-      <div className="fixed left-0 top-0 px-3 h-svh w-[var(--sidebar-width)] bg-neutral-50">
-        <div className="h-28 mx-3">
+      <div className="fixed left-0 top-0 px-2 h-svh w-[var(--sidebar-width)] border border-neutral-100">
+        <div className="h-40 mx-3">
           <Link
             to="/sheets"
             prefetch="intent"
@@ -29,7 +29,7 @@ export default function Sidebar() {
           <ButtonLink
             to="/sheets/create"
             variant="outlined-primary"
-            className="w-fit px-5 py-8 justify-start text-neutral-500 font-semibold border border-transparent gap-6 text-primary-500 bg-primary-50"
+            className="w-fit pl-5 pr-8 py-8 justify-start font-semibold border border-primary-50 gap-6 text-primary-500 bg-primary-100/20"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -56,7 +56,7 @@ export default function Sidebar() {
                   key={tab.title}
                   prefetch="intent"
                   className={cn(
-                    "px-5 justify-start text-neutral-500 font-medium border border-transparent gap-6 hover:bg-primary-50",
+                    "px-5 justify-start text-neutral-500 text-sm font-medium border border-transparent gap-6 hover:bg-primary-50",
                     isMatch && "text-primary-500",
                   )}
                 >

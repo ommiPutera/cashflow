@@ -20,7 +20,7 @@ import { getSession } from "~/lib/session.server";
 
 export function meta() {
   return [
-    { title: "Verifikasi Akun Expense Sheet" },
+    { title: "Expense Sheet - Verifikasi akun Anda" },
     { name: "description", content: "Welcome to Expense Sheet" },
   ];
 }
@@ -94,63 +94,69 @@ export default function VerifyPage() {
 
   return (
     <ShellPage>
-      <div className="my-28 items-center w-full mx-auto flex flex-col gap-2 max-w-xs">
-        <div className="mb-20">
+      <div className="my-8 items-center w-full mx-auto flex flex-col gap-44 max-w-xs">
+        <div>
           <SVGLogo />
         </div>
-        <h1 className="text-2xl font-semibold tracking-tight text-neutral-800 text-center">
-          Periksa email kamu
-        </h1>
-        <p className="text-base font-medium text-neutral-600 text-center">
-          {" "}
-          {email ? (
-            <>Kami mengirimkan kode otp pada {email}</>
-          ) : (
-            <>Periksa email Anda untuk medapatkan kode verifikasi</>
-          )}
-        </p>
-        <div className="w-full">
-          <fetcher.Form method="post" className="space-y-2 w-full">
-            <input type="hidden" name="code" value={value} />
-            <Input
-              minLength={6}
-              maxLength={6}
-              required
-              value={value}
-              onChange={(e) => setValue(e.target.value)}
-              disabled={isSubmitting}
-              placeholder="Masuk 6 digit kode OTP"
-            />
-            <Button
-              type="submit"
-              variant="primary"
-              className="w-full rounded-full"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? "Memverifikasi..." : "Verifikasi Kode OTP"}
-            </Button>
-          </fetcher.Form>
-          {errors && (
-            <p className="text-sm text-red-500 text-center my-2">{errors}</p>
-          )}
-          <div className="flex flex-col mt-20 gap-2">
-            <p className="text-sm text-gray-600 text-center font-normal">
-              Tidak menerima kode?
+        <div className="w-full flex flex-col gap-4">
+          <div className="flex flex-col gap-2">
+            <h1 className="text-xl font-semibold tracking-tight text-neutral-800 koh-santepheap-bold">
+              Periksa email kamu
+            </h1>
+            <p className="text-base font-medium text-neutral-600">
+              {" "}
+              {email ? (
+                <>Kami mengirimkan kode otp pada {email}</>
+              ) : (
+                <>Periksa email Anda untuk medapatkan kode verifikasi</>
+              )}
             </p>
-            <fetcher.Form
-              method="POST"
-              action="/auth/login"
-              autoComplete="off"
-              className="flex w-full flex-col gap-2"
-            >
+          </div>
+          <div className="w-full">
+            <fetcher.Form method="post" className="w-full">
+              <input type="hidden" name="code" value={value} />
+              <div className="grid w-full items-center gap-2 py-4">
+                <Input
+                  minLength={6}
+                  maxLength={6}
+                  required
+                  value={value}
+                  onChange={(e) => setValue(e.target.value)}
+                  disabled={isSubmitting}
+                  placeholder="Masukkan 6 digit kode"
+                />
+              </div>
               <Button
-                variant="outlined-primary"
                 type="submit"
+                variant="primary"
                 className="w-full rounded-full"
+                disabled={isSubmitting}
               >
-                Minta kode baru
+                {isSubmitting ? "Memverifikasi..." : "Verifikasi Kode"}
               </Button>
             </fetcher.Form>
+            {errors && (
+              <p className="text-sm text-red-500 text-center my-2">{errors}</p>
+            )}
+            <div className="flex flex-col mt-20 gap-4">
+              <p className="text-sm text-gray-600 text-center font-normal">
+                Tidak menerima kode?
+              </p>
+              <fetcher.Form
+                method="POST"
+                action="/auth/login"
+                autoComplete="off"
+                className="flex w-full flex-col gap-2"
+              >
+                <Button
+                  variant="outlined-primary"
+                  type="submit"
+                  className="w-full rounded-full"
+                >
+                  Minta kode baru
+                </Button>
+              </fetcher.Form>
+            </div>
           </div>
         </div>
       </div>

@@ -18,7 +18,7 @@ import { getSession } from "~/lib/session.server";
 
 export function meta() {
   return [
-    { title: "Log in ke Expense Sheet" },
+    { title: "Expense Sheet - Masuk" },
     { name: "description", content: "Welcome to Expense Sheet" },
   ];
 }
@@ -52,40 +52,50 @@ export default function Route() {
 
   return (
     <ShellPage>
-      <div className="my-28 items-center w-full mx-auto flex flex-col gap-2 max-w-xs">
+      <div className="my-8 items-center w-full mx-auto flex flex-col gap-44 max-w-xs">
         <Link to="/">
-          <div className="mb-20">
+          <div>
             <SVGLogo />
           </div>
         </Link>
-        <h1 className="text-2xl font-semibold text-center tracking-tight text-neutral-800">
-          Log in ke akun kamu
-        </h1>
-        <fetcher.Form method="post" className="w-full">
-          <div className="grid w-full items-center gap-2 py-4">
-            <Label htmlFor="email-address" className="font-semibold text-left">
-              Alamat Email
-            </Label>
-            <Input
-              id="email-address"
-              placeholder="Masukkan alamat email"
-              error={errors}
-              type="email"
-              name="email"
-              required
-              disabled={isSubmitting}
-            />
-            {errors && <p className="text-danger-500 text-sm">{errors}</p>}
+        <div className="w-full flex flex-col gap-4">
+          <div className="flex flex-col gap-2">
+            <h1 className="text-xl font-semibold tracking-tight text-neutral-800 koh-santepheap-bold">
+              Selamat datang kembali.
+            </h1>
+            <p className="text-base font-medium text-neutral-600">
+              Masuk ke akun kamu
+            </p>
           </div>
-          <Button
-            type="submit"
-            variant="primary"
-            className="w-full rounded-full"
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? "Tunggu..." : "Lanjutkan dengan Email"}
-          </Button>
-        </fetcher.Form>
+          <fetcher.Form method="post" className="w-full">
+            <div className="grid w-full items-center gap-2 py-4">
+              <Label
+                htmlFor="email-address"
+                className="font-semibold text-left"
+              >
+                Alamat Email
+              </Label>
+              <Input
+                id="email-address"
+                placeholder="you@example.com"
+                error={errors}
+                type="email"
+                name="email"
+                required
+                disabled={isSubmitting}
+              />
+              {errors && <p className="text-danger-500 text-sm">{errors}</p>}
+            </div>
+            <Button
+              type="submit"
+              variant="primary"
+              className="w-full rounded-full"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Tunggu..." : "Lanjutkan"}
+            </Button>
+          </fetcher.Form>
+        </div>
       </div>
     </ShellPage>
   );
