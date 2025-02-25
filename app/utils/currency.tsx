@@ -13,7 +13,7 @@ export function toIDR(
   symbol = true,
   negativeFormat: "minus" | "parentheses" = "minus",
 ) {
-  if (isNaN(v)) return v.toString();
+  if (isNaN(v)) return v?.toString();
 
   const absValue = Math.abs(v);
   const stringArr = absValue.toString().split(".");

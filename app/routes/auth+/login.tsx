@@ -68,7 +68,7 @@ export default function Route() {
             </p>
           </div>
           <fetcher.Form method="post" className="w-full">
-            <div className="grid w-full items-center gap-2 py-4">
+            <div className="grid w-full items-center gap-4 py-4">
               <Label
                 htmlFor="email-address"
                 className="font-semibold text-left"

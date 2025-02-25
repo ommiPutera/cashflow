@@ -115,7 +115,7 @@ export default function VerifyPage() {
           <div className="w-full">
             <fetcher.Form method="post" className="w-full">
               <input type="hidden" name="code" value={value} />
-              <div className="grid w-full items-center gap-2 py-4">
+              <div className="grid w-full items-center gap-4 py-4">
                 <Input
                   minLength={6}
                   maxLength={6}

@@ -98,7 +98,7 @@ export default function Index() {
       <Navigation />
       <Link
         to="/folder"
-        prefetch="viewport"
+        prefetch="render"
         className="p-0 h-fit active:scale-[0.99] font-normal inline-flex items-center tap-highlight-transparent"
       >
         <svg

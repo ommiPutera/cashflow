@@ -207,8 +207,8 @@ function SheetItem({ title, titleId, updatedAt }: Sheet) {
 function BalanceSheet() {
   const { totalAssets, totalLiabilities } = useLoaderData<typeof loader>();
   return (
-    <Section className="dark:bg-black border border-primary-200 bg-primary-50 dark:border-neutral-800 p-0 lg:p-0 rounded-xl 2xl:rounded-2xl">
-      <div className="px-4 py-3 lg:py-4 lg:px-6 bg-neutral-50 border-b border-primary-200 lg:bg-white">
+    <Section className="dark:bg-black border bg-primary-50 dark:border-neutral-800 p-0 lg:p-0 rounded-xl 2xl:rounded-2xl">
+      <div className="px-4 py-3 lg:py-4 lg:px-6 bg-neutral-50 border-b lg:bg-white">
         <h2 className="text-sm font-bold text-center">Neraca</h2>
       </div>
       <Divide className="flex flex-row divide-x divide-y-0 py-6">

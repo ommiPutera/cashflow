@@ -70,10 +70,8 @@ function Debt() {
         <span>Buat hutang</span>
       </ButtonLink>
       <div className="px-4 py-3 inline-flex justify-between items-center lg:py-4 lg:px-6 bg-neutral-50 border-b lg:border-none lg:bg-white">
-        <h2 className="text-sm font-bold">Hutang / terakhir dibuka</h2>
-        <span className="text-sm font-medium text-neutral-600">
-          Sisa harus dibayarkan
-        </span>
+        <h2 className="text-sm font-bold">Hutang</h2>
+        <h2 className="text-sm font-bold">Sisa harus dibayarkan</h2>
       </div>
       <Divide>
         {data.length ? (
@@ -116,7 +114,9 @@ function DebtItem({
         </span>
       </div>
       <div>
-        <h4 className="text-sm">{toIDR(targetAmount - currentAmount)}</h4>
+        <p className="text-sm font-semibold">
+          {toIDR(targetAmount - currentAmount)}
+        </p>
       </div>
     </ButtonLink>
   );

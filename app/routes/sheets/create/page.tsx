@@ -80,7 +80,7 @@ export default function Create() {
         <div className="w-full h-12">
           <Link
             to="/sheets"
-            prefetch="viewport"
+            prefetch="render"
             className="p-0 h-fit active:scale-[0.99] font-normal inline-flex items-center tap-highlight-transparent"
           >
             <svg
@@ -131,7 +131,7 @@ function FormCreateTransaction() {
   return (
     <div className="flex flex-col gap-2 h-full">
       <Section className="bg-white border border-neutral-200 dark:border-neutral-800 rounded-xl 2xl:rounded-2xl">
-        <div className="grid w-full items-center gap-2 py-4">
+        <div className="grid w-full items-center gap-4 py-4">
           <Label htmlFor={meta.id} className="font-semibold">
             Judul
           </Label>

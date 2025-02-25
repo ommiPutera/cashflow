@@ -8,6 +8,7 @@ import {
   useActionData,
   useFetcher,
   useLoaderData,
+  useLocation,
   useSearchParams,
 } from "react-router";
 import { z } from "zod";
@@ -57,6 +58,9 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
   const formData = await request.formData();
   const submission = parseWithZod(formData, { schema: editTransactionSchema });
 
+  const url = new URL(request.url);
+  const backUrl = url.searchParams.get("back-url");
+
   const {
     titleId,
     sheetId,
@@ -75,7 +79,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
     | null;
   if (actionType === ActionType.DELETE) {
     const transansation = await deleteTransaction(transactionId);
-    if (transansation) return redirect(`/sheets/${titleId}`);
+    if (transansation) return redirect(backUrl || `/sheets/${titleId}`);
   }
 
   if (
@@ -103,7 +107,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
       notes,
       financialGoalId,
     });
-    if (newTransaction) return redirect(`/sheets/${titleId}`);
+    if (newTransaction) return redirect(backUrl || `/sheets/${titleId}`);
   }
 
   return {};
@@ -190,6 +194,8 @@ export default function Edit() {
   const [searchParams] = useSearchParams();
   const backUrl = decodeURI(searchParams.get("back-url") || "");
 
+  const location = useLocation();
+
   return (
     <FormProvider context={form.context}>
       <ShellPage>
@@ -197,7 +203,7 @@ export default function Edit() {
         <div className="w-full h-12">
           <Link
             to={backUrl || `/sheets/${titleId}`}
-            prefetch="viewport"
+            prefetch="render"
             className="p-0 h-fit active:scale-[0.99] font-normal inline-flex items-center tap-highlight-transparent"
           >
             <svg
@@ -218,7 +224,7 @@ export default function Edit() {
         </div>
         <div className="flex flex-col gap-1">
           <fetcher.Form
-            action="."
+            action={`${location.pathname}${location.search}`}
             method="post"
             className="flex relative flex-col gap-4 h-full pb-32"
             {...getFormProps(form)}
@@ -277,7 +283,7 @@ function FormEditTransaction() {
         </div>
       </Section>
       <Section className="bg-white border border-neutral-200 dark:border-neutral-800 rounded-xl 2xl:rounded-2xl">
-        <div className="grid w-full items-center gap-2 py-4">
+        <div className="grid w-full items-center gap-4 py-4">
           <Label htmlFor={nameMeta.id} className="font-semibold" required>
             Nama Transaksi
           </Label>
@@ -293,7 +299,7 @@ function FormEditTransaction() {
         </div>
       </Section>
       <Section className="bg-white border border-neutral-200 dark:border-neutral-800 rounded-xl 2xl:rounded-2xl">
-        <div className="grid w-full items-center gap-2 py-4">
+        <div className="grid w-full items-center gap-4 py-4">
           <Label htmlFor={typeMeta.id} className="font-semibold" required>
             Tipe Transaksi
           </Label>
@@ -304,7 +310,7 @@ function FormEditTransaction() {
       <ExpenseClassification />
       <BalanceSheet />
       <Section className="bg-white border border-neutral-200 dark:border-neutral-800 rounded-xl 2xl:rounded-2xl">
-        <div className="grid w-full items-center gap-2 py-4">
+        <div className="grid w-full items-center gap-4 py-4">
           <Label htmlFor={notesMeta.id} className="font-semibold">
             Catatan
           </Label>
@@ -322,7 +328,7 @@ function FormEditTransaction() {
         </div>
       </Section>
       <Section className="bg-white border border-neutral-200 dark:border-neutral-800 rounded-xl 2xl:rounded-2xl">
-        <div className="grid w-full items-center gap-2 py-4">
+        <div className="grid w-full items-center gap-4 py-4">
           <Label htmlFor={financialGoalIdMeta.id} className="font-semibold">
             Tujuan Transaksi
           </Label>
@@ -341,7 +347,7 @@ function Nominal() {
 
   const [nominalMeta] = useField("nominal");
   return (
-    <div className="flex flex-col w-full items-center justify-center min-h-[calc(100svh-22rem)] lg:min-h-[calc(100svh-35.5rem)] lg:my-32">
+    <div className="flex flex-col gap-2 w-full items-center justify-center min-h-[calc(100svh-22rem)] lg:min-h-[calc(100svh-38.5rem)] lg:my-32">
       {type === "out" ? (
         <Label
           htmlFor={nominalMeta.id}
@@ -418,12 +424,15 @@ function Nominal() {
         maxLength={14}
         key={nominalMeta.key}
       />
-      <Label
-        htmlFor={nominalMeta.id}
-        className="text-base mt-2 text-primary-600 font-semibold"
+      <Link
+        to={`/sheets/${titleId}`}
+        prefetch="intent"
+        className="cursor-pointer"
       >
-        {title}
-      </Label>
+        <Label className="text-base mt-2 text-primary-600 font-semibold">
+          {title}
+        </Label>
+      </Link>
     </div>
   );
 }
@@ -437,7 +446,7 @@ export function ExpenseClassification() {
       className={cn(
         "hidden",
         typeMeta.value === "out" &&
-          "block bg-white border border-neutral-200 dark:border-neutral-800 rounded-xl 2xl:rounded-2xl",
+        "block bg-white border border-neutral-200 dark:border-neutral-800 rounded-xl 2xl:rounded-2xl",
       )}
     >
       <div className="grid w-full items-center gap-4 py-4">
@@ -487,6 +496,8 @@ function FinancialGoal() {
 
   const [financialGoalIdMeta, form] = useField("financialGoalId");
   const [typeMeta] = useField("type");
+
+  const location = useLocation();
   return (
     <div>
       <input
@@ -497,34 +508,87 @@ function FinancialGoal() {
       <ToggleGroup
         type="single"
         onValueChange={(value) => {
-          if (value) {
-            form.update({ name: financialGoalIdMeta.name, value });
-          }
+          form.update({ name: financialGoalIdMeta.name, value });
         }}
         defaultValue={String(financialGoalIdMeta.initialValue || "")}
-        className="flex w-full items-center gap-2"
+        className="flex flex-col w-full items-center gap-4"
       >
-        {financialGoals.map((item) => (
-          <ToggleGroupItem
-            key={item.id}
-            value={item.id}
-            aria-label="Pemasukan"
-            className={cn(
-              "w-full h-14",
-              item.type === "debt" &&
-                "data-[state=on]:border-warning-500 data-[state=on]:text-warning-600 data-[state=on]:bg-warning-50",
-              item.type === "saving" &&
-                "data-[state=on]:border-success-500 data-[state=on]:text-success-600 data-[state=on]:bg-success-50",
-              item.type === "investment" &&
-                "data-[state=on]:border-primary-500 data-[state=on]:text-primary-600 data-[state=on]:bg-primary-50",
-            )}
-          >
-            <span>
-              {typeMeta.value === "out" ? "Bayar: " : "Tambah: "}
-              <b>{item.title}</b>
-            </span>
-          </ToggleGroupItem>
-        ))}
+        <div className="px-4 py-6 w-full border rounded-xl flex flex-col gap-4">
+          <div className="flex justify-between items-center">
+            <Label className="font-semibold">Hutang</Label>
+            <Link
+              to={`/goals/debt/create?back-url=${encodeURI(location.pathname)}`}
+              className="cursor-pointer"
+            >
+              <Label className="font-semibold underline text-primary-500">
+                + Buat Hutang Baru
+              </Label>
+            </Link>
+          </div>
+          {financialGoals
+            .filter((item) => item.type === "debt")
+            .map((item) => (
+              <ToggleGroupItem
+                key={item.id}
+                value={item.id}
+                aria-label="Pemasukan"
+                className={cn(
+                  "w-full h-14",
+                  item.type === "debt" &&
+                  "data-[state=on]:border-warning-500 data-[state=on]:text-warning-600 data-[state=on]:bg-warning-50",
+                )}
+              >
+                <span>
+                  {typeMeta.value === "out" ? "Bayar: " : "Tambah: "}
+                  <b>{item.title}</b>
+                </span>
+              </ToggleGroupItem>
+            ))}
+        </div>
+        <div className="px-4 py-6 w-full border rounded-xl flex flex-col gap-4">
+          <Label className="font-semibold">Tabungan</Label>
+          {financialGoals
+            .filter((item) => item.type === "saving")
+            .map((item) => (
+              <ToggleGroupItem
+                key={item.id}
+                value={item.id}
+                aria-label="Pemasukan"
+                className={cn(
+                  "w-full h-14",
+                  item.type === "saving" &&
+                  "data-[state=on]:border-success-500 data-[state=on]:text-success-600 data-[state=on]:bg-success-50",
+                )}
+              >
+                <span>
+                  {typeMeta.value === "out" ? "Bayar: " : "Tambah: "}
+                  <b>{item.title}</b>
+                </span>
+              </ToggleGroupItem>
+            ))}
+        </div>
+        <div className="px-4 py-6 w-full border rounded-xl flex flex-col gap-4">
+          <Label className="font-semibold">Investasi</Label>
+          {financialGoals
+            .filter((item) => item.type === "investment")
+            .map((item) => (
+              <ToggleGroupItem
+                key={item.id}
+                value={item.id}
+                aria-label="Pemasukan"
+                className={cn(
+                  "w-full h-14",
+                  item.type === "investment" &&
+                  "data-[state=on]:border-primary-500 data-[state=on]:text-primary-600 data-[state=on]:bg-primary-50",
+                )}
+              >
+                <span>
+                  {typeMeta.value === "out" ? "Bayar: " : "Tambah: "}
+                  <b>{item.title}</b>
+                </span>
+              </ToggleGroupItem>
+            ))}
+        </div>
       </ToggleGroup>
     </div>
   );
@@ -543,7 +607,7 @@ function Type() {
           }
         }}
         defaultValue={String(meta.initialValue || "")}
-        className="flex w-full items-center gap-2"
+        className="flex w-full items-center gap-4"
       >
         <ToggleGroupItem
           value="in"
@@ -640,10 +704,12 @@ function BalanceSheet() {
 function DeleteTransaction() {
   const [isRequest, setIsRequest] = React.useState(false);
 
+  const { titleId } = useLoaderData<typeof loader>();
+  const location = useLocation();
+
   const fetcher = useFetcher({ key: "transaction-delete" });
   const isSubmitting = fetcher.state !== "idle" || fetcher.formData != null;
 
-  const { titleId } = useLoaderData<typeof loader>();
   return (
     <div>
       <Button
@@ -663,7 +729,11 @@ function DeleteTransaction() {
           isRequest && "flex",
         )}
       >
-        <fetcher.Form action="." method="post" className="w-full">
+        <fetcher.Form
+          action={`${location.pathname}${location.search}`}
+          method="post"
+          className="w-full"
+        >
           <input type="hidden" name="actionType" value={ActionType.DELETE} />
           <input type="hidden" name="titleId" value={titleId} />
           <Button

@@ -14,6 +14,7 @@ import {
   Link,
   MetaFunction,
   useActionData,
+  useSearchParams,
 } from "react-router";
 import { dataWithError, redirectWithSuccess } from "remix-toast";
 import { z } from "zod";
@@ -89,14 +90,17 @@ export default function Create() {
     shouldRevalidate: "onInput",
   });
 
+  const [searchParams] = useSearchParams();
+  const backUrl = decodeURI(searchParams.get("back-url") || "");
+
   return (
     <FormProvider context={form.context}>
       <ShellPage>
         <Navigation />
         <div className="w-full h-12">
           <Link
-            to="/sheets"
-            prefetch="viewport"
+            to={backUrl || "/goals"}
+            prefetch="render"
             className="p-0 h-fit active:scale-[0.99] font-normal inline-flex items-center tap-highlight-transparent"
           >
             <svg
@@ -149,7 +153,7 @@ function FormCreateFinancialGoal() {
   return (
     <div className="flex flex-col gap-2 h-full">
       <Section className="bg-white border border-neutral-200 dark:border-neutral-800 rounded-xl 2xl:rounded-2xl">
-        <div className="grid w-full items-center gap-2 py-4">
+        <div className="grid w-full items-center gap-4 py-4">
           <Label htmlFor={titleMeta.id} className="font-semibold" required>
             Judul Hutang
           </Label>
@@ -197,7 +201,7 @@ function FormCreateFinancialGoal() {
         </div>
       </Section>
       <Section className="bg-white border border-neutral-200 dark:border-neutral-800 rounded-xl 2xl:rounded-2xl">
-        <div className="grid w-full items-center gap-2 py-4">
+        <div className="grid w-full items-center gap-4 py-4">
           <Label htmlFor={descriptionMeta.id} className="font-semibold">
             Deskripsi
           </Label>

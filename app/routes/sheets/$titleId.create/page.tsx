@@ -150,7 +150,7 @@ export default function Create() {
         <div className="w-full h-12">
           <Link
             to={`/sheets/${titleId}`}
-            prefetch="viewport"
+            prefetch="render"
             className="p-0 h-fit active:scale-[0.99] font-normal inline-flex items-center tap-highlight-transparent"
           >
             <svg
@@ -209,7 +209,7 @@ function FormCreateTransaction() {
       <input type="hidden" name="id" value={id} />
       <input type="hidden" name="titleId" value={titleId} />
       <Section className="bg-white border border-neutral-200 dark:border-neutral-800 rounded-xl 2xl:rounded-2xl">
-        <div className="grid w-full items-center gap-2 py-4">
+        <div className="grid w-full items-center gap-4 py-4">
           <Label htmlFor={nameMeta.id} className="font-semibold" required>
             Nama Transaksi
           </Label>
@@ -253,7 +253,7 @@ function FormCreateTransaction() {
         </div>
       </Section>
       <Section className="bg-white border border-neutral-200 dark:border-neutral-800 rounded-xl 2xl:rounded-2xl">
-        <div className="grid w-full items-center gap-2 py-4">
+        <div className="grid w-full items-center gap-4 py-4">
           <Label htmlFor={typeMeta.id} className="font-semibold" required>
             Tipe Transaksi
           </Label>
@@ -264,7 +264,7 @@ function FormCreateTransaction() {
       <ExpenseClassification />
       <BalanceSheet />
       <Section className="bg-white border border-neutral-200 dark:border-neutral-800 rounded-xl 2xl:rounded-2xl">
-        <div className="grid w-full items-center gap-2 py-4">
+        <div className="grid w-full items-center gap-4 py-4">
           <Label htmlFor={notesMeta.id} className="font-semibold">
             Catatan
           </Label>
@@ -332,6 +332,12 @@ export function ExpenseClassification() {
               Tidak, ini hanya terjadi karena keadaan mendesak{" "}
             </label>
           </div>
+          <div className="flex items-center space-x-4">
+            <RadioGroupItem value="occasional" id="occasional" />
+            <label className={labelVariants()} htmlFor="occasional">
+              Tidak, hanya sekali{" "}
+            </label>
+          </div>
         </RadioGroup>
         {meta.errors && <ErrorMessage>{meta.errors}</ErrorMessage>}
       </div>
@@ -391,7 +397,7 @@ function Type() {
             form.update({ name: meta.name, value });
           }
         }}
-        className="flex w-full items-center gap-2"
+        className="flex w-full items-center gap-4"
       >
         <ToggleGroupItem
           value="in"

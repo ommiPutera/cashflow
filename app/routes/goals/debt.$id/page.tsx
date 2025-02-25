@@ -86,9 +86,9 @@ function DebtGoal() {
   const { targetAmount, totalIn, totalOut } = useLoaderData<typeof loader>();
   const progress = (totalOut / targetAmount) * 100;
   return (
-    <Section className="dark:bg-black border border-warning-200 bg-warning-50 dark:border-neutral-800 p-0 lg:p-0 rounded-xl 2xl:rounded-2xl">
-      <div className="px-4 py-3 lg:py-4 lg:px-6 bg-neutral-50 border-b border-warning-200 lg:bg-white">
-        <h2 className="text-sm font-bold text-center">Gambaran Hutang Anda</h2>
+    <Section className="dark:bg-black border bg-warning-50 dark:border-neutral-800 p-0 lg:p-0 rounded-xl 2xl:rounded-2xl">
+      <div className="px-4 py-3 lg:py-4 lg:px-6 bg-neutral-50 border-b lg:bg-white">
+        <h2 className="text-sm font-bold text-center">Gambaran Hutang</h2>
       </div>
       <Divide className="flex flex-row divide-x divide-y-0 py-6">
         <Button
@@ -118,11 +118,11 @@ function DebtGoal() {
           </h3>
         </Button>
       </Divide>
-      <div className="mx-10 flex flex-col gap-2 items-center mb-2">
+      <div className="mx-10 flex flex-col gap-2 items-center mt-2 mb-6">
         <p className="text-sm text-neutral-700 font-medium">
           {progress.toFixed(2)}%
         </p>
-        <Progress value={progress} className="bg-warning/20" />
+        <Progress value={progress} />
       </div>
     </Section>
   );
@@ -146,10 +146,12 @@ function History() {
             </Link>
           </li>
         ))}
-        <li className="text-gray-700">
-          {historyLength + 1}.{" "}
-          {toIDR(history[historyLength - 1]?.currentNominal, false)}
-        </li>
+        {!!historyLength && (
+          <li className="text-gray-700">
+            {historyLength + 1}.{" "}
+            {toIDR(history[historyLength - 1]?.currentNominal, false)}
+          </li>
+        )}
       </ul>
     </div>
   );
@@ -160,7 +162,7 @@ function Header() {
     <div className="w-full h-12 flex justify-between items-start">
       <Link
         to="/goals"
-        prefetch="viewport"
+        prefetch="render"
         className="p-0 h-fit active:scale-[0.99] font-normal inline-flex items-center tap-highlight-transparent"
       >
         <svg

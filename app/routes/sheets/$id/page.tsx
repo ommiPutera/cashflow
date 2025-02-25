@@ -105,7 +105,7 @@ function Header() {
     <div className="w-full h-12 flex justify-between items-start">
       <Link
         to="/sheets"
-        prefetch="viewport"
+        prefetch="render"
         className="p-0 h-fit active:scale-[0.99] font-normal inline-flex items-center tap-highlight-transparent"
       >
         <svg
