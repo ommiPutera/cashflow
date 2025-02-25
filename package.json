@@ -8,10 +8,10 @@
     "dev": "react-router dev",
     "format": "prettier --check .prettierignore .",
     "format:fix": "prettier --write .prettierignore .",
+    "postinstall": "prisma generate",
     "lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
     "start": "react-router-serve ./build/server/index.js",
-    "typecheck": "react-router typegen && tsc",
-    "vercel-build": "prisma generate && prisma db push && react-router build"
+    "typecheck": "react-router typegen && tsc"
   },
   "dependencies": {
     "@conform-to/react": "^1.2.2",
