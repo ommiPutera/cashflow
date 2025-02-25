@@ -23,14 +23,16 @@ import Navigation from "~/components/navigation";
 import ShellPage, { Section } from "~/components/shell-page";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
+import { InputNumber } from "~/components/ui/input-number";
 import { Label } from "~/components/ui/label";
+import { Textarea } from "~/components/ui/textarea";
 
 import { getSession } from "~/lib/session.server";
 
-import { createSheet } from "~/utils/sheet.server";
+import { createFinancialGoal } from "~/utils/financialGoal.server";
 
 export const meta: MetaFunction = () => {
-  const title = "Buat sheet baru";
+  const title = "Buat Hutang baru";
   return [{ title }, { name: "", content: "" }];
 };
 
@@ -40,27 +42,41 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const submission = parseWithZod(formData, { schema: createSheetSchema });
   if (submission.status !== "success") return submission.reply();
   const title = submission.payload.title;
+  const targetAmount = submission.payload.targetAmount;
+  const description = submission.payload.description || "";
 
   const session = await getSession(request.headers.get("Cookie"));
   const user: User = session.get("user");
 
-  let titleId = "";
-  if (typeof title === "string" && title) {
-    const newSheet = await createSheet(title, user.id);
-    if (newSheet.message !== "ok") {
-      return dataWithError(submission.reply(), newSheet.message);
+  if (
+    typeof title === "string" &&
+    title &&
+    typeof targetAmount === "string" &&
+    typeof description === "string"
+  ) {
+    const targetAmountValue = targetAmount?.split("Rp")[1].split(".").join("");
+    const newGoal = await createFinancialGoal({
+      title,
+      targetAmount: parseInt(targetAmountValue),
+      userId: user.id,
+      description,
+      type: "debt",
+    });
+    if (newGoal.message !== "ok") {
+      return dataWithError(submission.reply(), newGoal.message);
     }
-    titleId = newSheet.data?.titleId || "";
   }
-  return redirectWithSuccess(`/sheets/${titleId}`, "Berhasil");
+  return redirectWithSuccess("/goals", "Berhasil");
 };
 
 const createSheetSchema = z.object({
   title: z
-    .string({ required_error: "Judul sheet harus diisi" })
+    .string({ required_error: "Judul hutang harus diisi" })
     .max(30, "Maksimal 30 karakter"),
+  targetAmount: z.string({ required_error: "Nominal awal hutang harus diisi" }),
+  description: z.string().max(72, "Maksimal 72 karakter").optional(),
 });
-const formId = "create-sheet";
+const formId = "create-debt-goals";
 export default function Create() {
   const actionData = useActionData<typeof action>();
   const [form] = useForm({
@@ -104,7 +120,7 @@ export default function Create() {
             <div className="h-1 bg-primary-500 w-full"></div>
             <div className="px-4 py-5 lg:py-6 lg:px-6 flex justify-between items-center">
               <h2 className="text-lg font-bold koh-santepheap-bold">
-                Buat Lembar Baru
+                Buat Hutang Baru
               </h2>
             </div>
           </Section>
@@ -114,7 +130,7 @@ export default function Create() {
             className="flex relative flex-col gap-3 h-full pb-32"
             {...getFormProps(form)}
           >
-            <FormCreateTransaction />
+            <FormCreateFinancialGoal />
             <Button variant="outlined-primary" type="submit">
               Simpan
             </Button>
@@ -125,26 +141,77 @@ export default function Create() {
   );
 }
 
-function FormCreateTransaction() {
-  const [meta] = useField("title");
+function FormCreateFinancialGoal() {
+  const [titleMeta] = useField("title");
+  const [targetAmountMeta] = useField("targetAmount");
+  const [descriptionMeta] = useField("description");
 
   return (
     <div className="flex flex-col gap-2 h-full">
       <Section className="bg-white border border-neutral-200 dark:border-neutral-800 rounded-xl 2xl:rounded-2xl">
         <div className="grid w-full items-center gap-2 py-4">
-          <Label htmlFor={meta.id} className="font-semibold">
-            Judul
+          <Label htmlFor={titleMeta.id} className="font-semibold" required>
+            Judul Hutang
           </Label>
           <Input
             placeholder="Masukkan judul sheet"
-            error={!!meta.errors}
-            {...getInputProps(meta, {
+            error={!!titleMeta.errors}
+            {...getInputProps(titleMeta, {
               type: "text",
-              ariaDescribedBy: meta.descriptionId,
+              ariaDescribedBy: titleMeta.descriptionId,
             })}
-            key={meta.key}
+            key={titleMeta.key}
           />
-          {meta.errors && <ErrorMessage>{meta.errors}</ErrorMessage>}
+          {titleMeta.errors && <ErrorMessage>{titleMeta.errors}</ErrorMessage>}
+        </div>
+      </Section>
+      <Section className="bg-white border border-neutral-200 dark:border-neutral-800 rounded-xl 2xl:rounded-2xl">
+        <div className="grid w-full items-start gap-2 py-4">
+          <Label
+            htmlFor={targetAmountMeta.id}
+            className="font-semibold"
+            required
+          >
+            Nominal Awal Hutang
+          </Label>
+          <InputNumber
+            placeholder="Rp0"
+            className="border-none bg-transparent px-0 text-3xl font-bold"
+            error={!!targetAmountMeta.errors}
+            {...getInputProps(targetAmountMeta, {
+              type: "text",
+              ariaDescribedBy: targetAmountMeta.descriptionId,
+            })}
+            prefix="Rp"
+            pattern="[0-9]*"
+            inputMode="decimal"
+            thousandSeparator="."
+            decimalSeparator=","
+            allowNegative={false}
+            maxLength={14}
+            key={targetAmountMeta.key}
+          />
+          {targetAmountMeta.errors && (
+            <ErrorMessage>{targetAmountMeta.errors}</ErrorMessage>
+          )}
+        </div>
+      </Section>
+      <Section className="bg-white border border-neutral-200 dark:border-neutral-800 rounded-xl 2xl:rounded-2xl">
+        <div className="grid w-full items-center gap-2 py-4">
+          <Label htmlFor={descriptionMeta.id} className="font-semibold">
+            Deskripsi
+          </Label>
+          <Textarea
+            placeholder="Masukkan deskripsi hutang"
+            rows={4}
+            maxLength={72}
+            error={!!descriptionMeta.errors}
+            {...getInputProps(descriptionMeta, {
+              type: "text",
+              ariaDescribedBy: descriptionMeta.descriptionId,
+            })}
+            key={descriptionMeta.key}
+          />
         </div>
       </Section>
     </div>

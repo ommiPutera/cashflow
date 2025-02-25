@@ -78,11 +78,29 @@ export const updateTransaction = async ({
   liabilities: boolean;
   expenseClassification?: string;
   notes?: string;
+  financialGoalId?: string;
 }) => {
   try {
+    const { financialGoalId, type, nominal, ...payload } = data;
+    const existingTransaction = await prisma.transaction.findUnique({
+      where: { id },
+      select: {
+        financialGoalId: true,
+        nominal: true,
+        type: true,
+        financialGoal: { select: { type: true } },
+      },
+    });
+
+    if (!existingTransaction) throw new Error("Transaction not found");
     return await prisma.transaction.update({
       where: { id },
-      data: { ...data },
+      data: {
+        type,
+        nominal,
+        ...payload,
+        financialGoalId: financialGoalId || null,
+      },
     });
   } catch (error) {
     console.error("Error updating transaction:", error);

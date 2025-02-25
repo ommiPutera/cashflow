@@ -209,6 +209,23 @@ function FormCreateTransaction() {
       <input type="hidden" name="id" value={id} />
       <input type="hidden" name="titleId" value={titleId} />
       <Section className="bg-white border border-neutral-200 dark:border-neutral-800 rounded-xl 2xl:rounded-2xl">
+        <div className="grid w-full items-center gap-2 py-4">
+          <Label htmlFor={nameMeta.id} className="font-semibold" required>
+            Nama Transaksi
+          </Label>
+          <Input
+            placeholder="Masukkan nama transaksi"
+            error={!!nameMeta.errors}
+            {...getInputProps(nameMeta, {
+              type: "text",
+              ariaDescribedBy: nameMeta.descriptionId,
+            })}
+            key={nameMeta.key}
+          />
+          {nameMeta.errors && <ErrorMessage>{nameMeta.errors}</ErrorMessage>}
+        </div>
+      </Section>
+      <Section className="bg-white border border-neutral-200 dark:border-neutral-800 rounded-xl 2xl:rounded-2xl">
         <div className="grid w-full items-start gap-2 py-4">
           <Label htmlFor={nominalMeta.id} className="font-semibold" required>
             Nominal
@@ -233,23 +250,6 @@ function FormCreateTransaction() {
           {nominalMeta.errors && (
             <ErrorMessage>{nominalMeta.errors}</ErrorMessage>
           )}
-        </div>
-      </Section>
-      <Section className="bg-white border border-neutral-200 dark:border-neutral-800 rounded-xl 2xl:rounded-2xl">
-        <div className="grid w-full items-center gap-2 py-4">
-          <Label htmlFor={nameMeta.id} className="font-semibold" required>
-            Nama Transaksi
-          </Label>
-          <Input
-            placeholder="Masukkan nama transaksi"
-            error={!!nameMeta.errors}
-            {...getInputProps(nameMeta, {
-              type: "text",
-              ariaDescribedBy: nameMeta.descriptionId,
-            })}
-            key={nameMeta.key}
-          />
-          {nameMeta.errors && <ErrorMessage>{nameMeta.errors}</ErrorMessage>}
         </div>
       </Section>
       <Section className="bg-white border border-neutral-200 dark:border-neutral-800 rounded-xl 2xl:rounded-2xl">

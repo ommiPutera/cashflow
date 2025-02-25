@@ -6,17 +6,15 @@ import { ButtonLink } from "~/components/ui/button";
 import { cn } from "~/lib/utils";
 
 export function SidebarWrapper({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="lg:ml-[var(--sidebar-width)] xl:ml-0">{children}</div>
-  );
+  return <div className="lg:ml-[var(--sidebar-width)] xl:ml-0">{children}</div>;
 }
 
 export default function Sidebar() {
   const location = useLocation();
   return (
     <div className="hidden lg:block">
-      <div className="fixed left-0 top-0 px-2 h-svh w-[var(--sidebar-width)] border border-neutral-100">
-        <div className="h-40 mx-3">
+      <div className="fixed left-0 top-0 px-2 h-svh w-[var(--sidebar-width)] border border-neutral-200">
+        <div className="h-32 mx-3">
           <Link
             to="/sheets"
             prefetch="intent"

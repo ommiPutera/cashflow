@@ -8,6 +8,7 @@ import {
   useActionData,
   useFetcher,
   useLoaderData,
+  useSearchParams,
 } from "react-router";
 import { z } from "zod";
 
@@ -39,6 +40,9 @@ import {
 import { getSheetById } from "~/utils/sheet.server";
 import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
 import { ErrorMessage } from "~/components/errors";
+import { getSession } from "~/lib/session.server";
+import { User } from "@prisma/client";
+import { getFinancialGoals } from "~/utils/financialGoal.server";
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
   const title = data?.name;
@@ -62,6 +66,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
     nominal,
     notes,
     balanceSheet,
+    financialGoalId,
   } = submission.payload;
   const transactionId = params.id || "";
 
@@ -76,6 +81,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
   if (
     actionType === ActionType.UPDATE &&
     typeof titleId === "string" &&
+    typeof financialGoalId === "string" &&
     typeof sheetId === "string" &&
     typeof name === "string" &&
     typeof notes === "string" &&
@@ -95,6 +101,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
       assets: balanceSheet === "assets",
       liabilities: balanceSheet === "liabilities",
       notes,
+      financialGoalId,
     });
     if (newTransaction) return redirect(`/sheets/${titleId}`);
   }
@@ -102,12 +109,17 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
   return {};
 };
 
-export const loader = async ({ params }: LoaderFunctionArgs) => {
+export const loader = async ({ params, request }: LoaderFunctionArgs) => {
+  const session = await getSession(request.headers.get("Cookie"));
+  const user: User = session.get("user");
+
   const transaction = await getTransactionById(params.id || "");
   const sheet = await getSheetById(transaction?.sheetId || "");
+  const financialGoals = await getFinancialGoals(user.id || "");
   return {
     ...transaction,
     ...sheet,
+    financialGoals,
   };
 };
 
@@ -121,6 +133,7 @@ const editTransactionSchema = z
       .max(30, "Maksimal 30 karakter"),
     notes: z.string().max(72, "Maksimal 72 karakter").optional(),
     balanceSheet: z.string({ required_error: "Pertanyaan harus dijawab" }),
+    financialGoalId: z.string().optional(),
     type: z.enum(["in", "out"], {
       errorMap: () => ({ message: "Tipe transaksi harus diisi" }),
     }),
@@ -143,8 +156,16 @@ const editTransactionSchema = z
   );
 const formId = "edit-transaction";
 export default function Edit() {
-  const { name, nominal, notes, type, assets, expenseClassification, titleId } =
-    useLoaderData<typeof loader>();
+  const {
+    name,
+    nominal,
+    notes,
+    type,
+    assets,
+    expenseClassification,
+    financialGoalId,
+    titleId,
+  } = useLoaderData<typeof loader>();
 
   const fetcher = useFetcher();
   const actionData = useActionData<typeof action>();
@@ -161,9 +182,13 @@ export default function Edit() {
       type,
       expenseClassification,
       balanceSheet: assets ? "assets" : "liabilities",
+      financialGoalId,
     },
     shouldValidate: "onInput",
   });
+
+  const [searchParams] = useSearchParams();
+  const backUrl = decodeURI(searchParams.get("back-url") || "");
 
   return (
     <FormProvider context={form.context}>
@@ -171,7 +196,7 @@ export default function Edit() {
         <Navigation />
         <div className="w-full h-12">
           <Link
-            to={`/sheets/${titleId}`}
+            to={backUrl || `/sheets/${titleId}`}
             prefetch="viewport"
             className="p-0 h-fit active:scale-[0.99] font-normal inline-flex items-center tap-highlight-transparent"
           >
@@ -199,12 +224,11 @@ export default function Edit() {
             {...getFormProps(form)}
           >
             <FormEditTransaction />
-            <div className="fixed left-0 lg:left-[var(--sidebar-width)] backdrop-blur-sm bg-background/80 bottom-0 py-6 px-4 w-full lg:w-[calc(100%_-_var(--sidebar-width))] 2xl:w-[calc(100%_-_var(--sidebar-width)_-_var(--sidebar-width))]">
+            <div className="fixed border-t border-neutral-200 left-0 lg:left-[var(--sidebar-width)] bg-background bottom-0 py-6 px-4 w-full lg:w-[calc(100%_-_var(--sidebar-width))] xl:w-[calc(100%_-_var(--sidebar-width)_-_var(--sidebar-width))]">
               <div className="max-w-[var(--shell-page-width)] lg:max-w-[520px] mx-auto w-full flex flex-col gap-2 justify-between">
                 <Button
                   variant="primary"
                   type="submit"
-                  size="sm"
                   disabled={!form.dirty}
                   className="w-full border-2 font-bold text-white border-primary-500 rounded-full"
                 >
@@ -227,6 +251,7 @@ function FormEditTransaction() {
   const [nameMeta] = useField("name");
   const [notesMeta] = useField("notes");
   const [typeMeta] = useField("type");
+  const [financialGoalIdMeta] = useField("financialGoalId");
 
   return (
     <div className="flex flex-col gap-2 h-full mb-52 lg:mb-0">
@@ -296,6 +321,17 @@ function FormEditTransaction() {
           />
         </div>
       </Section>
+      <Section className="bg-white border border-neutral-200 dark:border-neutral-800 rounded-xl 2xl:rounded-2xl">
+        <div className="grid w-full items-center gap-2 py-4">
+          <Label htmlFor={financialGoalIdMeta.id} className="font-semibold">
+            Tujuan Transaksi
+          </Label>
+          <FinancialGoal />
+          {financialGoalIdMeta.errors && (
+            <ErrorMessage>{financialGoalIdMeta.errors}</ErrorMessage>
+          )}
+        </div>
+      </Section>
     </div>
   );
 }
@@ -305,7 +341,7 @@ function Nominal() {
 
   const [nominalMeta] = useField("nominal");
   return (
-    <div className="flex flex-col w-full items-center justify-center min-h-[calc(100svh-19rem)] lg:min-h-[calc(100svh-35.5rem)] lg:my-32">
+    <div className="flex flex-col w-full items-center justify-center min-h-[calc(100svh-22rem)] lg:min-h-[calc(100svh-35.5rem)] lg:my-32">
       {type === "out" ? (
         <Label
           htmlFor={nominalMeta.id}
@@ -401,7 +437,7 @@ export function ExpenseClassification() {
       className={cn(
         "hidden",
         typeMeta.value === "out" &&
-        "block bg-white border border-neutral-200 dark:border-neutral-800 rounded-xl 2xl:rounded-2xl",
+          "block bg-white border border-neutral-200 dark:border-neutral-800 rounded-xl 2xl:rounded-2xl",
       )}
     >
       <div className="grid w-full items-center gap-4 py-4">
@@ -443,6 +479,54 @@ export function ExpenseClassification() {
         {meta.errors && <ErrorMessage>{meta.errors}</ErrorMessage>}
       </div>
     </Section>
+  );
+}
+
+function FinancialGoal() {
+  const { financialGoals } = useLoaderData<typeof loader>();
+
+  const [financialGoalIdMeta, form] = useField("financialGoalId");
+  const [typeMeta] = useField("type");
+  return (
+    <div>
+      <input
+        type="hidden"
+        name={financialGoalIdMeta.name}
+        value={String(financialGoalIdMeta.value || "")}
+      />
+      <ToggleGroup
+        type="single"
+        onValueChange={(value) => {
+          if (value) {
+            form.update({ name: financialGoalIdMeta.name, value });
+          }
+        }}
+        defaultValue={String(financialGoalIdMeta.initialValue || "")}
+        className="flex w-full items-center gap-2"
+      >
+        {financialGoals.map((item) => (
+          <ToggleGroupItem
+            key={item.id}
+            value={item.id}
+            aria-label="Pemasukan"
+            className={cn(
+              "w-full h-14",
+              item.type === "debt" &&
+                "data-[state=on]:border-warning-500 data-[state=on]:text-warning-600 data-[state=on]:bg-warning-50",
+              item.type === "saving" &&
+                "data-[state=on]:border-success-500 data-[state=on]:text-success-600 data-[state=on]:bg-success-50",
+              item.type === "investment" &&
+                "data-[state=on]:border-primary-500 data-[state=on]:text-primary-600 data-[state=on]:bg-primary-50",
+            )}
+          >
+            <span>
+              {typeMeta.value === "out" ? "Bayar: " : "Tambah: "}
+              <b>{item.title}</b>
+            </span>
+          </ToggleGroupItem>
+        ))}
+      </ToggleGroup>
+    </div>
   );
 }
 
@@ -565,7 +649,6 @@ function DeleteTransaction() {
       <Button
         variant="outlined-danger"
         type="button"
-        size="sm"
         onClick={() => setIsRequest(true)}
         className={cn(
           "w-full border-2 font-bold rounded-full",
@@ -576,7 +659,7 @@ function DeleteTransaction() {
       </Button>
       <div
         className={cn(
-          "hidden border-2 border-danger-500 h-11 lg:h-10 justify-between rounded-full overflow-hidden",
+          "hidden border-2 border-danger-500 h-14 lg:h-12 justify-between rounded-full overflow-hidden",
           isRequest && "flex",
         )}
       >
@@ -589,7 +672,7 @@ function DeleteTransaction() {
             size="sm"
             disabled={isSubmitting}
             onClick={() => setIsRequest(true)}
-            className="border-none w-full rounded-none bg-danger-50 h-10 lg:h-9"
+            className="border-none w-full rounded-none bg-danger-50 h-14 lg:h-11"
           >
             Ya, Hapus
           </Button>
@@ -599,7 +682,7 @@ function DeleteTransaction() {
           type="button"
           size="sm"
           onClick={() => setIsRequest(false)}
-          className="border-none w-full rounded-none h-10 lg:h-9"
+          className="border-none w-full rounded-none h-14 lg:h-11"
         >
           Batal
         </Button>

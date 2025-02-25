@@ -207,8 +207,8 @@ function SheetItem({ title, titleId, updatedAt }: Sheet) {
 function BalanceSheet() {
   const { totalAssets, totalLiabilities } = useLoaderData<typeof loader>();
   return (
-    <Section className="bg-white dark:bg-black border border-neutral-200 dark:border-neutral-800 p-0 lg:p-0 rounded-xl 2xl:rounded-2xl">
-      <div className="px-4 py-3 lg:py-4 lg:px-6 bg-neutral-50 border-b lg:border-none lg:bg-white">
+    <Section className="dark:bg-black border border-primary-200 bg-primary-50 dark:border-neutral-800 p-0 lg:p-0 rounded-xl 2xl:rounded-2xl">
+      <div className="px-4 py-3 lg:py-4 lg:px-6 bg-neutral-50 border-b border-primary-200 lg:bg-white">
         <h2 className="text-sm font-bold text-center">Neraca</h2>
       </div>
       <Divide className="flex flex-row divide-x divide-y-0 py-6">
@@ -219,8 +219,8 @@ function BalanceSheet() {
           <div className="inline-flex gap-3 justify-center items-center w-full">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
+              width="22"
+              height="22"
               fill="none"
               stroke="currentColor"
               strokeLinecap="round"
@@ -232,11 +232,11 @@ function BalanceSheet() {
               <path d="M18.09 10.37A6 6 0 1 1 10.34 18M7 6h1v4"></path>
               <path d="m16.71 13.88.7.71-2.82 2.82"></path>
             </svg>
-            <span className="text-sm font-medium text-wrap koh-santepheap-bold">
+            <span className="text-xs lg:text-sm font-medium text-wrap koh-santepheap-bold">
               Total Liabilitas
             </span>
           </div>
-          <h3 className="text-lg font-bold text-neutral-700 text-wrap">
+          <h3 className="text-base lg:text-lg font-bold text-neutral-700 text-wrap">
             {toIDR(totalLiabilities)}
           </h3>
         </Button>
@@ -247,8 +247,8 @@ function BalanceSheet() {
           <div className="inline-flex gap-3 justify-center items-center w-full">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
+              width="22"
+              height="22"
               fill="none"
               stroke="currentColor"
               strokeLinecap="round"
@@ -261,11 +261,11 @@ function BalanceSheet() {
               <circle cx="16" cy="9" r="2.9"></circle>
               <circle cx="6" cy="5" r="3"></circle>
             </svg>
-            <span className="text-sm font-medium text-wrap koh-santepheap-bold">
+            <span className="text-xs lg:text-sm font-medium text-wrap koh-santepheap-bold">
               Total Aset
             </span>
           </div>
-          <h3 className="text-lg font-bold text-neutral-700 text-wrap">
+          <h3 className="text-base lg:text-lg font-bold text-neutral-700 text-wrap">
             {toIDR(totalAssets)}
           </h3>
         </Button>
