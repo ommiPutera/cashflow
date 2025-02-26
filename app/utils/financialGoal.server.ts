@@ -1,14 +1,29 @@
-import { PrismaClient, FinancialGoalType } from "@prisma/client";
+import { PrismaClient, FinancialGoalType, FinancialGoal } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
 export async function getFinancialGoals(
   userId: string,
   type?: FinancialGoalType,
-) {
-  return await prisma.financialGoal.findMany({
+): Promise<(FinancialGoal & { totalIn: number; totalOut: number })[]> {
+  const financialGoals = await prisma.financialGoal.findMany({
     where: { userId, type },
     orderBy: { createdAt: "desc" },
+    include: {
+      transactions: {
+        select: { type: true, nominal: true },
+      },
+    },
+  });
+
+  return financialGoals.map((goal) => {
+    let totalIn = 0,
+      totalOut = 0;
+    for (const { type, nominal } of goal.transactions) {
+      if (type === "in") totalIn += nominal;
+      else totalOut += nominal;
+    }
+    return { ...goal, totalIn, totalOut };
   });
 }
 
@@ -67,7 +82,6 @@ export async function updateFinancialGoal(
     name: string;
     targetAmount: number;
     description: string;
-    currentAmount: number;
   }>,
 ) {
   return await prisma.financialGoal.update({ where: { id }, data });

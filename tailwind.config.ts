@@ -16,6 +16,9 @@ export default {
         "4xl": ["38px", "40px"],
         "5xl": ["54px", "1.1em"],
       },
+      maxWidth: {
+        xs: "21rem",
+      },
       colors: {
         white: "hsl(var(--white))",
         black: "hsl(var(--black))",

@@ -155,7 +155,7 @@ function FormCreateFinancialGoal() {
       <Section className="bg-white border border-neutral-200 dark:border-neutral-800 rounded-xl 2xl:rounded-2xl">
         <div className="grid w-full items-center gap-4 py-4">
           <Label htmlFor={titleMeta.id} className="font-semibold" required>
-            Judul Hutang
+            Judul
           </Label>
           <Input
             placeholder="Masukkan judul sheet"
@@ -176,7 +176,7 @@ function FormCreateFinancialGoal() {
             className="font-semibold"
             required
           >
-            Nominal Awal Hutang
+            Nominal
           </Label>
           <InputNumber
             placeholder="Rp0"
@@ -206,7 +206,7 @@ function FormCreateFinancialGoal() {
             Deskripsi
           </Label>
           <Textarea
-            placeholder="Masukkan deskripsi hutang"
+            placeholder="Hutang Bank Mandiri"
             rows={4}
             maxLength={72}
             error={!!descriptionMeta.errors}

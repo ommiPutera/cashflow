@@ -60,10 +60,10 @@ export default function Route() {
         </Link>
         <div className="w-full flex flex-col gap-4">
           <div className="flex flex-col gap-2">
-            <h1 className="text-xl font-semibold tracking-tight text-neutral-800 koh-santepheap-bold">
+            <h1 className="text-2xl font-semibold tracking-tight text-neutral-800 koh-santepheap-bold">
               Selamat datang kembali.
             </h1>
-            <p className="text-base font-medium text-neutral-600">
+            <p className="text-base font-normal text-neutral-600">
               Masuk ke akun kamu
             </p>
           </div>

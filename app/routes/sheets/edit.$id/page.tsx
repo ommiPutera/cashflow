@@ -446,7 +446,7 @@ export function ExpenseClassification() {
       className={cn(
         "hidden",
         typeMeta.value === "out" &&
-        "block bg-white border border-neutral-200 dark:border-neutral-800 rounded-xl 2xl:rounded-2xl",
+          "block bg-white border border-neutral-200 dark:border-neutral-800 rounded-xl 2xl:rounded-2xl",
       )}
     >
       <div className="grid w-full items-center gap-4 py-4">
@@ -535,7 +535,7 @@ function FinancialGoal() {
                 className={cn(
                   "w-full h-14",
                   item.type === "debt" &&
-                  "data-[state=on]:border-warning-500 data-[state=on]:text-warning-600 data-[state=on]:bg-warning-50",
+                    "data-[state=on]:border-warning-500 data-[state=on]:text-warning-600 data-[state=on]:bg-warning-50",
                 )}
               >
                 <span>
@@ -557,7 +557,7 @@ function FinancialGoal() {
                 className={cn(
                   "w-full h-14",
                   item.type === "saving" &&
-                  "data-[state=on]:border-success-500 data-[state=on]:text-success-600 data-[state=on]:bg-success-50",
+                    "data-[state=on]:border-success-500 data-[state=on]:text-success-600 data-[state=on]:bg-success-50",
                 )}
               >
                 <span>
@@ -579,7 +579,7 @@ function FinancialGoal() {
                 className={cn(
                   "w-full h-14",
                   item.type === "investment" &&
-                  "data-[state=on]:border-primary-500 data-[state=on]:text-primary-600 data-[state=on]:bg-primary-50",
+                    "data-[state=on]:border-primary-500 data-[state=on]:text-primary-600 data-[state=on]:bg-primary-50",
                 )}
               >
                 <span>

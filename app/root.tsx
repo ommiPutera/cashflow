@@ -13,6 +13,7 @@ import {
 } from "react-router";
 import { getToast } from "remix-toast";
 
+import ProgerssBar from "~/components/progress-bar";
 import { Toaster } from "~/components/ui/toaster";
 
 import { useToast } from "~/hooks/use-toast";
@@ -84,6 +85,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
+        <ProgerssBar />
         {children}
         <Toaster />
         <ScrollRestoration />

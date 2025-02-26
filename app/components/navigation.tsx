@@ -63,7 +63,7 @@ export const tabs = [
     ),
   },
   {
-    title: "Lainnya",
+    title: "Akun",
     to: "/account",
     icon: (
       <svg
@@ -93,20 +93,20 @@ export default function Navigation({
     <>
       {!noNavigationOnMobile && (
         <div className="lg:hidden">
-          <nav className="fixed top-0 w-full bg-background left-0 flex items-center justify-center z-20 shadow-sm border-b lg:border-b-transparent lg:shadow-none h-[var(--header-height-mobile)] lg:h-[var(--header-height)]">
-            <div className="max-w-screen-2xl lg:px-14 flex flex-col lg:flex-row items-center w-full h-full justify-between lg:gap-2 mx-auto">
-              <div className="flex-1 inline-flex">
+          <nav className="fixed top-0 w-full bg-background left-0 flex items-center justify-center z-20 shadow-sm border-b border-b-transparent h-fit">
+            <div className="max-w-screen-2xl flex flex-col items-center w-full h-full justify-between gap-2 mx-auto">
+              <div className="flex-1 inline-flex mt-3 mb-1">
                 <Link
                   to="/sheets"
                   prefetch="intent"
-                  className="flex justify-start items-center tap-highlight-transparent w-fit h-full"
+                  className="flex justify-center items-center tap-highlight-transparent w-fit h-full"
                 >
                   <SVGLogo />
                 </Link>
               </div>
               <div
                 className={cn(
-                  "flex flex-1 justify-center items-center lg:justify-end w-full h-full",
+                  "flex flex-1 justify-center items-center w-full h-full",
                 )}
               >
                 {tabs.map((tab) => {
@@ -117,7 +117,7 @@ export default function Navigation({
                       key={tab.title}
                       prefetch="intent"
                       className={cn(
-                        "h-full w-full lg:w-fit lg:px-6 cursor-pointer border-b-[3px] border-white inline-flex justify-center items-center lg:border-transparent",
+                        "h-full w-fit px-4 py-2.5 cursor-pointer border-b-[3px] inline-flex justify-center items-center border-transparent",
                         isMatch && "border-primary-500",
                       )}
                     >
@@ -127,7 +127,7 @@ export default function Navigation({
                           isMatch && "text-primary-500",
                         )}
                       >
-                        <span className="text-xs font-bold lg:text-base lg:font-semibold">
+                        <span className="text-xs font-semibold">
                           {tab.title}
                         </span>
                       </div>
@@ -137,7 +137,7 @@ export default function Navigation({
               </div>
             </div>
           </nav>
-          <div className="h-[calc(var(--header-height-mobile)_-_32px)] lg:h-[calc(var(--header-height)_-_56px)] bg-background"></div>
+          <div className="h-[calc(var(--header-height-mobile)_-_32px)] bg-background"></div>
         </div>
       )}
       <Sidebar />
@@ -148,12 +148,12 @@ export default function Navigation({
 export function PublicNavigation() {
   return (
     <>
-      <nav className="fixed top-0 w-full bg-background left-0 flex items-center justify-center z-20 h-[var(--header-height-mobile)] lg:h-[var(--header-height)]">
-        <div className="max-w-screen-2xl lg:px-14 flex items-center w-full h-full justify-between lg:gap-2 mx-auto px-6">
+      <nav className="fixed top-0 w-full bg-background left-0 flex items-center justify-center z-20 h-[var(--header-height-mobile)]">
+        <div className="max-w-screen-2xl px-14 flex items-center w-full h-full justify-between gap-2 mx-auto">
           <Link
             to="/"
             prefetch="intent"
-            className="flex-1 lg:flex-initial inline-flex justify-start items-center tap-highlight-transparent w-fit h-full"
+            className="flex-1 inline-flex justify-start items-center tap-highlight-transparent w-fit h-full"
           >
             <SVGLogo />
           </Link>
@@ -176,7 +176,7 @@ export function PublicNavigation() {
           </div>
         </div>
       </nav>
-      <div className="h-[calc(var(--header-height-mobile)_-_32px)] lg:h-[calc(var(--header-height)_-_56px)] bg-background"></div>
+      <div className="h-[calc(var(--header-height-mobile)_-_32px)] bg-background"></div>
     </>
   );
 }

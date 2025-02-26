@@ -1,8 +1,5 @@
 import { FinancialGoal, User } from "@prisma/client";
 
-import { format } from "date-fns";
-import { id as locale } from "date-fns/locale";
-
 import {
   useLoaderData,
   type LoaderFunctionArgs,
@@ -70,8 +67,8 @@ function Debt() {
         <span>Buat hutang</span>
       </ButtonLink>
       <div className="px-4 py-3 inline-flex justify-between items-center lg:py-4 lg:px-6 bg-neutral-50 border-b lg:border-none lg:bg-white">
-        <h2 className="text-sm font-bold">Hutang</h2>
-        <h2 className="text-sm font-bold">Sisa harus dibayarkan</h2>
+        <h2 className="text-sm font-medium lg:font-bold">Hutang</h2>
+        <h2 className="text-xs font-medium lg:font-bold">Harus dibayarkan</h2>
       </div>
       <Divide>
         {data.length ? (
@@ -91,33 +88,20 @@ function Debt() {
 function DebtItem({
   id,
   title,
-  currentAmount,
   targetAmount,
-  updatedAt,
-}: FinancialGoal) {
-  const date = format(new Date(updatedAt), "dd MMM yyyy", {
-    locale,
-  });
-  const time = format(new Date(updatedAt), "EEEE, hh:mm", {
-    locale,
-  });
+  totalIn,
+  totalOut,
+}: FinancialGoal & { totalIn: number; totalOut: number }) {
   return (
     <ButtonLink
       to={`/goals/debt/${id}`}
       variant="transparent"
       className="px-4 lg:px-6 active:scale-[0.99] active:bg-transparent h-14 lg:h-16 flex w-full items-center hover:bg-primary-50 cursor-pointer rounded-none border-x-0"
     >
-      <div className="flex flex-col gap-0.5 w-full">
-        <span className="text-sm font-medium text-wrap">{title}</span>
-        <span className="text-xs font-normal text-left text-neutral-500 whitespace-nowrap">
-          {time} WIB - {date}
-        </span>
-      </div>
-      <div>
-        <p className="text-sm font-semibold">
-          {toIDR(targetAmount - currentAmount)}
-        </p>
-      </div>
+      <span className="text-sm font-medium text-wrap w-full">{title}</span>
+      <p className="text-sm font-semibold">
+        {toIDR(targetAmount + totalIn - totalOut)}
+      </p>
     </ButtonLink>
   );
 }

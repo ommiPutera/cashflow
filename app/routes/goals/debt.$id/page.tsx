@@ -23,6 +23,7 @@ import { toIDR } from "~/utils/currency";
 import { getFinancialGoalById } from "~/utils/financialGoal.server";
 
 import { getSession } from "~/lib/session.server";
+import { cn } from "~/lib/utils";
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const session = await getSession(request.headers.get("Cookie"));
@@ -66,13 +67,18 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 };
 
 export default function Debt() {
-  const { title } = useLoaderData<typeof loader>();
+  const { title, description } = useLoaderData<typeof loader>();
   return (
     <ShellPage>
       <Navigation />
       <Header />
       <div className="flex flex-col gap-3 my-6 lg:my-12 mx-auto">
-        <h2 className="text-lg font-bold koh-santepheap-bold mb-2">{title}</h2>
+        <h2 className="text-xl font-bold koh-santepheap-bold mb-2">{title}</h2>
+        {description && (
+          <span className="text-xs lg:text-sm font-normal text-wrap">
+            {description}
+          </span>
+        )}
         <DebtGoal />
         <br />
         <h2 className="text-lg font-bold koh-santepheap-bold mb-2">Riwayat</h2>
@@ -86,9 +92,9 @@ function DebtGoal() {
   const { targetAmount, totalIn, totalOut } = useLoaderData<typeof loader>();
   const progress = (totalOut / targetAmount) * 100;
   return (
-    <Section className="dark:bg-black border bg-warning-50 dark:border-neutral-800 p-0 lg:p-0 rounded-xl 2xl:rounded-2xl">
+    <Section className="dark:bg-black border bg-warning-50/50 dark:border-neutral-800 p-0 lg:p-0 rounded-xl 2xl:rounded-2xl">
       <div className="px-4 py-3 lg:py-4 lg:px-6 bg-neutral-50 border-b lg:bg-white">
-        <h2 className="text-sm font-bold text-center">Gambaran Hutang</h2>
+        <h2 className="text-sm font-medium text-center">Gambaran</h2>
       </div>
       <Divide className="flex flex-row divide-x divide-y-0 py-6">
         <Button
@@ -96,11 +102,11 @@ function DebtGoal() {
           className="px-4 lg:px-6 active:scale-[0.99] [&_svg]:size-5 active:bg-transparent flex flex-col w-full items-center cursor-pointer rounded-none border-x-0"
         >
           <div className="inline-flex gap-3 justify-center items-center w-full">
-            <span className="text-sm font-medium text-wrap koh-santepheap-bold">
+            <span className="text-xs lg:text-sm font-normal text-wrap">
               {totalIn ? "Hutang" : "Hutang awal"}
             </span>
           </div>
-          <h3 className="text-lg font-bold text-neutral-700 text-wrap">
+          <h3 className="text-base lg:text-lg font-bold text-neutral-700 text-wrap">
             {toIDR(targetAmount + totalIn)}
           </h3>
         </Button>
@@ -109,11 +115,11 @@ function DebtGoal() {
           className="px-4 lg:px-6 active:scale-[0.99] [&_svg]:size-5 active:bg-transparent flex flex-col w-full items-center cursor-pointer rounded-none border-x-0"
         >
           <div className="inline-flex gap-3 justify-center items-center w-full">
-            <span className="text-sm font-medium text-wrap koh-santepheap-bold">
+            <span className="text-xs lg:text-sm font-normal text-wrap">
               Harus dibayarkan
             </span>
           </div>
-          <h3 className="text-lg font-bold text-neutral-700 text-wrap">
+          <h3 className="text-base lg:text-lg font-bold text-neutral-700 text-wrap">
             {toIDR(targetAmount + totalIn - totalOut)}
           </h3>
         </Button>
@@ -135,12 +141,19 @@ function History() {
     <div>
       <ul className="mt-2">
         {history.map((item, index) => (
-          <li key={index} className="text-gray-700">
-            {index + 1}. {toIDR(item.prevTotal, false)} {item.mark}{" "}
+          <li key={index} className="text-gray-700 inline-flex w-full">
+            <span className="inline-flex gap-4">
+              <span className="min-w-4">{index + 1}.</span>
+              <span>{toIDR(item.prevTotal, false)}</span>
+            </span>
+            <span className="min-w-4 mr-4 ml-6">{item.mark}</span>
             <Link
               to={`${item.link}?back-url=${encodeURI(location.pathname)}`}
               prefetch="intent"
-              className="underline"
+              className={cn(
+                "underline font-medium",
+                item.mark === "-" ? "text-danger-500" : "text-success-500",
+              )}
             >
               {item.nominal > 0 ? `${toIDR(item.nominal, false)}` : ""}
             </Link>
@@ -148,8 +161,12 @@ function History() {
         ))}
         {!!historyLength && (
           <li className="text-gray-700">
-            {historyLength + 1}.{" "}
-            {toIDR(history[historyLength - 1]?.currentNominal, false)}
+            <span className="inline-flex gap-4">
+              <span className="min-w-4">{historyLength + 1}.</span>
+              <span>
+                {toIDR(history[historyLength - 1]?.currentNominal, false)}
+              </span>
+            </span>
           </li>
         )}
       </ul>

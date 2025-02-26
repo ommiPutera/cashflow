@@ -167,8 +167,10 @@ function SheetsLinks({ title, sheets }: TGroupSheet) {
     <Section className="bg-white dark:bg-black border border-neutral-200 dark:border-neutral-800 p-0 lg:p-0 rounded-xl 2xl:rounded-2xl">
       {title && (
         <div className="px-4 py-3 inline-flex justify-between items-center lg:py-4 lg:px-6 bg-neutral-50 border-b lg:border-none lg:bg-white">
-          <h2 className="text-sm font-bold">{title}</h2>
-          <span className="text-xs font-semibold">Terakhir dibuka</span>
+          <h2 className="text-sm font-medium lg:font-bold">{title}</h2>
+          <span className="text-xs font-medium lg:font-bold">
+            Terakhir dibuka
+          </span>
         </div>
       )}
       <Divide>
@@ -207,9 +209,9 @@ function SheetItem({ title, titleId, updatedAt }: Sheet) {
 function BalanceSheet() {
   const { totalAssets, totalLiabilities } = useLoaderData<typeof loader>();
   return (
-    <Section className="dark:bg-black border bg-primary-50 dark:border-neutral-800 p-0 lg:p-0 rounded-xl 2xl:rounded-2xl">
+    <Section className="dark:bg-black border bg-primary-50/50 dark:border-neutral-800 p-0 lg:p-0 rounded-xl 2xl:rounded-2xl">
       <div className="px-4 py-3 lg:py-4 lg:px-6 bg-neutral-50 border-b lg:bg-white">
-        <h2 className="text-sm font-bold text-center">Neraca</h2>
+        <h2 className="text-sm font-medium lg:font-bold text-center">Neraca</h2>
       </div>
       <Divide className="flex flex-row divide-x divide-y-0 py-6">
         <Button
@@ -219,8 +221,8 @@ function BalanceSheet() {
           <div className="inline-flex gap-3 justify-center items-center w-full">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              width="22"
-              height="22"
+              width="20"
+              height="20"
               fill="none"
               stroke="currentColor"
               strokeLinecap="round"
@@ -232,7 +234,7 @@ function BalanceSheet() {
               <path d="M18.09 10.37A6 6 0 1 1 10.34 18M7 6h1v4"></path>
               <path d="m16.71 13.88.7.71-2.82 2.82"></path>
             </svg>
-            <span className="text-xs lg:text-sm font-medium text-wrap koh-santepheap-bold">
+            <span className="text-xs lg:text-sm font-normal text-wrap">
               Total Liabilitas
             </span>
           </div>
@@ -247,8 +249,8 @@ function BalanceSheet() {
           <div className="inline-flex gap-3 justify-center items-center w-full">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              width="22"
-              height="22"
+              width="20"
+              height="20"
               fill="none"
               stroke="currentColor"
               strokeLinecap="round"
@@ -261,7 +263,7 @@ function BalanceSheet() {
               <circle cx="16" cy="9" r="2.9"></circle>
               <circle cx="6" cy="5" r="3"></circle>
             </svg>
-            <span className="text-xs lg:text-sm font-medium text-wrap koh-santepheap-bold">
+            <span className="text-xs lg:text-sm font-normal text-wrap">
               Total Aset
             </span>
           </div>
