@@ -112,8 +112,8 @@ export function SumItem({ title, totalAmount, from }: TSumItem) {
   return (
     <div className="px-4 lg:px-6 h-14 lg:h-16 flex w-full items-center hover:bg-primary-50 cursor-pointer">
       <div className="flex justify-between items-center w-full flex-wrap">
-        <span className="text-sm font-medium text-wrap">{title}</span>
-        <span className="text-sm inline-flex gap-2 font-semibold text-neutral-700 text-wrap">
+        <span className="text-sm font-normal text-wrap">{title}</span>
+        <span className="text-sm inline-flex gap-2 font-normal text-neutral-700 text-wrap">
           {totalAmount}
           {symbol}
         </span>

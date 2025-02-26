@@ -10,8 +10,8 @@ export const tabs = [
     icon: (
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="24"
+        width="22"
+        height="22"
         fill="none"
         stroke="currentColor"
         strokeLinecap="round"
@@ -30,8 +30,8 @@ export const tabs = [
     icon: (
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="24"
+        width="22"
+        height="22"
         fill="none"
         stroke="currentColor"
         strokeLinecap="round"
@@ -49,8 +49,8 @@ export const tabs = [
     icon: (
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="24"
+        width="22"
+        height="22"
         fill="none"
         stroke="currentColor"
         strokeLinecap="round"
@@ -68,8 +68,8 @@ export const tabs = [
     icon: (
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="24"
+        width="22"
+        height="22"
         fill="none"
         stroke="currentColor"
         strokeLinecap="round"

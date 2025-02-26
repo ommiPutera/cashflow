@@ -32,7 +32,9 @@ export default function Index() {
     <ShellPage>
       <Navigation noNavigationOnMobile={false} />
       <div className="flex flex-col gap-3 my-6 lg:my-12 mx-auto">
-        <h2 className="text-lg font-bold koh-santepheap-bold mb-2">Folder</h2>
+        <h2 className="text-lg lg:text-xl font-bold koh-santepheap-bold mb-2">
+          Folder
+        </h2>
         <Sheet />
       </div>
     </ShellPage>
@@ -67,7 +69,7 @@ function Sheet() {
               <rect width="18" height="18" x="3" y="3" rx="2" ry="2"></rect>
               <path d="M3 9h18M3 15h18M9 9v12M15 9v12"></path>
             </svg>
-            <span className="text-sm font-medium text-wrap">Semua Lembar</span>
+            <span className="text-sm font-normal text-wrap">Semua Lembar</span>
           </div>
           <span className="text-sm font-normal text-neutral-500 text-wrap">
             {sheetsCount}
@@ -92,7 +94,7 @@ function Sheet() {
             >
               <path d="M3 6h18M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
             </svg>
-            <span className="text-sm font-medium text-wrap">Baru Dihapus</span>
+            <span className="text-sm font-normal text-wrap">Baru Dihapus</span>
           </div>
           <span className="text-sm font-normal text-neutral-500 text-wrap">
             {deletedSheets}

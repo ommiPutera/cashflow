@@ -67,7 +67,7 @@ function ExpectationMode() {
           });
         }}
       />
-      <Label htmlFor="expectation-mode" className="font-semibold">
+      <Label htmlFor="expectation-mode" className="font-semibold text-xs">
         Mode Ekspetasi
       </Label>
     </div>
@@ -135,7 +135,7 @@ function ListTransactions() {
 function EmptyTransaction() {
   return (
     <div className="w-full h-16 flex justify-center items-center">
-      <span className="text-sm font-medium text-neutral-400">
+      <span className="text-sm font-normal text-neutral-400">
         Belum ada Transaksi..
       </span>
     </div>
@@ -281,9 +281,9 @@ function TransactionContent({ type, nominal, name }: Transaction) {
             </span>
           </div>
         )}
-        <p className="text-sm font-medium text-wrap">{name}</p>
+        <p className="text-sm font-normal text-wrap">{name}</p>
       </div>
-      <span className="text-sm font-semibold text-neutral-700 text-wrap">
+      <span className="text-sm font-normal text-neutral-700 text-wrap">
         {toIDR(nominal)}
       </span>
     </div>

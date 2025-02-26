@@ -53,11 +53,11 @@ authenticator.use(
         });
 
         // Development Only.
-        console.log({
-          email,
-          code,
-          magicLink,
-        });
+        // console.log({
+        //   email,
+        //   code,
+        //   magicLink,
+        // });
       },
     },
     async ({ email, request }) => {

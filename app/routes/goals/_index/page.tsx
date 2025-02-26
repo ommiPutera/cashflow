@@ -32,7 +32,9 @@ export default function Index() {
     <ShellPage>
       <Navigation noNavigationOnMobile={false} />
       <div className="flex flex-col gap-3 my-6 lg:my-12 mx-auto">
-        <h2 className="text-lg font-bold koh-santepheap-bold mb-2">Tujuan</h2>
+        <h2 className="text-lg lg:text-xl font-bold koh-santepheap-bold mb-2">
+          Tujuan
+        </h2>
         <Debt />
       </div>
     </ShellPage>
@@ -98,8 +100,8 @@ function DebtItem({
       variant="transparent"
       className="px-4 lg:px-6 active:scale-[0.99] active:bg-transparent h-14 lg:h-16 flex w-full items-center hover:bg-primary-50 cursor-pointer rounded-none border-x-0"
     >
-      <span className="text-sm font-medium text-wrap w-full">{title}</span>
-      <p className="text-sm font-semibold">
+      <span className="text-sm font-normal text-wrap w-full">{title}</span>
+      <p className="text-sm font-normal">
         {toIDR(targetAmount + totalIn - totalOut)}
       </p>
     </ButtonLink>

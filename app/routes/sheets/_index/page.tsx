@@ -43,12 +43,12 @@ export default function Sheets() {
     <ShellPage>
       <Navigation noNavigationOnMobile={false} />
       <div className="flex flex-col gap-3 my-6 lg:my-12 mx-auto">
-        <h2 className="text-lg font-bold koh-santepheap-bold mb-2">
+        <h2 className="text-lg lg:text-xl font-bold koh-santepheap-bold mb-2">
           Neraca Anda
         </h2>
         <BalanceSheet />
         <br />
-        <h2 className="text-lg font-bold koh-santepheap-bold mb-2">
+        <h2 className="text-lg lg:text-xl font-bold koh-santepheap-bold mb-2">
           Lembar Anda
         </h2>
         <CreateSheet />
@@ -167,8 +167,8 @@ function SheetsLinks({ title, sheets }: TGroupSheet) {
     <Section className="bg-white dark:bg-black border border-neutral-200 dark:border-neutral-800 p-0 lg:p-0 rounded-xl 2xl:rounded-2xl">
       {title && (
         <div className="px-4 py-3 inline-flex justify-between items-center lg:py-4 lg:px-6 bg-neutral-50 border-b lg:border-none lg:bg-white">
-          <h2 className="text-sm font-medium lg:font-bold">{title}</h2>
-          <span className="text-xs font-medium lg:font-bold">
+          <h2 className="text-sm font-normal lg:font-bold">{title}</h2>
+          <span className="text-xs font-normal lg:font-bold">
             Terakhir dibuka
           </span>
         </div>
@@ -195,7 +195,7 @@ function SheetItem({ title, titleId, updatedAt }: Sheet) {
       className="px-4 lg:px-6 active:scale-[0.99] active:bg-transparent h-14 lg:h-16 flex w-full items-center hover:bg-primary-50 cursor-pointer rounded-none border-x-0"
     >
       <div className="flex flex-col w-full">
-        <span className="text-sm font-medium text-wrap">{title}</span>
+        <span className="text-sm font-normal text-wrap">{title}</span>
       </div>
       <span className="text-xs font-normal text-right text-neutral-500 whitespace-nowrap">
         {time} WIB
@@ -213,7 +213,7 @@ function BalanceSheet() {
       <div className="px-4 py-3 lg:py-4 lg:px-6 bg-neutral-50 border-b lg:bg-white">
         <h2 className="text-sm font-medium lg:font-bold text-center">Neraca</h2>
       </div>
-      <Divide className="flex flex-row divide-x divide-y-0 py-6">
+      <Divide className="flex flex-row divide-x divide-y-0 py-6 lg:py-12">
         <Button
           variant="transparent"
           className="px-4 lg:px-6 active:scale-[0.99] [&_svg]:size-5 active:bg-transparent flex flex-col w-full items-center cursor-pointer rounded-none border-x-0"

@@ -230,8 +230,8 @@ export default function Edit() {
             {...getFormProps(form)}
           >
             <FormEditTransaction />
-            <div className="fixed border-t border-neutral-200 left-0 lg:left-[var(--sidebar-width)] bg-background bottom-0 py-6 px-4 w-full lg:w-[calc(100%_-_var(--sidebar-width))] xl:w-[calc(100%_-_var(--sidebar-width)_-_var(--sidebar-width))]">
-              <div className="max-w-[var(--shell-page-width)] lg:max-w-[520px] mx-auto w-full flex flex-col gap-2 justify-between">
+            <div className="fixed border-t border-neutral-100 left-0 lg:left-[var(--sidebar-width)] bg-background bottom-0 py-6 px-4 w-full lg:w-[calc(100%_-_var(--sidebar-width))] xl:w-[calc(100%_-_var(--sidebar-width)_-_var(--sidebar-width))]">
+              <div className="max-w-[var(--shell-page-width)] lg:max-w-[420px] mx-auto w-full flex flex-col gap-2 justify-between">
                 <Button
                   variant="primary"
                   type="submit"
@@ -277,7 +277,7 @@ function FormEditTransaction() {
           <h2 className="text-lg font-bold koh-santepheap-bold">
             Ubah Transaksi: <span className="underline">{name}</span>
           </h2>
-          <p className="text-sm font-medium">
+          <p className="text-sm font-normal">
             Transaksi ini tercatat pada lembar <b>{title}</b>
           </p>
         </div>

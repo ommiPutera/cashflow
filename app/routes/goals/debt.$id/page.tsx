@@ -81,7 +81,9 @@ export default function Debt() {
         )}
         <DebtGoal />
         <br />
-        <h2 className="text-lg font-bold koh-santepheap-bold mb-2">Riwayat</h2>
+        <h2 className="text-lg lg:text-xl font-bold koh-santepheap-bold mb-2">
+          Riwayat
+        </h2>
         <History />
       </div>
     </ShellPage>
