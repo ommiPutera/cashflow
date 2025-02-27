@@ -42,16 +42,18 @@ export default function Sheets() {
   return (
     <ShellPage>
       <Navigation noNavigationOnMobile={false} />
-      <div className="flex flex-col gap-3 my-6 lg:my-12 mx-auto">
+      <div className="flex flex-col gap-3 my-4 lg:my-12 mx-auto">
         <h2 className="text-lg lg:text-xl font-bold koh-santepheap-bold mb-2">
           Neraca Anda
         </h2>
         <BalanceSheet />
         <br />
-        <h2 className="text-lg lg:text-xl font-bold koh-santepheap-bold mb-2">
-          Lembar Anda
-        </h2>
-        <CreateSheet />
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg lg:text-xl font-bold koh-santepheap-bold">
+            Lembar Anda
+          </h2>
+          <CreateSheet />
+        </div>
         <EmptyState />
         <GroupedSheet />
       </div>
@@ -65,7 +67,8 @@ function CreateSheet() {
   return (
     <ButtonLink
       to="/sheets/create"
-      className="w-fit lg:hidden px-6 z-40 text-primary-500 overflow-hidden shadow-sm [&_svg]:size-4 fixed bottom-12 right-6 bg-neutral-50 gap-3 rounded-2xl border inline-flex"
+      variant="transparent"
+      className="w-fit lg:hidden px-6 z-40 text-primary-500 overflow-hidden [&_svg]:size-4 gap-3 rounded-2xl inline-flex"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"

@@ -93,17 +93,8 @@ export default function Navigation({
     <>
       {!noNavigationOnMobile && (
         <div className="lg:hidden">
-          <nav className="fixed top-0 w-full bg-background left-0 flex items-center justify-center z-20 shadow-sm border-b border-b-transparent h-fit">
-            <div className="max-w-screen-2xl flex flex-col items-center w-full h-full justify-between gap-2 mx-auto">
-              <div className="flex-1 inline-flex mt-3 mb-1">
-                <Link
-                  to="/sheets"
-                  prefetch="intent"
-                  className="flex justify-center items-center tap-highlight-transparent w-fit h-full"
-                >
-                  <SVGLogo />
-                </Link>
-              </div>
+          <nav className="fixed bottom-0 w-full bg-background shadow-md left-0 h-[var(--header-height-mobile)] flex items-center justify-center z-20 border-t border-b-transparent">
+            <div className="max-w-screen-2xl w-full h-full mx-auto">
               <div
                 className={cn(
                   "flex flex-1 justify-center items-center w-full h-full",
@@ -116,17 +107,15 @@ export default function Navigation({
                       to={tab.to}
                       key={tab.title}
                       prefetch="intent"
-                      className={cn(
-                        "h-full w-fit px-4 py-2.5 cursor-pointer border-b-[3px] inline-flex justify-center items-center border-transparent",
-                        isMatch && "border-primary-500",
-                      )}
+                      className="h-full w-fit px-6 py-3 cursor-pointer inline-flex justify-center items-center border-transparent"
                     >
                       <div
                         className={cn(
-                          "flex gap-1 items-center text-neutral-500",
+                          "flex flex-col gap-1 items-center text-neutral-500",
                           isMatch && "text-primary-500",
                         )}
                       >
+                        <span>{tab.icon}</span>
                         <span className="text-xs font-semibold">
                           {tab.title}
                         </span>
@@ -137,7 +126,6 @@ export default function Navigation({
               </div>
             </div>
           </nav>
-          <div className="h-[calc(var(--header-height-mobile)_-_32px)] bg-background"></div>
         </div>
       )}
       <Sidebar />
