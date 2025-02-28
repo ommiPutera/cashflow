@@ -7,7 +7,7 @@
     --white: 0 0% 100%;
     --black: 0 0% 8%;
 
-    --background: 0 0% 100%;
+    --background: 0 0% 94%;
     --foreground: 213 13% 17%;
 
     --primary-50: 217 91% 95%;
@@ -78,11 +78,14 @@
 
     --radius: 0.5rem;
 
-    --shell-page-width: 550px;
-
     --sidebar-width: 210px;
 
-    --header-height-mobile: 85px;
+    --shell-page-width: 610px;
+    --header-height: 48px;
+    --header-height-mobile: 20px;
+
+    --bottom-border-height: 8px;
+    --bottom-border-height-mobile: 0.725rem;
   }
 
   .dark {
@@ -116,6 +119,9 @@
 @layer base {
   * {
     -webkit-tap-highlight-color: transparent;
+    overscroll-behavior-y: none;
+    scroll-behavior: auto;
+    -webkit-font-smoothing: antialiased;
     font-synthesis: none;
     @apply border-border;
   }
@@ -139,6 +145,16 @@
     text-size-adjust: 100%;
     -webkit-font-smoothing: antialiased;
     @apply bg-background text-foreground border-border;
+  }
+  .shadow-circle {
+    box-shadow:
+      0 0 12px 0 #f4f2ee,
+      0 0 0 48px #f4f2ee;
+  }
+  .dark .shadow-circle {
+    box-shadow:
+      0 0 12px 0 #08090a,
+      0 0 0 48px #08090a;
   }
   html,
   body {

@@ -116,7 +116,7 @@ export default function Index() {
         </svg>
         <span className="text-xs font-medium">Kembali</span>
       </Link>
-      <div className="flex flex-col gap-3 my-4 lg:my-12 mx-auto">
+      <div className="flex flex-col gap-3  mx-auto">
         <Section
           loading={isSubmitting}
           className="bg-white dark:bg-black border border-neutral-200 dark:border-neutral-800 p-0 lg:p-0 rounded-xl 2xl:rounded-2xl"

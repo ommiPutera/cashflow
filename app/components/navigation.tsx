@@ -93,7 +93,7 @@ export default function Navigation({
     <>
       {!noNavigationOnMobile && (
         <div className="lg:hidden">
-          <nav className="fixed bottom-0 w-full bg-background shadow-md left-0 h-[var(--header-height-mobile)] flex items-center justify-center z-20 border-t border-b-transparent">
+          <nav className="fixed bottom-0 w-full shadow-md left-0 h-fit bg-white flex items-center justify-center z-20 border-t border-b-transparent">
             <div className="max-w-screen-2xl w-full h-full mx-auto">
               <div
                 className={cn(
@@ -107,7 +107,7 @@ export default function Navigation({
                       to={tab.to}
                       key={tab.title}
                       prefetch="intent"
-                      className="h-full w-fit px-6 py-3 cursor-pointer inline-flex justify-center items-center border-transparent"
+                      className="h-full w-fit px-7 py-3 cursor-pointer inline-flex justify-center items-center border-transparent"
                     >
                       <div
                         className={cn(

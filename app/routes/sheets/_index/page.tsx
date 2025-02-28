@@ -42,7 +42,7 @@ export default function Sheets() {
   return (
     <ShellPage>
       <Navigation noNavigationOnMobile={false} />
-      <div className="flex flex-col gap-3 my-4 lg:my-12 mx-auto">
+      <div className="flex flex-col gap-3  mx-auto">
         <h2 className="text-lg lg:text-xl font-bold koh-santepheap-bold mb-2">
           Neraca Anda
         </h2>
