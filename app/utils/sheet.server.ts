@@ -71,8 +71,9 @@ export async function createSheet(
   userId: string,
 ): Promise<{ data: Sheet | null; message: string }> {
   const existingSheet = await prisma.sheet.findFirst({
-    where: { titleId: title.replace(/\s/g, "").split(" ").join("-"), userId },
+    where: { title, userId },
   });
+  console.log("existingSheet: ", existingSheet);
   if (existingSheet) {
     return {
       data: null,
@@ -81,8 +82,8 @@ export async function createSheet(
   }
   const newSheet = await prisma.sheet.create({
     data: {
-      title: title,
-      titleId: title.split(" ").join("-"),
+      title,
+      titleId: title.replace(/\s/g, "").split(" ").join("-"),
       userId,
       deletedAt: null,
     },

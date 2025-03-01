@@ -294,7 +294,7 @@ export function ExpenseClassification() {
       className={cn(
         "hidden",
         typeMeta.value === "out" &&
-        "block bg-white border border-neutral-200 dark:border-neutral-800 rounded-xl 2xl:rounded-2xl",
+          "block bg-white border border-neutral-200 dark:border-neutral-800 rounded-xl 2xl:rounded-2xl",
       )}
     >
       <div className="grid w-full items-center gap-4 py-4">

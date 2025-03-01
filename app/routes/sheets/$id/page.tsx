@@ -91,7 +91,7 @@ export default function Sheet() {
     <ShellPage>
       <Navigation />
       <Header />
-      <div className="flex flex-col gap-3 mb-24">
+      <div className="flex flex-col gap-3">
         <SheetSum />
         <AvailableMinus />
         <Transactions />
