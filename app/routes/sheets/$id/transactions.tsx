@@ -17,7 +17,7 @@ import { SumItem } from "./sheet-sum";
 export default function Transactions() {
   const { sheetId } = useLoaderData<typeof loader>();
   return (
-    <Section className="bg-white dark:bg-black border border-neutral-200 dark:border-neutral-800 p-0 lg:p-0 rounded-xl 2xl:rounded-2xl">
+    <Section className="w-full bg-white dark:bg-black border border-neutral-200 dark:border-neutral-800 p-0 lg:p-0 rounded-xl 2xl:rounded-2xl">
       <ButtonLink
         to={`/sheets/${sheetId}/create`}
         variant="outlined-primary"

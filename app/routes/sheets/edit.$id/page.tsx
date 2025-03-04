@@ -222,7 +222,7 @@ export default function Edit() {
             <span className="text-xs font-medium">Kembali</span>
           </Link>
         </div>
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-1 max-w-[var(--shell-page-width)] mx-auto">
           <fetcher.Form
             action={`${location.pathname}${location.search}`}
             method="post"
@@ -230,7 +230,7 @@ export default function Edit() {
             {...getFormProps(form)}
           >
             <FormEditTransaction />
-            <div className="fixed border-t border-neutral-100 left-0 lg:left-[var(--sidebar-width)] bg-background bottom-0 py-6 px-4 w-full lg:w-[calc(100%_-_var(--sidebar-width))] xl:w-[calc(100%_-_var(--sidebar-width)_-_var(--sidebar-width))]">
+            <div className="fixed z-20 border-t border-neutral-100 left-0 lg:left-[var(--sidebar-width)] bg-background bottom-0 py-6 px-4 w-full lg:w-[calc(100%_-_var(--sidebar-width))]">
               <div className="max-w-[var(--shell-page-width)] lg:max-w-[420px] mx-auto w-full flex flex-col gap-2 justify-between">
                 <Button
                   variant="primary"
@@ -347,7 +347,7 @@ function Nominal() {
 
   const [nominalMeta] = useField("nominal");
   return (
-    <div className="flex flex-col gap-2 w-full items-center justify-center min-h-[calc(100svh-22rem)] lg:min-h-[calc(100svh-38.5rem)] lg:my-32">
+    <div className="flex flex-col gap-2 w-full items-center justify-center min-h-[calc(100svh-20rem)] lg:min-h-[calc(100svh-36.5rem)] lg:my-32">
       {type === "out" ? (
         <Label
           htmlFor={nominalMeta.id}

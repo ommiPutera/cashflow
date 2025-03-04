@@ -72,7 +72,7 @@ export default function Debt() {
     <ShellPage>
       <Navigation />
       <Header />
-      <div className="flex flex-col gap-3  mx-auto">
+      <div className="flex flex-col gap-3  max-w-[var(--shell-page-width)] mx-auto">
         <h2 className="text-xl font-bold koh-santepheap-bold mb-2">{title}</h2>
         {description && (
           <span className="text-xs lg:text-sm font-normal text-wrap">

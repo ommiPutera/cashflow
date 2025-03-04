@@ -6,10 +6,10 @@ export default {
   theme: {
     extend: {
       fontSize: {
-        xs: ["13px", "18px"],
-        sm: ["14px", "20px"],
-        base: ["16px", "24px"],
-        lg: ["20px", "28px"],
+        xs: ["12.5px", "18px"],
+        sm: ["13.5px", "20px"],
+        base: ["15px", "24px"],
+        lg: ["19.5px", "28px"],
         xl: ["23px", "31px"],
         "2xl": ["28px", "34.5px"],
         "3xl": ["33px", "36.5px"],

@@ -10,7 +10,7 @@ import {
 } from "react-router";
 
 import Navigation from "~/components/navigation";
-import ShellPage, { Section } from "~/components/shell-page";
+import ShellPage from "~/components/shell-page";
 import { Button } from "~/components/ui/button";
 import {
   DropdownMenu,
@@ -44,10 +44,8 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const session = await getSession(request.headers.get("Cookie"));
   const user: User = session.get("user");
   if (typeof id !== "string" || !user) return {};
-  const sheet = await deleteSheet(id, user.id);
-  if (sheet) return redirect("/sheets");
-
-  return {};
+  await deleteSheet(id, user.id);
+  return redirect("/sheets");
 };
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
@@ -88,15 +86,18 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 
 export default function Sheet() {
   return (
-    <ShellPage>
-      <Navigation />
-      <Header />
-      <div className="flex flex-col gap-3">
-        <SheetSum />
-        <AvailableMinus />
-        <Transactions />
-      </div>
-    </ShellPage>
+    <>
+      <ShellPage withoutFooter>
+        <Navigation />
+        <Header />
+      </ShellPage>
+      <ShellPage className="xl:max-w-[900px]">
+        <div className="flex flex-col xl:flex-row gap-3 w-full">
+          <SheetSum />
+          <Transactions />
+        </div>
+      </ShellPage>
+    </>
   );
 }
 
@@ -232,22 +233,5 @@ function DeleteSheet() {
         <path d="M3 6h18M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2M10 11v6M14 11v6"></path>
       </svg>
     </DropdownMenuItem>
-  );
-}
-
-function AvailableMinus() {
-  const {
-    sum: { totalIn, totalOut, available },
-  } = useLoaderData<typeof loader>();
-
-  if ((totalIn >= 0 || totalOut >= 0) && available > -1) return <></>;
-  return (
-    <Section className="bg-white dark:bg-black border border-danger-200 dark:border-neutral-800 p-0 lg:p-0 rounded-xl 2xl:rounded-2xl">
-      <div className="px-4 py-3 lg:py-4 lg:px-6 bg-danger-50 text-danger-500 border-none">
-        <span className="text-sm font-medium">
-          Finansialmu sedang dalam masalah..
-        </span>
-      </div>
-    </Section>
   );
 }

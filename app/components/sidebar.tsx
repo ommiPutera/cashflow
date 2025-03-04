@@ -6,14 +6,14 @@ import { ButtonLink } from "~/components/ui/button";
 import { cn } from "~/lib/utils";
 
 export function SidebarWrapper({ children }: { children: React.ReactNode }) {
-  return <div className="lg:ml-[var(--sidebar-width)] xl:ml-0">{children}</div>;
+  return <div className="xl:ml-[var(--sidebar-width)]">{children}</div>;
 }
 
 export default function Sidebar() {
   const location = useLocation();
   return (
-    <div className="hidden lg:block">
-      <div className="fixed left-0 top-0 px-2 h-svh w-[var(--sidebar-width)] border border-neutral-100 bg-white">
+    <div className="hidden xl:block">
+      <div className="fixed left-0 top-0 px-2 h-svh w-[var(--sidebar-width)] bg-neutral-100/50 border border-neutral-100">
         <div className="h-32 mx-3">
           <Link
             to="/sheets"
@@ -42,7 +42,7 @@ export default function Sidebar() {
             >
               <path d="M5 12h14M12 5v14"></path>
             </svg>
-            <span className="text-xs font-medium">Buat Lembar</span>
+            <span className="text-xs">Buat Lembar</span>
           </ButtonLink>
           <div className="flex flex-col">
             {tabs.map((tab) => {

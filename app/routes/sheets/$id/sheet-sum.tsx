@@ -16,7 +16,13 @@ export default function SheetSum() {
   const { sum } = useLoaderData<typeof loader>();
   const title = useParams().id?.replace(/-/g, " ");
   return (
-    <Accordion type="single" defaultValue="item" collapsible asChild>
+    <Accordion
+      type="single"
+      defaultValue="item"
+      collapsible
+      asChild
+      className="w-full h-fit"
+    >
       <Section className="bg-white dark:bg-black border border-neutral-200 dark:border-neutral-800 p-0 lg:p-0 rounded-xl 2xl:rounded-2xl">
         <AccordionItem value="item" className="border-none">
           <AccordionTrigger className="px-4 py-5 lg:py-6 lg:px-6 bg-neutral-50 lg:bg-white">

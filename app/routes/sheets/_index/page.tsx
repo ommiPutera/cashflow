@@ -42,7 +42,7 @@ export default function Sheets() {
   return (
     <ShellPage>
       <Navigation noNavigationOnMobile={false} />
-      <div className="flex flex-col gap-3  mx-auto">
+      <div className="flex flex-col gap-4 mx-auto max-w-[var(--shell-page-width)]">
         <h2 className="text-lg lg:text-xl font-bold koh-santepheap-bold mb-2">
           Neraca Anda
         </h2>
@@ -148,9 +148,34 @@ function GroupedSheet() {
       propKey: "more",
     },
   ];
-  return groups.map((group) => {
+  return groups.map((group, index) => {
     if (!groupedSheets[group.propKey as keyof typeof groupedSheets].length) {
       return null;
+    }
+    if (index === 0) {
+      return (
+        <div key={group.propKey}>
+          {group.title && (
+            <div className="px-4 py-3 inline-flex justify-between w-full items-center lg:py-4 lg:px-6 bg-white">
+              <h2 className="text-xs lg:text-sm font-semibold lg:font-bold">
+                {group.title}
+              </h2>
+              <span className="text-xs font-semibold">
+                Terakhir dibuka oleh saya
+              </span>
+            </div>
+          )}
+          <Section className="bg-white dark:bg-black border border-neutral-200 dark:border-neutral-800 p-0 lg:p-0 rounded-xl 2xl:rounded-2xl">
+            <Divide>
+              {groupedSheets[group.propKey as keyof typeof groupedSheets].map(
+                (sheet) => (
+                  <SheetItem key={sheet.id} {...sheet} />
+                ),
+              )}
+            </Divide>
+          </Section>
+        </div>
+      );
     }
     return (
       <SheetsLinks
@@ -167,28 +192,26 @@ type TGroupSheet = {
 };
 function SheetsLinks({ title, sheets }: TGroupSheet) {
   return (
-    <Section className="bg-white dark:bg-black border border-neutral-200 dark:border-neutral-800 p-0 lg:p-0 rounded-xl 2xl:rounded-2xl">
+    <div>
       {title && (
-        <div className="px-4 py-3 inline-flex justify-between items-center lg:py-4 lg:px-6 bg-neutral-50 border-b lg:border-none lg:bg-white">
-          <h2 className="text-sm font-normal lg:font-bold">{title}</h2>
-          <span className="text-xs font-normal lg:font-bold">
-            Terakhir dibuka
-          </span>
+        <div className="px-4 py-3 items-center lg:py-4 lg:px-6 bg-white">
+          <h2 className="text-xs lg:text-sm font-semibold lg:font-bold">
+            {title}
+          </h2>
         </div>
       )}
-      <Divide>
-        {sheets.map((sheet) => (
-          <SheetItem key={sheet.id} {...sheet} />
-        ))}
-      </Divide>
-    </Section>
+      <Section className="bg-white dark:bg-black border border-neutral-200 dark:border-neutral-800 p-0 lg:p-0 rounded-xl 2xl:rounded-2xl">
+        <Divide>
+          {sheets.map((sheet) => (
+            <SheetItem key={sheet.id} {...sheet} />
+          ))}
+        </Divide>
+      </Section>
+    </div>
   );
 }
 function SheetItem({ title, titleId, updatedAt }: Sheet) {
   const date = format(new Date(updatedAt), "dd MMM yyyy", {
-    locale: id,
-  });
-  const time = format(new Date(updatedAt), "EEEE, hh:mm", {
     locale: id,
   });
   return (
@@ -201,8 +224,6 @@ function SheetItem({ title, titleId, updatedAt }: Sheet) {
         <span className="text-sm font-normal text-wrap">{title}</span>
       </div>
       <span className="text-xs font-normal text-right text-neutral-500 whitespace-nowrap">
-        {time} WIB
-        <br />
         {date}
       </span>
     </ButtonLink>

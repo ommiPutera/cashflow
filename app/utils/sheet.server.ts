@@ -83,7 +83,10 @@ export async function createSheet(
   const newSheet = await prisma.sheet.create({
     data: {
       title,
-      titleId: title.replace(/\s/g, "").split(" ").join("-"),
+      titleId: title
+        .replace(/\s{2,}/g, " ")
+        .split(" ")
+        .join("-"),
       userId,
       deletedAt: null,
     },
