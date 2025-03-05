@@ -1,12 +1,6 @@
-import { useLoaderData, useParams } from "react-router";
+import { useLoaderData } from "react-router";
 
 import { Divide, Section } from "~/components/shell-page";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "~/components/ui/accordion";
 
 import { toIDR } from "~/utils/currency";
 
@@ -14,42 +8,22 @@ import { loader } from "./page";
 
 export default function SheetSum() {
   const { sum } = useLoaderData<typeof loader>();
-  const title = useParams().id?.replace(/-/g, " ");
   return (
-    <Accordion
-      type="single"
-      defaultValue="item"
-      collapsible
-      asChild
-      className="w-full h-fit"
-    >
-      <Section className="bg-white dark:bg-black border border-neutral-200 dark:border-neutral-800 p-0 lg:p-0 rounded-xl 2xl:rounded-2xl">
-        <AccordionItem value="item" className="border-none">
-          <AccordionTrigger className="px-4 py-5 lg:py-6 lg:px-6 bg-neutral-50 lg:bg-white">
-            <h2 className="text-sm font-bold">{title}</h2>
-          </AccordionTrigger>
-          <AccordionContent className="pb-0">
-            <Divide>
-              <SumItem
-                title="Pemasukan"
-                totalAmount={toIDR(sum.totalIn)}
-                from="in"
-              />
-              <SumItem
-                title="Pengeluaran"
-                totalAmount={toIDR(sum.totalOut)}
-                from="out"
-              />
-              <SumItem
-                title="Dana Tersedia"
-                totalAmount={toIDR(sum.available)}
-                from="available"
-              />
-            </Divide>
-          </AccordionContent>
-        </AccordionItem>
-      </Section>
-    </Accordion>
+    <Section className="bg-white w-full h-fit dark:bg-black border border-neutral-200 dark:border-neutral-800 p-0 lg:p-0 rounded-xl 2xl:rounded-2xl">
+      <Divide>
+        <SumItem title="Pemasukan" totalAmount={toIDR(sum.totalIn)} from="in" />
+        <SumItem
+          title="Pengeluaran"
+          totalAmount={toIDR(sum.totalOut)}
+          from="out"
+        />
+        <SumItem
+          title="Dana Tersedia"
+          totalAmount={toIDR(sum.available)}
+          from="available"
+        />
+      </Divide>
+    </Section>
   );
 }
 

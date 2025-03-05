@@ -16,7 +16,6 @@ import { getSession } from "~/lib/session.server";
 
 import { toIDR } from "~/utils/currency";
 import { getGroupedSheets, getSheets } from "~/utils/sheet.server";
-import { getTotalLiabilitiesAndAssets } from "~/utils/transaction.server";
 
 export const meta: MetaFunction = () => {
   return [{ title: "Beranda" }, { name: "", content: "" }];
@@ -28,13 +27,10 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
   const groupedSheets = await getGroupedSheets(user.id);
   const sheets = await getSheets(user.id);
-  const totalLiabilitiesAndAssets = await getTotalLiabilitiesAndAssets(user.id);
 
   return {
     groupedSheets,
     sheets,
-    totalAssets: totalLiabilitiesAndAssets.totalAssets,
-    totalLiabilities: totalLiabilitiesAndAssets.totalLiabilities,
   };
 }
 
@@ -47,8 +43,8 @@ export default function Sheets() {
           Neraca Anda
         </h2>
         <BalanceSheet />
-        <br />
-        <div className="flex items-center justify-between">
+        <div className="h-2"></div>
+        <div className="flex items-center gap-3">
           <h2 className="text-lg lg:text-xl font-bold koh-santepheap-bold">
             Lembar Anda
           </h2>
@@ -68,7 +64,7 @@ function CreateSheet() {
     <ButtonLink
       to="/sheets/create"
       variant="transparent"
-      className="w-fit lg:hidden px-6 z-40 text-primary-500 overflow-hidden [&_svg]:size-4 gap-3 rounded-2xl inline-flex"
+      className="w-fit lg:hidden px-2 text-primary-500 overflow-hidden [&_svg]:size-4 gap-3 rounded-2xl inline-flex"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -231,11 +227,20 @@ function SheetItem({ title, titleId, updatedAt }: Sheet) {
 }
 
 function BalanceSheet() {
-  const { totalAssets, totalLiabilities } = useLoaderData<typeof loader>();
   return (
     <Section className="dark:bg-black border bg-primary-50/50 dark:border-neutral-800 p-0 lg:p-0 rounded-xl 2xl:rounded-2xl">
-      <div className="px-4 py-3 lg:py-4 lg:px-6 bg-neutral-50 border-b lg:bg-white">
-        <h2 className="text-sm font-medium lg:font-bold text-center">Neraca</h2>
+      <div className="p-4 mt-4 text-center">
+        <div className="flex flex-col gap-2 justify-center items-center">
+          <span className="text-xs lg:text-sm font-medium text-wrap">
+            Kekayaan Bersih
+          </span>
+          <h3 className="text-lg lg:text-xl font-bold text-neutral-700 text-wrap text-primary-500">
+            {toIDR(0)}
+          </h3>
+        </div>
+        <p className="text-xs lg:text-sm font-normal text-wrap mt-4">
+          Kekayaan Bersih = Total Aset - Total Liabilitas
+        </p>
       </div>
       <Divide className="flex flex-row divide-x divide-y-0 py-6 lg:py-12">
         <Button
@@ -263,7 +268,7 @@ function BalanceSheet() {
             </span>
           </div>
           <h3 className="text-base lg:text-lg font-bold text-neutral-700 text-wrap">
-            {toIDR(totalLiabilities)}
+            {toIDR(0)}
           </h3>
         </Button>
         <Button
@@ -292,7 +297,7 @@ function BalanceSheet() {
             </span>
           </div>
           <h3 className="text-base lg:text-lg font-bold text-neutral-700 text-wrap">
-            {toIDR(totalAssets)}
+            {toIDR(0)}
           </h3>
         </Button>
       </Divide>

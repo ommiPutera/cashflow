@@ -79,7 +79,7 @@
 
     --radius: 0.5rem;
 
-    --sidebar-width: 220px;
+    --sidebar-width: 230px;
 
     --shell-page-width: 570px;
     --header-height: 48px;
@@ -120,8 +120,8 @@
 @layer base {
   * {
     -webkit-tap-highlight-color: transparent;
-    overscroll-behavior-y: none;
-    scroll-behavior: auto;
+    /* overscroll-behavior-y: none; */
+    /* scroll-behavior: auto; */
     -webkit-font-smoothing: antialiased;
     font-synthesis: none;
     @apply border-border;

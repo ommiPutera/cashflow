@@ -102,8 +102,6 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
       type,
       nominal: parseInt(nominalValue),
       expenseClassification: type === "out" ? expenseClassification : "",
-      assets: balanceSheet === "assets",
-      liabilities: balanceSheet === "liabilities",
       notes,
       financialGoalId,
     });
@@ -136,7 +134,6 @@ const editTransactionSchema = z
       .string({ required_error: "Nominal transaksi harus diisi" })
       .max(30, "Maksimal 30 karakter"),
     notes: z.string().max(72, "Maksimal 72 karakter").optional(),
-    balanceSheet: z.string({ required_error: "Pertanyaan harus dijawab" }),
     financialGoalId: z.string().optional(),
     type: z.enum(["in", "out"], {
       errorMap: () => ({ message: "Tipe transaksi harus diisi" }),
@@ -165,7 +162,6 @@ export default function Edit() {
     nominal,
     notes,
     type,
-    assets,
     expenseClassification,
     financialGoalId,
     titleId,
@@ -185,7 +181,6 @@ export default function Edit() {
       notes,
       type,
       expenseClassification,
-      balanceSheet: assets ? "assets" : "liabilities",
       financialGoalId,
     },
     shouldValidate: "onInput",
@@ -308,7 +303,6 @@ function FormEditTransaction() {
         </div>
       </Section>
       <ExpenseClassification />
-      <BalanceSheet />
       <Section className="bg-white border border-neutral-200 dark:border-neutral-800 rounded-xl 2xl:rounded-2xl">
         <div className="grid w-full items-center gap-4 py-4">
           <Label htmlFor={notesMeta.id} className="font-semibold">
@@ -657,47 +651,6 @@ function Type() {
         </ToggleGroupItem>
       </ToggleGroup>
     </div>
-  );
-}
-
-function BalanceSheet() {
-  const [meta, form] = useField("balanceSheet");
-  return (
-    <Section className="block bg-white border border-neutral-200 dark:border-neutral-800 rounded-xl 2xl:rounded-2xl">
-      <div className="grid w-full items-center gap-4 py-4">
-        <input
-          type="hidden"
-          name={meta.name}
-          value={String(meta.value || "")}
-        />
-        <Label className="font-semibold" required>
-          Apakah transaksi ini akan menambah nilai kekayaan Anda atau justru
-          kewajiban yang harus Anda bayar?
-        </Label>
-        <RadioGroup
-          onValueChange={(value) => {
-            if (value) {
-              form.update({ name: meta.name, value });
-            }
-          }}
-          defaultValue={String(meta.initialValue)}
-        >
-          <div className="flex items-center space-x-4">
-            <RadioGroupItem value="assets" id="assets" />
-            <label className={labelVariants()} htmlFor="assets">
-              Menambah nilai kekayaan (Aset)
-            </label>
-          </div>
-          <div className="flex items-center space-x-4">
-            <RadioGroupItem value="liabilities" id="liabilities" />
-            <label className={labelVariants()} htmlFor="liabilities">
-              Menambah kewajiban yang harus dibayar (Liabilitas)
-            </label>
-          </div>
-        </RadioGroup>
-        {meta.errors && <ErrorMessage>{meta.errors}</ErrorMessage>}
-      </div>
-    </Section>
   );
 }
 

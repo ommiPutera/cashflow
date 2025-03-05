@@ -7,6 +7,7 @@ import {
   redirect,
   useFetcher,
   useLoaderData,
+  useParams,
 } from "react-router";
 
 import Navigation from "~/components/navigation";
@@ -21,14 +22,14 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 
-import { deleteSheet, getSheet } from "~/utils/sheet.server";
-
 import { getSession } from "~/lib/session.server";
 
+import { deleteSheet, getSheet } from "~/utils/sheet.server";
 import {
   getTotalInAndOut,
   getTransactionsBySheet,
 } from "~/utils/transaction.server";
+
 import SheetSum from "./sheet-sum";
 import Transactions from "./transactions";
 
@@ -85,19 +86,19 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 };
 
 export default function Sheet() {
+  const title = useParams().id?.replace(/-/g, " ");
   return (
-    <>
-      <ShellPage withoutFooter>
-        <Navigation />
-        <Header />
-      </ShellPage>
-      <ShellPage className="xl:max-w-[900px]">
-        <div className="flex flex-col xl:flex-row gap-3 w-full">
-          <SheetSum />
-          <Transactions />
-        </div>
-      </ShellPage>
-    </>
+    <ShellPage>
+      <Navigation />
+      <Header />
+      <h2 className="text-lg lg:text-xl font-bold koh-santepheap-bold mb-8 mt-2 text-center w-full">
+        {title}
+      </h2>
+      <div className="flex flex-col xl:flex-row gap-3 w-full max-w-[var(--shell-page-width)] xl:max-w-[calc(var(--shell-page-width)_+_300px)] mx-auto">
+        <SheetSum />
+        <Transactions />
+      </div>
+    </ShellPage>
   );
 }
 

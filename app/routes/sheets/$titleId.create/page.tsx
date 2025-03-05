@@ -46,16 +46,8 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
   const submission = parseWithZod(formData, { schema: createTransactionchema });
 
-  const {
-    titleId,
-    id,
-    name,
-    type,
-    expenseClassification,
-    nominal,
-    notes,
-    balanceSheet,
-  } = submission.payload;
+  const { titleId, id, name, type, expenseClassification, nominal, notes } =
+    submission.payload;
 
   if (
     typeof titleId === "string" &&
@@ -63,7 +55,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     typeof name === "string" &&
     typeof notes === "string" &&
     typeof expenseClassification === "string" &&
-    typeof balanceSheet === "string" &&
     typeof nominal === "string" &&
     (type === "in" || type === "out")
   ) {
@@ -73,8 +64,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       name,
       type,
       nominal: parseInt(nominalValue),
-      assets: balanceSheet === "assets",
-      liabilities: balanceSheet === "liabilities",
       expenseClassification,
       notes,
     });
@@ -261,7 +250,6 @@ function FormCreateTransaction() {
         </div>
       </Section>
       <ExpenseClassification />
-      <BalanceSheet />
       <Section className="bg-white border border-neutral-200 dark:border-neutral-800 rounded-xl 2xl:rounded-2xl">
         <div className="grid w-full items-center gap-4 py-4">
           <Label htmlFor={notesMeta.id} className="font-semibold">
@@ -335,46 +323,6 @@ export function ExpenseClassification() {
             <RadioGroupItem value="occasional" id="occasional" />
             <label className={labelVariants()} htmlFor="occasional">
               Tidak, hanya sekali{" "}
-            </label>
-          </div>
-        </RadioGroup>
-        {meta.errors && <ErrorMessage>{meta.errors}</ErrorMessage>}
-      </div>
-    </Section>
-  );
-}
-
-function BalanceSheet() {
-  const [meta, form] = useField("balanceSheet");
-  return (
-    <Section className="block bg-white border border-neutral-200 dark:border-neutral-800 rounded-xl 2xl:rounded-2xl">
-      <div className="grid w-full items-center gap-4 py-4">
-        <input
-          type="hidden"
-          name={meta.name}
-          value={String(meta.value || "")}
-        />
-        <Label className="font-semibold" required>
-          Apakah transaksi ini dimasa depan akan menambah nilai kekayaan Anda
-          atau justru merupakan kewajiban yang harus Anda bayar?
-        </Label>
-        <RadioGroup
-          onValueChange={(value) => {
-            if (value) {
-              form.update({ name: meta.name, value });
-            }
-          }}
-        >
-          <div className="flex items-center space-x-4">
-            <RadioGroupItem value="assets" id="assets" />
-            <label className={labelVariants()} htmlFor="assets">
-              Menambah nilai kekayaan (Aset)
-            </label>
-          </div>
-          <div className="flex items-center space-x-4">
-            <RadioGroupItem value="liabilities" id="liabilities" />
-            <label className={labelVariants()} htmlFor="liabilities">
-              Menambah kewajiban yang harus dibayar (Liabilitas)
             </label>
           </div>
         </RadioGroup>
