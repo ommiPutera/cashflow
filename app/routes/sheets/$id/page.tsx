@@ -91,12 +91,16 @@ export default function Sheet() {
     <ShellPage>
       <Navigation />
       <Header />
-      <h2 className="text-lg lg:text-xl font-bold koh-santepheap-bold mb-8 mt-2 text-center w-full">
-        {title}
-      </h2>
-      <div className="flex flex-col xl:flex-row gap-3 w-full max-w-[var(--shell-page-width)] xl:max-w-[calc(var(--shell-page-width)_+_300px)] mx-auto">
-        <SheetSum />
-        <Transactions />
+      <div className="flex flex-col lg:flex-row-reverse gap-4 mx-auto max-w-[var(--shell-page-width)] lg:gap-14 2xl:gap-16 lg:max-w-[1150px]">
+        <div className="w-full lg:max-w-[400px]">
+          <SheetSum />
+        </div>
+        <div className="w-full mt-4 lg:mt-0">
+          <h2 className="text-lg lg:text-xl font-bold koh-santepheap-bold mb-6">
+            {title}
+          </h2>
+          <Transactions />
+        </div>
       </div>
     </ShellPage>
   );
@@ -104,11 +108,11 @@ export default function Sheet() {
 
 function Header() {
   return (
-    <div className="w-full h-12 flex justify-between items-start">
+    <div className="w-full h-12 flex justify-between items-start lg:hidden">
       <Link
         to="/sheets"
         prefetch="render"
-        className="p-0 h-fit active:scale-[0.99] font-normal inline-flex items-center tap-highlight-transparent"
+        className="p-0 h-fit  font-normal inline-flex items-center tap-highlight-transparent"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

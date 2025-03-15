@@ -8,7 +8,6 @@
     --black: 0 0% 8%;
 
     --background: 0 0% 100%;
-    /* --background: 0 0% 94%; */
     --foreground: 213 13% 17%;
 
     --primary-50: 217 91% 95%;
@@ -79,7 +78,7 @@
 
     --radius: 0.5rem;
 
-    --sidebar-width: 230px;
+    --sidebar-width: 240px;
 
     --shell-page-width: 570px;
     --header-height: 48px;
@@ -120,8 +119,6 @@
 @layer base {
   * {
     -webkit-tap-highlight-color: transparent;
-    /* overscroll-behavior-y: none; */
-    /* scroll-behavior: auto; */
     -webkit-font-smoothing: antialiased;
     font-synthesis: none;
     @apply border-border;
@@ -162,10 +159,6 @@
     @media (prefers-color-scheme: dark) {
       color-scheme: dark;
     }
-  }
-  input::selection,
-  textarea::selection {
-    color: inherit;
   }
   input:-webkit-autofill,
   input:-webkit-autofill:focus {

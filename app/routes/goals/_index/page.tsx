@@ -98,7 +98,7 @@ function DebtItem({
     <ButtonLink
       to={`/goals/debt/${id}`}
       variant="transparent"
-      className="px-4 lg:px-6 active:scale-[0.99] active:bg-transparent h-14 lg:h-16 flex w-full items-center hover:bg-primary-50 cursor-pointer rounded-none border-x-0"
+      className="px-4 lg:px-6  active:bg-transparent h-14 lg:h-16 flex w-full items-center hover:bg-primary-50 cursor-pointer rounded-none border-x-0"
     >
       <span className="text-sm font-normal text-wrap w-full">{title}</span>
       <p className="text-sm font-normal">

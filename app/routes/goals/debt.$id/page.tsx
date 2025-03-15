@@ -101,7 +101,7 @@ function DebtGoal() {
       <Divide className="flex flex-row divide-x divide-y-0 py-6">
         <Button
           variant="transparent"
-          className="px-4 lg:px-6 active:scale-[0.99] [&_svg]:size-5 active:bg-transparent flex flex-col w-full items-center cursor-pointer rounded-none border-x-0"
+          className="px-4 lg:px-6  [&_svg]:size-5 active:bg-transparent flex flex-col w-full items-center cursor-pointer rounded-none border-x-0"
         >
           <div className="inline-flex gap-3 justify-center items-center w-full">
             <span className="text-xs lg:text-sm font-normal text-wrap">
@@ -114,7 +114,7 @@ function DebtGoal() {
         </Button>
         <Button
           variant="transparent"
-          className="px-4 lg:px-6 active:scale-[0.99] [&_svg]:size-5 active:bg-transparent flex flex-col w-full items-center cursor-pointer rounded-none border-x-0"
+          className="px-4 lg:px-6  [&_svg]:size-5 active:bg-transparent flex flex-col w-full items-center cursor-pointer rounded-none border-x-0"
         >
           <div className="inline-flex gap-3 justify-center items-center w-full">
             <span className="text-xs lg:text-sm font-normal text-wrap">
@@ -182,7 +182,7 @@ function Header() {
       <Link
         to="/goals"
         prefetch="render"
-        className="p-0 h-fit active:scale-[0.99] font-normal inline-flex items-center tap-highlight-transparent"
+        className="p-0 h-fit  font-normal inline-flex items-center tap-highlight-transparent"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

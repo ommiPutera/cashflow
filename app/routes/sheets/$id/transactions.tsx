@@ -21,7 +21,7 @@ export default function Transactions() {
       <ButtonLink
         to={`/sheets/${sheetId}/create`}
         variant="outlined-primary"
-        className="!h-14 lg:!h-20 bg-neutral-50 inline-flex gap-2 rounded-t-xl 2xl:rounded-t-2xl rounded-b-none border-t-transparent border-x-transparent border-b"
+        className="!h-14 lg:!h-20 bg-neutral-50 lg:hidden inline-flex gap-2 rounded-t-xl 2xl:rounded-t-2xl rounded-b-none border-t-transparent border-x-transparent border-b"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -54,7 +54,7 @@ function ExpectationMode() {
   } = useLoaderData<typeof loader>();
   const [, setSearchParams] = useSearchParams();
   return (
-    <div className="flex items-center space-x-2 active:scale-[0.99]">
+    <div className="flex items-center space-x-2 ">
       <Switch
         disabled={!hasTransactions}
         id="expectation-mode"
@@ -152,7 +152,7 @@ function ExpectationSum() {
 
   if (!isExpectationModeActive) return <></>;
   return (
-    <Section className="bg-neutral-50 m-2 dark:bg-black border border-neutral-200 dark:border-neutral-800 p-0 lg:p-0 rounded-xl 2xl:rounded-2xl">
+    <Section className="bg-primary-50/50 m-4 dark:bg-black border border-neutral-200 dark:border-neutral-800 p-0 lg:p-0 rounded-xl 2xl:rounded-2xl">
       <Divide>
         <SumItem
           title="Pemasukan"
@@ -232,9 +232,7 @@ function TransactionContentLayout({
       htmlFor={id}
       className="px-4 lg:px-6 min-h-14 lg:h-16 flex w-full items-center hover:bg-primary-50 cursor-pointer rounded-none border-x-0"
     >
-      <div className="active:scale-[0.99] active:bg-transparent w-full">
-        {props.children}
-      </div>
+      <div className=" active:bg-transparent w-full">{props.children}</div>
     </label>
   );
 }

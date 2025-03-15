@@ -16,7 +16,7 @@ export default function ShellPage({
     >
       <section className="flex flex-col relative">
         <div className="h-fit bg-white dark:bg-black relative">
-          <main role="main" className="px-4 py-6 lg:px-6 lg:py-8">
+          <main role="main" className="px-4 py-8 lg:px-10 lg:py-12 mb-32">
             {props.children}
           </main>
         </div>

@@ -199,7 +199,7 @@ export default function Edit() {
           <Link
             to={backUrl || `/sheets/${titleId}`}
             prefetch="render"
-            className="p-0 h-fit active:scale-[0.99] font-normal inline-flex items-center tap-highlight-transparent"
+            className="p-0 h-fit  font-normal inline-flex items-center tap-highlight-transparent"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -225,13 +225,13 @@ export default function Edit() {
             {...getFormProps(form)}
           >
             <FormEditTransaction />
-            <div className="fixed z-20 border-t border-neutral-100 left-0 lg:left-[var(--sidebar-width)] bg-background bottom-0 py-6 px-4 w-full lg:w-[calc(100%_-_var(--sidebar-width))]">
-              <div className="max-w-[var(--shell-page-width)] lg:max-w-[420px] mx-auto w-full flex flex-col gap-2 justify-between">
+            <div className="fixed z-20 border-t border-neutral-200 left-0 lg:left-[var(--sidebar-width)] bg-background bottom-0 py-6 px-4 w-full lg:w-[calc(100%_-_var(--sidebar-width))]">
+              <div className="max-w-[var(--shell-page-width)] lg:max-w-full mx-auto w-full flex flex-col lg:flex-row-reverse gap-2 lg:gap-4">
                 <Button
                   variant="primary"
                   type="submit"
                   disabled={!form.dirty}
-                  className="w-full border-2 font-bold text-white border-primary-500 rounded-full"
+                  className="w-full border-2 font-bold text-white lg:w-72 border-primary-500 rounded-full"
                 >
                   Ubah
                 </Button>
@@ -670,7 +670,7 @@ function DeleteTransaction() {
         type="button"
         onClick={() => setIsRequest(true)}
         className={cn(
-          "w-full border-2 font-bold rounded-full",
+          "w-full border-2 font-bold rounded-full lg:w-72",
           isRequest && "hidden",
         )}
       >
@@ -678,7 +678,7 @@ function DeleteTransaction() {
       </Button>
       <div
         className={cn(
-          "hidden border-2 border-danger-500 h-14 lg:h-12 justify-between rounded-full overflow-hidden",
+          "hidden border-2 border-danger-500 h-14 lg:h-12 justify-between rounded-full overflow-hidden lg:w-72",
           isRequest && "flex",
         )}
       >

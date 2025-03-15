@@ -12,7 +12,7 @@
   p,
   span,
   label {
-    @apply tracking-tight;
+    @apply tracking-normal;
   }
 }
 

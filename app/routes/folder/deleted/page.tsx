@@ -99,7 +99,7 @@ export default function Index() {
       <Link
         to="/folder"
         prefetch="render"
-        className="p-0 h-fit active:scale-[0.99] font-normal inline-flex items-center tap-highlight-transparent"
+        className="p-0 h-fit  font-normal inline-flex items-center tap-highlight-transparent"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -163,7 +163,7 @@ function SheetItem({ id, title, createdAt }: Sheet) {
         <DialogTrigger asChild>
           <Button
             variant="transparent"
-            className="px-4 lg:px-6 active:scale-[0.99] [&_svg]:size-5 active:bg-transparent h-14 lg:h-16 flex w-full items-center hover:bg-primary-50 cursor-pointer rounded-none border-x-0"
+            className="px-4 lg:px-6  [&_svg]:size-5 active:bg-transparent h-14 lg:h-16 flex w-full items-center hover:bg-primary-50 cursor-pointer rounded-none border-x-0"
           >
             <div className="inline-flex gap-3 items-center w-full">
               <span className="text-sm font-medium text-wrap">{title}</span>
@@ -228,7 +228,7 @@ function SheetItem({ id, title, createdAt }: Sheet) {
       <DrawerTrigger asChild>
         <Button
           variant="transparent"
-          className="px-4 lg:px-6 active:scale-[0.99] [&_svg]:size-5 active:bg-transparent h-14 lg:h-16 flex w-full items-center hover:bg-primary-50 cursor-pointer rounded-none border-x-0"
+          className="px-4 lg:px-6  [&_svg]:size-5 active:bg-transparent h-14 lg:h-16 flex w-full items-center hover:bg-primary-50 cursor-pointer rounded-none border-x-0"
         >
           <div className="inline-flex gap-3 items-center w-full">
             <span className="text-sm font-medium text-wrap">{title}</span>

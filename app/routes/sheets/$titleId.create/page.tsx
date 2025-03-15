@@ -139,7 +139,7 @@ export default function Create() {
           <Link
             to={`/sheets/${titleId}`}
             prefetch="render"
-            className="p-0 h-fit active:scale-[0.99] font-normal inline-flex items-center tap-highlight-transparent"
+            className="p-0 h-fit  font-normal inline-flex items-center tap-highlight-transparent"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -279,12 +279,13 @@ export function ExpenseClassification() {
 
   return (
     <Section
-      className={cn(
-        "hidden",
-        typeMeta.value === "out" &&
-          "block bg-white border border-neutral-200 dark:border-neutral-800 rounded-xl 2xl:rounded-2xl",
-      )}
+      className={cn()
+      // "hidden",
+      // typeMeta.value === "out" &&
+      //   "block bg-white border border-neutral-200 dark:border-neutral-800 rounded-xl 2xl:rounded-2xl",
+      }
     >
+      {typeMeta.value}
       <div className="grid w-full items-center gap-4 py-4">
         <input
           type="hidden"

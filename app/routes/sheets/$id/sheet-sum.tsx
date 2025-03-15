@@ -5,11 +5,33 @@ import { Divide, Section } from "~/components/shell-page";
 import { toIDR } from "~/utils/currency";
 
 import { loader } from "./page";
+import { ButtonLink } from "~/components/ui/button";
 
 export default function SheetSum() {
-  const { sum } = useLoaderData<typeof loader>();
+  const { sum, sheetId } = useLoaderData<typeof loader>();
   return (
     <Section className="bg-white w-full h-fit dark:bg-black border border-neutral-200 dark:border-neutral-800 p-0 lg:p-0 rounded-xl 2xl:rounded-2xl">
+      <ButtonLink
+        to={`/sheets/${sheetId}/create`}
+        variant="outlined-primary"
+        className="!h-14 lg:!h-20 bg-neutral-50 hidden lg:inline-flex gap-2 rounded-t-xl 2xl:rounded-t-2xl rounded-b-none border-t-transparent border-x-transparent border-b"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          fill="none"
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="3"
+          className="w-4 h-4 lg:w-5 lg:h-5"
+          viewBox="0 0 24 24"
+        >
+          <path d="M5 12h14M12 5v14"></path>
+        </svg>
+        <span>Buat transaksi</span>
+      </ButtonLink>
       <Divide>
         <SumItem title="Pemasukan" totalAmount={toIDR(sum.totalIn)} from="in" />
         <SumItem

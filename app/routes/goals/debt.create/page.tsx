@@ -101,7 +101,7 @@ export default function Create() {
           <Link
             to={backUrl || "/goals"}
             prefetch="render"
-            className="p-0 h-fit active:scale-[0.99] font-normal inline-flex items-center tap-highlight-transparent"
+            className="p-0 h-fit  font-normal inline-flex items-center tap-highlight-transparent"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
