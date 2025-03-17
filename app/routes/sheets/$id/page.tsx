@@ -91,12 +91,12 @@ export default function Sheet() {
     <ShellPage>
       <Navigation />
       <Header />
-      <div className="flex flex-col lg:flex-row-reverse gap-4 mx-auto max-w-[var(--shell-page-width)] lg:gap-14 2xl:gap-16 lg:max-w-[1150px]">
+      <div className="flex flex-col lg:flex-row-reverse gap-4 mx-auto xl:mx-0 max-w-[var(--shell-page-width)] lg:gap-10 lg:max-w-[1150px]">
         <div className="w-full lg:max-w-[400px]">
           <SheetSum />
         </div>
         <div className="w-full mt-4 lg:mt-0">
-          <h2 className="text-lg lg:text-xl font-bold koh-santepheap-bold mb-6">
+          <h2 className="text-lg lg:text-xl font-bold koh-santepheap-bold mb-6 lg:hidden block">
             {title}
           </h2>
           <Transactions />

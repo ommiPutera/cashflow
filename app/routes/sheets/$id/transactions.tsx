@@ -1,20 +1,22 @@
 import { type Transaction } from "@prisma/client";
 
 import React from "react";
-import { Link, useLoaderData, useSearchParams } from "react-router";
+import { Link, useLoaderData, useParams, useSearchParams } from "react-router";
 
 import { Divide, Section } from "~/components/shell-page";
 import { ButtonLink } from "~/components/ui/button";
 import { Checkbox } from "~/components/ui/checkbox";
-import { Label } from "~/components/ui/label";
+import { labelVariants } from "~/components/ui/label";
 import { Switch } from "~/components/ui/switch";
 
 import { toIDR } from "~/utils/currency";
 
+import { cn } from "~/lib/utils";
 import { loader } from "./page";
 import { SumItem } from "./sheet-sum";
 
 export default function Transactions() {
+  const title = useParams().id?.replace(/-/g, " ");
   const { sheetId } = useLoaderData<typeof loader>();
   return (
     <Section className="w-full bg-white dark:bg-black border border-neutral-200 dark:border-neutral-800 p-0 lg:p-0 rounded-xl 2xl:rounded-2xl">
@@ -40,7 +42,14 @@ export default function Transactions() {
         <span>Buat transaksi</span>
       </ButtonLink>
       <div className="px-4 py-5 lg:py-6 lg:px-6 bg-neutral-50 lg:bg-white flex flex-wrap gap-2 justify-between items-center">
-        <h2 className="text-sm font-bold">Transaksi</h2>
+        <div>
+          <h2 className="text-lg lg:text-xl font-bold koh-santepheap-bold hidden lg:block">
+            {title}
+          </h2>
+          <p className="text-sm lg:text-base lg:mt-1.5 font-bold lg:font-medium">
+            Transaksi
+          </p>
+        </div>
         <ExpectationMode />
       </div>
       <ListTransactions />
@@ -67,9 +76,12 @@ function ExpectationMode() {
           });
         }}
       />
-      <Label htmlFor="expectation-mode" className="font-semibold text-xs">
+      <label
+        className={cn(labelVariants(), "font-semibold text-xs")}
+        htmlFor="expectation-mode"
+      >
         Mode Ekspetasi
-      </Label>
+      </label>
     </div>
   );
 }
@@ -134,7 +146,7 @@ function ListTransactions() {
 }
 function EmptyTransaction() {
   return (
-    <div className="w-full h-16 flex justify-center items-center">
+    <div className="w-full h-40 flex justify-center items-center">
       <span className="text-sm font-normal text-neutral-400">
         Belum ada Transaksi..
       </span>

@@ -7,6 +7,7 @@ import {
   useActionData,
   useFetcher,
   useLoaderData,
+  useLocation,
 } from "react-router";
 import { z } from "zod";
 
@@ -36,6 +37,7 @@ import { createTransaction } from "~/utils/transaction.server";
 import { getSheet } from "~/utils/sheet.server";
 import { getSession } from "~/lib/session.server";
 import { User } from "@prisma/client";
+import { getFinancialGoals } from "~/utils/financialGoal.server";
 
 export const meta: MetaFunction = ({ params }) => {
   const title = `Buat Transaksi | ${params.titleId?.split("-").join(" ")}`;
@@ -78,8 +80,10 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const user: User = session.get("user");
 
   const sheet = await getSheet(params.titleId || "", user.id);
+  const financialGoals = await getFinancialGoals(user.id || "");
   return {
     ...sheet,
+    financialGoals,
   };
 };
 
@@ -91,8 +95,8 @@ const createTransactionchema = z
     nominal: z
       .string({ required_error: "Nominal transaksi harus diisi" })
       .max(30, "Maksimal 30 karakter"),
-    notes: z.string().max(30, "Maksimal 30 karakter").optional(),
-    balanceSheet: z.string({ required_error: "Pertanyaan harus dijawab" }),
+    notes: z.string().max(72, "Maksimal 72 karakter").optional(),
+    financialGoalId: z.string().optional(),
     type: z.enum(["in", "out"], {
       errorMap: () => ({ message: "Tipe transaksi harus diisi" }),
     }),
@@ -113,7 +117,6 @@ const createTransactionchema = z
       }),
     ]),
   );
-
 const formId = "create-transaction";
 export default function Create() {
   const { titleId } = useLoaderData<typeof loader>();
@@ -157,27 +160,29 @@ export default function Create() {
             <span className="text-xs font-medium">Kembali</span>
           </Link>
         </div>
-        <div className="flex flex-col gap-2  lg:mb-0 max-w-[var(--shell-page-width)] mx-auto">
-          <Section className="bg-white border border-neutral-200 dark:border-neutral-800 p-0 lg:p-0 rounded-xl 2xl:rounded-2xl overflow-hidden">
-            <div className="h-1 bg-primary-500 w-full"></div>
-            <div className="px-4 py-5 lg:py-6 lg:px-6 flex justify-between items-center">
-              <h2 className="text-lg font-bold koh-santepheap-bold">
-                Buat Transaksi di Lembar{" "}
-                <span className="underline">{title}</span>
-              </h2>
-            </div>
-          </Section>
-          <fetcher.Form
-            action="."
-            method="post"
-            className="flex relative flex-col gap-3 h-full pb-32"
-            {...getFormProps(form)}
-          >
-            <FormCreateTransaction />
-            <Button variant="outlined-primary" type="submit">
-              Simpan
-            </Button>
-          </fetcher.Form>
+        <div className="lg:max-w-[1150px]">
+          <div className="flex flex-col gap-4 mx-auto xl:mx-0 max-w-[var(--shell-page-width)]">
+            <Section className="bg-white border border-neutral-200 dark:border-neutral-800 p-0 lg:p-0 rounded-xl 2xl:rounded-2xl overflow-hidden">
+              <div className="h-1 bg-primary-500 w-full"></div>
+              <div className="px-4 py-5 lg:py-6 lg:px-6 flex justify-between items-center">
+                <h2 className="text-lg font-bold koh-santepheap-bold">
+                  Buat Transaksi di Lembar{" "}
+                  <span className="underline">{title}</span>
+                </h2>
+              </div>
+            </Section>
+            <fetcher.Form
+              action="."
+              method="post"
+              className="flex relative flex-col gap-3 h-full pb-32"
+              {...getFormProps(form)}
+            >
+              <FormCreateTransaction />
+              <Button variant="outlined-primary" type="submit">
+                Simpan
+              </Button>
+            </fetcher.Form>
+          </div>
         </div>
       </ShellPage>
     </FormProvider>
@@ -191,6 +196,7 @@ function FormCreateTransaction() {
   const [nameMeta] = useField("name");
   const [notesMeta] = useField("notes");
   const [typeMeta] = useField("type");
+  const [financialGoalIdMeta] = useField("financialGoalId");
 
   return (
     <div className="flex flex-col gap-2 h-full">
@@ -269,6 +275,17 @@ function FormCreateTransaction() {
           {notesMeta.errors && <ErrorMessage>{notesMeta.errors}</ErrorMessage>}
         </div>
       </Section>
+      <Section className="bg-white border border-neutral-200 dark:border-neutral-800 rounded-xl 2xl:rounded-2xl">
+        <div className="grid w-full items-center gap-4 py-4">
+          <Label htmlFor={financialGoalIdMeta.id} className="font-semibold">
+            Tujuan Transaksi
+          </Label>
+          <FinancialGoal />
+          {financialGoalIdMeta.errors && (
+            <ErrorMessage>{financialGoalIdMeta.errors}</ErrorMessage>
+          )}
+        </div>
+      </Section>
     </div>
   );
 }
@@ -279,13 +296,12 @@ export function ExpenseClassification() {
 
   return (
     <Section
-      className={cn()
-      // "hidden",
-      // typeMeta.value === "out" &&
-      //   "block bg-white border border-neutral-200 dark:border-neutral-800 rounded-xl 2xl:rounded-2xl",
-      }
+      className={cn(
+        "hidden",
+        typeMeta.value === "out" &&
+          "block bg-white border border-neutral-200 dark:border-neutral-800 rounded-xl 2xl:rounded-2xl",
+      )}
     >
-      {typeMeta.value}
       <div className="grid w-full items-center gap-4 py-4">
         <input
           type="hidden"
@@ -393,6 +409,65 @@ function Type() {
           </span>
           <span>Pengeluaran</span>
         </ToggleGroupItem>
+      </ToggleGroup>
+    </div>
+  );
+}
+
+function FinancialGoal() {
+  const { financialGoals } = useLoaderData<typeof loader>();
+
+  const [financialGoalIdMeta, form] = useField("financialGoalId");
+  const [typeMeta] = useField("type");
+
+  const location = useLocation();
+  return (
+    <div>
+      <input
+        type="hidden"
+        name={financialGoalIdMeta.name}
+        value={String(financialGoalIdMeta.value || "")}
+      />
+      <ToggleGroup
+        type="single"
+        onValueChange={(value) => {
+          form.update({ name: financialGoalIdMeta.name, value });
+        }}
+        defaultValue={String(financialGoalIdMeta.initialValue || "")}
+        className="flex flex-col w-full items-center gap-4"
+      >
+        <div className="px-4 py-6 w-full border rounded-xl flex flex-col gap-4">
+          <div className="flex justify-between items-center">
+            <Label className="font-semibold">Hutang</Label>
+            <Link
+              to={`/goals/debt/create?back-url=${encodeURI(location.pathname)}`}
+              className="cursor-pointer"
+            >
+              <Label className="font-semibold underline text-primary-500">
+                + Buat Hutang Baru
+              </Label>
+            </Link>
+          </div>
+          {financialGoals
+            .filter((item) => item.type === "debt")
+            .map((item) => (
+              <ToggleGroupItem
+                key={item.id}
+                value={item.id}
+                aria-label="Pemasukan"
+                className={cn(
+                  "w-full h-20",
+                  item.type === "debt" &&
+                    "data-[state=on]:border-warning-500 data-[state=on]:text-warning-600 data-[state=on]:bg-warning-50",
+                )}
+              >
+                <span>
+                  {typeMeta.value === "out" ? "Bayar: " : "Tambah: "}
+                  <b>{item.title}</b>
+                </span>
+              </ToggleGroupItem>
+            ))}
+        </div>
       </ToggleGroup>
     </div>
   );

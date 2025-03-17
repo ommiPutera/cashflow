@@ -217,28 +217,30 @@ export default function Edit() {
             <span className="text-xs font-medium">Kembali</span>
           </Link>
         </div>
-        <div className="flex flex-col gap-1 max-w-[var(--shell-page-width)] mx-auto">
-          <fetcher.Form
-            action={`${location.pathname}${location.search}`}
-            method="post"
-            className="flex relative flex-col gap-4 h-full pb-32"
-            {...getFormProps(form)}
-          >
-            <FormEditTransaction />
-            <div className="fixed z-20 border-t border-neutral-200 left-0 lg:left-[var(--sidebar-width)] bg-background bottom-0 py-6 px-4 w-full lg:w-[calc(100%_-_var(--sidebar-width))]">
-              <div className="max-w-[var(--shell-page-width)] lg:max-w-full mx-auto w-full flex flex-col lg:flex-row-reverse gap-2 lg:gap-4">
-                <Button
-                  variant="primary"
-                  type="submit"
-                  disabled={!form.dirty}
-                  className="w-full border-2 font-bold text-white lg:w-72 border-primary-500 rounded-full"
-                >
-                  Ubah
-                </Button>
-                <DeleteTransaction />
+        <div className="lg:max-w-[1150px]">
+          <div className="flex flex-col gap-4 mx-auto xl:mx-0 max-w-[var(--shell-page-width)]">
+            <fetcher.Form
+              action={`${location.pathname}${location.search}`}
+              method="post"
+              className="flex relative flex-col gap-4 h-full pb-32"
+              {...getFormProps(form)}
+            >
+              <FormEditTransaction />
+              <div className="fixed z-20 border-t border-neutral-200 left-0 lg:left-[var(--sidebar-width)] bg-background bottom-0 py-6 px-4 lg:px-10 w-full lg:w-[calc(100%_-_var(--sidebar-width))]">
+                <div className="max-w-[var(--shell-page-width)] lg:max-w-[1150px] w-full flex flex-col lg:flex-row gap-2 lg:gap-4">
+                  <Button
+                    variant="primary"
+                    type="submit"
+                    disabled={!form.dirty}
+                    className="w-full border-2 font-bold text-white lg:w-72 border-primary-500 rounded-full"
+                  >
+                    Ubah
+                  </Button>
+                  <DeleteTransaction />
+                </div>
               </div>
-            </div>
-          </fetcher.Form>
+            </fetcher.Form>
+          </div>
         </div>
       </ShellPage>
     </FormProvider>
@@ -670,7 +672,7 @@ function DeleteTransaction() {
         type="button"
         onClick={() => setIsRequest(true)}
         className={cn(
-          "w-full border-2 font-bold rounded-full lg:w-72",
+          "w-full border-2 font-bold rounded-full lg:w-64",
           isRequest && "hidden",
         )}
       >

@@ -38,7 +38,7 @@ export default function Sheets() {
   return (
     <ShellPage>
       <Navigation noNavigationOnMobile={false} />
-      <div className="flex flex-col lg:flex-row-reverse gap-4 mx-auto max-w-[var(--shell-page-width)] lg:gap-14 2xl:gap-16 lg:max-w-[1150px]">
+      <div className="flex flex-col lg:flex-row-reverse gap-4 mx-auto xl:mx-0 max-w-[var(--shell-page-width)] lg:gap-10 lg:max-w-[1150px]">
         <div className="w-full lg:max-w-[400px]">
           <BalanceSheet />
         </div>

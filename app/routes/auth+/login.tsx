@@ -52,49 +52,51 @@ export default function Route() {
 
   return (
     <ShellPage>
-      <div className="my-8 items-center w-full mx-auto flex flex-col gap-44 max-w-xs">
-        <Link to="/">
-          <div>
-            <SVGLogo />
-          </div>
-        </Link>
-        <div className="w-full flex flex-col gap-4">
-          <div className="flex flex-col gap-2">
-            <h1 className="text-2xl font-semibold tracking-tight text-neutral-800 koh-santepheap-bold">
-              Selamat datang kembali.
-            </h1>
-            <p className="text-base font-normal text-neutral-600">
-              Masuk ke akun kamu
-            </p>
-          </div>
-          <fetcher.Form method="post" className="w-full">
-            <div className="grid w-full items-center gap-4 py-4">
-              <Label
-                htmlFor="email-address"
-                className="font-semibold text-left"
-              >
-                Alamat Email
-              </Label>
-              <Input
-                id="email-address"
-                placeholder="you@example.com"
-                error={errors}
-                type="email"
-                name="email"
-                required
-                disabled={isSubmitting}
-              />
-              {errors && <p className="text-danger-500 text-sm">{errors}</p>}
+      <div className="flex justify-center items-center min-h-[calc(100svh_-_30svh)]">
+        <div className="items-start w-full mx-auto flex flex-col max-w-xs">
+          <Link to="/">
+            <div className="w-fit mb-12">
+              <SVGLogo width={180} />
             </div>
-            <Button
-              type="submit"
-              variant="primary"
-              className="w-full rounded-full"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? "Tunggu..." : "Lanjutkan"}
-            </Button>
-          </fetcher.Form>
+          </Link>
+          <div className="w-full flex flex-col gap-4">
+            <div className="flex flex-col gap-2">
+              <h1 className="text-2xl font-semibold tracking-tight text-neutral-800 koh-santepheap-bold">
+                Selamat datang kembali.
+              </h1>
+              <p className="text-base font-normal text-neutral-600">
+                Masuk ke akun kamu
+              </p>
+            </div>
+            <fetcher.Form method="post" className="w-full">
+              <div className="grid w-full items-center gap-4 py-4">
+                <Label
+                  htmlFor="email-address"
+                  className="font-semibold text-left"
+                >
+                  Alamat Email
+                </Label>
+                <Input
+                  id="email-address"
+                  placeholder="you@example.com"
+                  error={errors}
+                  type="email"
+                  name="email"
+                  required
+                  disabled={isSubmitting}
+                />
+                {errors && <p className="text-danger-500 text-sm">{errors}</p>}
+              </div>
+              <Button
+                type="submit"
+                variant="primary"
+                className="w-full rounded-full"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Tunggu..." : "Lanjutkan"}
+              </Button>
+            </fetcher.Form>
+          </div>
         </div>
       </div>
     </ShellPage>

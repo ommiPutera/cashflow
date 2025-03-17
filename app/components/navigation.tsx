@@ -169,11 +169,11 @@ export function PublicNavigation() {
   );
 }
 
-export function SVGLogo() {
+export function SVGLogo({ width = 135 }: { width?: number }) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="135"
+      width={width}
       fill="none"
       viewBox="0 0 155 33"
     >
