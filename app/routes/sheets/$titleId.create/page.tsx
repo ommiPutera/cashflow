@@ -38,6 +38,7 @@ import { getSheet } from "~/utils/sheet.server";
 import { getSession } from "~/lib/session.server";
 import { User } from "@prisma/client";
 import { getFinancialGoals } from "~/utils/financialGoal.server";
+import React from "react";
 
 export const meta: MetaFunction = ({ params }) => {
   const title = `Buat Transaksi | ${params.titleId?.split("-").join(" ")}`;
@@ -294,21 +295,24 @@ export function ExpenseClassification() {
   const [meta, form] = useField("expenseClassification");
   const [typeMeta] = useField("type");
 
+  const isValid = typeMeta.value !== "out";
+
+  React.useEffect(() => {
+    if (isValid) {
+      form.update({ name: meta.name, value: "" });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [typeMeta.value])
+
   return (
-    <Section
-      className={cn(
-        "hidden",
-        typeMeta.value === "out" &&
-          "block bg-white border border-neutral-200 dark:border-neutral-800 rounded-xl 2xl:rounded-2xl",
-      )}
-    >
+    <Section className="bg-white border border-neutral-200 dark:border-neutral-800 rounded-xl 2xl:rounded-2xl relative">
       <div className="grid w-full items-center gap-4 py-4">
         <input
           type="hidden"
           name={meta.name}
           value={String(meta.value || "")}
         />
-        <Label className="font-semibold" required>
+        <Label className="font-semibold">
           Apakah nominal pengeluaran ini biasanya sama setiap bulan?
         </Label>
         <RadioGroup
@@ -317,6 +321,8 @@ export function ExpenseClassification() {
               form.update({ name: meta.name, value });
             }
           }}
+          value={meta.value as string}
+          disabled={isValid}
         >
           <div className="flex items-center space-x-4">
             <RadioGroupItem value="fixed" id="fixed" />
@@ -333,18 +339,15 @@ export function ExpenseClassification() {
           <div className="flex items-center space-x-4">
             <RadioGroupItem value="occasional" id="occasional" />
             <label className={labelVariants()} htmlFor="occasional">
-              Tidak, ini hanya terjadi karena keadaan mendesak{" "}
-            </label>
-          </div>
-          <div className="flex items-center space-x-4">
-            <RadioGroupItem value="occasional" id="occasional" />
-            <label className={labelVariants()} htmlFor="occasional">
-              Tidak, hanya sekali{" "}
+              Tidak, hanya sekali atau ini hanya terjadi karena keadaan mendesak{" "}
             </label>
           </div>
         </RadioGroup>
         {meta.errors && <ErrorMessage>{meta.errors}</ErrorMessage>}
       </div>
+      {isValid && (
+        <div className="bg-red-100/50 absolute top-0 w-full h-full left-0"></div>
+      )}
     </Section>
   );
 }
@@ -458,7 +461,7 @@ function FinancialGoal() {
                 className={cn(
                   "w-full h-20",
                   item.type === "debt" &&
-                    "data-[state=on]:border-warning-500 data-[state=on]:text-warning-600 data-[state=on]:bg-warning-50",
+                  "data-[state=on]:border-warning-500 data-[state=on]:text-warning-600 data-[state=on]:bg-warning-50",
                 )}
               >
                 <span>
